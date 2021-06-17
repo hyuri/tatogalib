@@ -18,6 +18,114 @@ from toga.style import Pack
 from toga.style.pack import COLUMN, ROW
 
 
+class TaGui:
+    """
+    Template class for new GUIs
+
+    Derived classes must implement the method build_gui()
+
+    Example code:
+
+    def build_gui(self):
+        # create box for content
+        self.main_box = toga.Box(style=Pack(direction=COLUMN))
+        _label = toga.Label('This is a label')
+        self.main_box.add(_label)
+
+        # button bar
+        box_buttons = toga.Box(style=Pack(direction=ROW, padding=(5, 0, 0, 0)))  # top, right, bottom and left padding
+        box_buttons.add(toga.Label('', style=Pack(flex=1)))
+        box_buttons.add(toga.Button('OK', on_press=self.handle_OK_button))
+        box_buttons.add(toga.Label('', style=Pack(flex=1)))
+        self.main_box.add(box_buttons)
+
+        # add main_box to window
+        if toga.platform.current_platform in ('win32', 'darwin'):
+            self.window = TaWindow(self.parentGui.window, 'taGui')
+            self.app.windows.add(self.window)
+            self.window.content = self.main_box
+        else:
+            self.window = self.parentGui.window
+    # build_gui
+    """
+    app = None
+    window = None
+    parentGui = None
+    _state_data = {}
+
+    def __init__(self, app, parentGui):
+        """
+        Creates a new GUI class
+
+        :param app: The app object
+        :param parentGui: The parent GUI of this GUI - must inherit from TaGui
+        """
+        self.app = app
+        self.parentGui = parentGui
+        if parentGui is not None and not isinstance(parentGui, TaGui):
+            print(type(parentGui))
+            raise Exception('parentGui must inherit from TaGui!')
+        self.clear_state()
+    # __init__
+
+    def clear_state(self):
+        """
+        Clears the state date
+        This method is called in the __init__ method
+        """
+        print('clearing state...')
+        self._state_data = {}
+    # clear_state
+
+    def close(self):
+        """
+        Closes the current GUI.
+        On Android an iOS, calls parentGui.show() to restore the previous GUI
+        """
+        if toga.platform.current_platform in ('android', 'ios'):
+            if self.parentGui is not None:
+                self.parentGui.show()
+        else:
+            self.window.close()
+    # close
+
+    def restore_state(self):
+        """
+        Override this method to restore the state data
+
+        This method should be called (on Android) in the show() method of a GUI, after the GUI controls
+        have been (re-)created.
+        """
+        pass
+    # restore_state
+
+    def save_state(self):
+        """
+        Override this method to save the state data
+
+        This method should be called on Android before you show a new GUI
+        """
+        pass
+    # save_state
+
+    def show(self):
+        """
+        Override build_gui() or the complete show() method to implement building and showing the GUI
+        """
+        self.build_gui()
+        self.restore_state()
+        if toga.platform.current_platform in ('win32', 'darwin'):
+            self.window.show()
+        else:
+            if self.parentGui is not None:  # sub-GUI
+                self.parentGui.window.content = self.main_box
+            else:  # main GUI
+                self.window.show()
+    # show
+
+# TaGui
+
+
 class TaWindow(toga.Window):
     """
     Extension of toga.Window with following features:
@@ -28,8 +136,9 @@ class TaWindow(toga.Window):
     _timer = None
     _centerOnParent = False
     _auto_close_duration = None
+    _user_on_close = None
 
-    def __init__(self, parentWindow, title, size=(200, 200), position=None, auto_close_duration=None):
+    def __init__(self, parentWindow, title, size=(200, 200), position=None, auto_close_duration=None, on_close=None):
         """
         Creates a new taWindow.
 
@@ -41,15 +150,22 @@ class TaWindow(toga.Window):
         :type position: tuple[(int, int)] or None
         :param auto_close_duration: The time in seconds after which this HtmlWindow closes automatically
         :type auto_close_duration: float or None
+        :param on_close: The callable that will be called when the user closes the window
         """
         self.parentWindow = parentWindow
         self._centerOnParent = False
         self._auto_close_duration = auto_close_duration
+        self._user_on_close = on_close
         if position is None:
             position = (100, 100)
             self._centerOnParent = True
         super().__init__(title=title, size=size, position=position)
     # __init__
+
+    def activate(self):
+        if toga.platform.current_platform == 'win32':
+            self._impl.native.Activate()
+    # activate
 
     def close(self):
         """Cancels a possibly active auto-close timer and closes the window"""
@@ -59,15 +175,20 @@ class TaWindow(toga.Window):
         super().close()
     # close
 
-    def on_close(self):
-        """Cancels a possibly active auto-close timer and calls its super method"""
-        # todo: on_close not implemented in winforms
-        if self._timer is not None:
-            print('cancel timer (on_close)')
-            self._timer.cancel()
-            self._timer = None
-        print('super().on_close()')
-        super().on_close()
+    def window_close_handler(self, window):
+        """
+        Cancels a possibly active auto-close timer when the window should close
+        Returns True when the window should close, False when it should stay open
+        """
+        _should_close = True
+        if self._user_on_close is not None:
+            _should_close = self._user_on_close(window)
+        if _should_close:
+            if self._timer is not None:
+                print('cancel timer (on_close)')
+                self._timer.cancel()
+                self._timer = None
+        return _should_close
 
     def show(self):
         if self._centerOnParent is True:
@@ -75,6 +196,8 @@ class TaWindow(toga.Window):
         if self._auto_close_duration is not None:
             self._timer = Timer(self._auto_close_duration, self.close)
             self._timer.start()
+        if self._auto_close_duration is not None or self._user_on_close is not None:
+            self.on_close = self.window_close_handler
         super().show()
     # show
 
@@ -89,7 +212,8 @@ class HtmlWindow (TaWindow):
     webView = None
     _mainBox = None
 
-    def __init__(self, parentWindow, title, html_text, size=(200, 200), position=None, auto_close_duration=None):
+    def __init__(self, parentWindow, title, html_text, size=(200, 200), position=None, auto_close_duration=None,
+                 on_close=None):
         """
         Creates a window with a WebView.
 
@@ -102,8 +226,10 @@ class HtmlWindow (TaWindow):
         :type position: tuple[(int, int)] or None
         :param auto_close_duration: The time in seconds after which this HtmlWindow closes automatically
         :type auto_close_duration: float or None
+        :param on_close: The callable that will be called when the user closes the window
         """
-        super().__init__(parentWindow, title, size, position, auto_close_duration)
+        super().__init__(parentWindow, title, size=size, position=position, auto_close_duration=auto_close_duration,
+                         on_close=on_close)
         self._mainBox = toga.Box(style=Pack(direction=COLUMN, padding=5))
         self.webView = toga.WebView(style=Pack(flex=1))
         self.webView.set_content('data:text/html,', html_text)
@@ -155,5 +281,5 @@ def centerOnParent(parent_window, child_window):
 # centerOnParent
 
 
-version = '0.2'
-version_date = '2020-08-10 - 2020-08-10'
+version = '0.5.1'
+version_date = '2020-08-10 - 2021-06-17'
