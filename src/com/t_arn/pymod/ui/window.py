@@ -22,9 +22,16 @@ class TaGui:
     """
     Template class for new GUIs
 
-    Derived classes must implement the method build_gui()
+    Derived classes must call super().__init__() and implement the method build_gui()
 
     Example code:
+
+    def __init__(self, app, parentGui, title, size=(300, 200), position=None):
+        super().__init__(app, parentGui)
+        self._title = title
+        self._size = size
+        self._position = position
+    # __init__
 
     def build_gui(self):
         # create box for content
@@ -65,6 +72,9 @@ class TaGui:
         if parentGui is not None and not isinstance(parentGui, TaGui):
             print(type(parentGui))
             raise Exception('parentGui must inherit from TaGui!')
+        if toga.platform.current_platform in ('android', 'ios'):
+            if parentGui is not None:
+                parentGui.save_state()
         self.clear_state()
     # __init__
 
@@ -103,7 +113,7 @@ class TaGui:
         """
         Override this method to save the state data
 
-        This method should be called on Android before you show a new GUI
+        On mobile platforms, this method is called on the parentGui in the __init__ method of the child GUI
         """
         pass
     # save_state
@@ -281,5 +291,5 @@ def centerOnParent(parent_window, child_window):
 # centerOnParent
 
 
-version = '0.5.1'
-version_date = '2020-08-10 - 2021-06-17'
+version = '0.6.0'
+version_date = '2020-08-10 - 2021-12-15'
