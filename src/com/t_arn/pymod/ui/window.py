@@ -23,6 +23,8 @@ class TaGui:
     Template class for new GUIs
 
     Derived classes must call super().__init__() and implement the method build_gui()
+    
+    build_gui() must create the main_box and add all content there
 
     Example code:
 
@@ -291,5 +293,5 @@ def centerOnParent(parent_window, child_window):
 # centerOnParent
 
 
-version = '0.6.0'
-version_date = '2020-08-10 - 2021-12-15'
+version = '0.6.1'
+version_date = '2020-08-10 - 2021-12-31'
