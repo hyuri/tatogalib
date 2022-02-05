@@ -20,119 +20,109 @@ from toga.style.pack import COLUMN, ROW
 
 class TaGui:
     """
-    Template class for new GUIs
-
+    Template class for new GUIs. In the constructor, you can use all keyword arguments from Window or MainWindow
     Derived classes must call super().__init__() and implement the method build_gui()
-    
-    build_gui() must create the main_box and add all content there
+    build_gui() must create the main_box and add all content there.
+    Then, the window can be shown by calling the show() method of the class
 
-    Example code:
+    Example code (works the same for the main GUI and sub GUIs):
+    # in app.py:
+    mygui = user_gui.MainGui(
+        self, None, "Main GUI", size=(600, 480)  # using None for the parentGui marks the main gui
+    )
+    mygui.show()
 
-    def __init__(self, app, parentGui, title, size=(300, 200), position=None):
-        super().__init__(app, parentGui)
-        self._title = title
-        self._size = size
-        self._position = position
-    # __init__
+    # in user_gui:
+    class MainGui(TaGui):
+        main_box = None
 
-    def build_gui(self):
-        # create box for content
-        self.main_box = toga.Box(style=Pack(direction=COLUMN))
-        _label = toga.Label('This is a label')
-        self.main_box.add(_label)
+        def __init__(self, app, parentGui, title, **kwargs):
+            super().__init__(app, parentGui, title, **kwargs)
+        # __init__
 
-        # button bar
-        box_buttons = toga.Box(style=Pack(direction=ROW, padding=(5, 0, 0, 0)))  # top, right, bottom and left padding
-        box_buttons.add(toga.Label('', style=Pack(flex=1)))
-        box_buttons.add(toga.Button('OK', on_press=self.handle_OK_button))
-        box_buttons.add(toga.Label('', style=Pack(flex=1)))
-        self.main_box.add(box_buttons)
+        def build_gui(self):
+            # create box for content
+            self.main_box = toga.Box(style=Pack(direction=COLUMN))
+            self.main_box.add(toga.Label("Hello"))
 
-        # add main_box to window
-        if toga.platform.current_platform in ('win32', 'darwin'):
-            self.window = TaWindow(self.parentGui.window, 'taGui')
-            self.app.windows.add(self.window)
-            self.window.content = self.main_box
-        else:
-            self.window = self.parentGui.window
-    # build_gui
+            # button bar
+            box_buttons = toga.Box(style=Pack(direction=ROW, padding=(5, 0, 0, 0)))  # top, right, bottom and left padding
+            box_buttons.add(toga.Label("", style=Pack(flex=1)))
+            box_buttons.add(toga.Button("OK", on_press=self.handle_OK_button))
+            box_buttons.add(toga.Label("", style=Pack(flex=1)))
+            self.main_box.add(box_buttons)
+        # build_gui
     """
     app = None
+    root_box = None
     window = None
     parentGui = None
-    _state_data = {}
+    title = None
 
-    def __init__(self, app, parentGui):
+    def __init__(self, app, parentGui, title, **kwargs):
         """
         Creates a new GUI class
 
-        :param app: The app object
-        :param parentGui: The parent GUI of this GUI - must inherit from TaGui
+        :param toga.App app: The app object
+        :param TaGui parentGui: The parent GUI of this GUI - must inherit from TaGui - Use None for the main window
+        :param str title: The title of the window to be created
+        :param kwargs: All keyword arguments allowed in Window or MainWindow
         """
         self.app = app
         self.parentGui = parentGui
+        self.title = title
         if parentGui is not None and not isinstance(parentGui, TaGui):
-            print(type(parentGui))
-            raise Exception('parentGui must inherit from TaGui!')
-        if toga.platform.current_platform in ('android', 'ios'):
-            if parentGui is not None:
-                parentGui.save_state()
-        self.clear_state()
+            print("Type of parentGui: {}".format(str(type(parentGui))))
+            raise Exception("parentGui must inherit from TaGui!")
+        # create the window
+        if parentGui is None:  # main GUI
+            self.app.main_window = toga.MainWindow(title=title, **kwargs)
+            self.window = self.app.main_window
+        else:  # sub GUIs
+            self.window = TaWindow(self.parentGui.window, title, **kwargs)
+            if toga.platform.current_platform in ("win32", "darwin"):
+                self.app.windows.add(self.window)
+            else:
+                self.window = self.parentGui.window
+        # create root_box on mobile platforms
+        if toga.platform.current_platform in ("android", "ios"):
+            if parentGui is None:
+                self.root_box = toga.Box(style=Pack(direction=COLUMN))
+            else:
+                self.root_box = parentGui.root_box
     # __init__
-
-    def clear_state(self):
-        """
-        Clears the state date
-        This method is called in the __init__ method
-        """
-        print('clearing state...')
-        self._state_data = {}
-    # clear_state
 
     def close(self):
         """
         Closes the current GUI.
         On Android an iOS, calls parentGui.show() to restore the previous GUI
         """
-        if toga.platform.current_platform in ('android', 'ios'):
-            if self.parentGui is not None:
-                self.parentGui.show()
-        else:
+        if toga.platform.current_platform in ("win32", "darwin"):
             self.window.close()
+        if toga.platform.current_platform in ("android", "ios"):
+            self.parentGui.show()
     # close
-
-    def restore_state(self):
-        """
-        Override this method to restore the state data
-
-        This method should be called (on Android) in the show() method of a GUI, after the GUI controls
-        have been (re-)created.
-        """
-        pass
-    # restore_state
-
-    def save_state(self):
-        """
-        Override this method to save the state data
-
-        On mobile platforms, this method is called on the parentGui in the __init__ method of the child GUI
-        """
-        pass
-    # save_state
 
     def show(self):
         """
-        Override build_gui() or the complete show() method to implement building and showing the GUI
+        Calls build_gui() and displays the GUI.
+        Override build_gui() method in derived classes to implement the GUI
         """
-        self.build_gui()
-        self.restore_state()
-        if toga.platform.current_platform in ('win32', 'darwin'):
+        if self.main_box is None:
+            self.build_gui()
+        if toga.platform.current_platform in ("win32", "darwin"):
+            self.window.content = self.main_box
             self.window.show()
-        else:
-            if self.parentGui is not None:  # sub-GUI
-                self.parentGui.window.content = self.main_box
-            else:  # main GUI
-                self.window.show()
+        if toga.platform.current_platform in ("android", "ios"):
+            if self.parentGui is None:  # main GUI
+                if not self.window.content:
+                    self.window.content = self.root_box
+            for child in self.root_box.children:
+                self.root_box.remove(child)
+            self.root_box.add(self.main_box)
+            # setting app title
+            self.app._impl.native.setTitle(self.title)
+            self.window.show()
     # show
 
 # TaGui
@@ -175,7 +165,7 @@ class TaWindow(toga.Window):
     # __init__
 
     def activate(self):
-        if toga.platform.current_platform == 'win32':
+        if toga.platform.current_platform == "win32":
             self._impl.native.Activate()
     # activate
 
@@ -197,7 +187,7 @@ class TaWindow(toga.Window):
             _should_close = self._user_on_close(window)
         if _should_close:
             if self._timer is not None:
-                print('cancel timer (on_close)')
+                print("cancel timer (on_close)")
                 self._timer.cancel()
                 self._timer = None
         return _should_close
@@ -244,16 +234,16 @@ class HtmlWindow (TaWindow):
                          on_close=on_close)
         self._mainBox = toga.Box(style=Pack(direction=COLUMN, padding=5))
         self.webView = toga.WebView(style=Pack(flex=1))
-        self.webView.set_content('data:text/html,', html_text)
+        self.webView.set_content("data:text/html,", html_text)
         self._mainBox.add(self.webView)
     # __init__
 
     def add_ok_button(self):
         """Adds an OK button at the bottom."""
         _buttonBox = toga.Box(style=Pack(direction=ROW, padding=(5, 0, 0, 0)))  # top, right, bottom and left padding
-        _buttonBox.add(toga.Label('', style=Pack(flex=1)))
-        _buttonBox.add(toga.Button('OK', on_press=self.handle_ok_button))
-        _buttonBox.add(toga.Label('', style=Pack(flex=1)))
+        _buttonBox.add(toga.Label("", style=Pack(flex=1)))
+        _buttonBox.add(toga.Button("OK", on_press=self.handle_ok_button))
+        _buttonBox.add(toga.Label("", style=Pack(flex=1)))
         self._mainBox.add(_buttonBox)
     # add_ok_button
 
@@ -293,5 +283,5 @@ def centerOnParent(parent_window, child_window):
 # centerOnParent
 
 
-version = '0.6.1'
-version_date = '2020-08-10 - 2021-12-31'
+version = "0.7.1"
+version_date = "2020-08-10 - 2022-02-04"
