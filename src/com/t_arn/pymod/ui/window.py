@@ -121,7 +121,8 @@ class TaGui:
                 self.root_box.remove(child)
             self.root_box.add(self.main_box)
             # setting app title
-            self.app._impl.native.setTitle(self.title)
+            if toga.platform.current_platform == "android":
+                self.app._impl.native.setTitle(self.title)
             self.window.show()
     # show
 
@@ -283,5 +284,5 @@ def centerOnParent(parent_window, child_window):
 # centerOnParent
 
 
-version = "0.7.1"
-version_date = "2020-08-10 - 2022-02-04"
+version = "0.7.2"
+version_date = "2020-08-10 - 2022-02-09"
