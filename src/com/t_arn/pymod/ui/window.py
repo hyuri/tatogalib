@@ -34,9 +34,9 @@ class TaGui:
 
     # in user_gui:
     class MainGui(TaGui):
-        main_box = None
 
         def __init__(self, app, parentGui, title, **kwargs):
+            self.main_box = None
             super().__init__(app, parentGui, title, **kwargs)
         # __init__
 
@@ -53,11 +53,6 @@ class TaGui:
             self.main_box.add(box_buttons)
         # build_gui
     """
-    app = None
-    root_box = None
-    window = None
-    parentGui = None
-    title = None
 
     def __init__(self, app, parentGui, title, **kwargs):
         """
@@ -68,6 +63,8 @@ class TaGui:
         :param str title: The title of the window to be created
         :param kwargs: All keyword arguments allowed in Window or MainWindow
         """
+        self.root_box = None
+        self.window = None
         self.app = app
         self.parentGui = parentGui
         self.title = title
@@ -121,8 +118,7 @@ class TaGui:
                 self.root_box.remove(child)
             self.root_box.add(self.main_box)
             # setting app title
-            if toga.platform.current_platform == "android":
-                self.app._impl.native.setTitle(self.title)
+            self.app._impl.native.setTitle(self.title)
             self.window.show()
     # show
 
@@ -135,11 +131,6 @@ class TaWindow(toga.Window):
     - auto closeable
     - auto centered on parent window
     """
-    parentWindow = None
-    _timer = None
-    _centerOnParent = False
-    _auto_close_duration = None
-    _user_on_close = None
 
     def __init__(self, parentWindow, title, size=(200, 200), position=None, auto_close_duration=None, on_close=None):
         """
@@ -155,6 +146,7 @@ class TaWindow(toga.Window):
         :type auto_close_duration: float or None
         :param on_close: The callable that will be called when the user closes the window
         """
+        self._timer = None
         self.parentWindow = parentWindow
         self._centerOnParent = False
         self._auto_close_duration = auto_close_duration
@@ -212,8 +204,6 @@ class HtmlWindow (TaWindow):
     Class which shows a taWindow with html content.
     If no position is passed, the window will center on its parent
     """
-    webView = None
-    _mainBox = None
 
     def __init__(self, parentWindow, title, html_text, size=(200, 200), position=None, auto_close_duration=None,
                  on_close=None):
@@ -285,4 +275,4 @@ def centerOnParent(parent_window, child_window):
 
 
 version = "0.7.2"
-version_date = "2020-08-10 - 2022-02-09"
+version_date = "2020-08-10 - 2022-02-17"
