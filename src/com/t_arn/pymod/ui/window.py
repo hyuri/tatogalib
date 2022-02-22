@@ -246,7 +246,10 @@ class HtmlWindow (TaWindow):
         """Adds an OK button at the bottom."""
         _buttonBox = toga.Box(style=Pack(direction=ROW, padding=(5, 0, 0, 0)))  # top, right, bottom and left padding
         _buttonBox.add(toga.Label("", style=Pack(flex=1)))
-        _buttonBox.add(toga.Button("OK", on_press=self.handle_ok_button, style=Pack(font_size=self.font_size)))
+        if self.font_size is None:
+            _buttonBox.add(toga.Button("OK", on_press=self.handle_ok_button))
+        else:
+            _buttonBox.add(toga.Button("OK", on_press=self.handle_ok_button, style=Pack(font_size=self.font_size)))
         _buttonBox.add(toga.Label("", style=Pack(flex=1)))
         self._mainBox.add(_buttonBox)
     # add_ok_button
