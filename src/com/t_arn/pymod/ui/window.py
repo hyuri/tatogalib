@@ -12,6 +12,7 @@ For suggestions and questions:
 This file is distributed under the terms of the LGPL
 """
 
+import copy
 from threading import Timer
 import toga
 from toga.style import Pack
@@ -68,6 +69,8 @@ class TaGui:
         self.app = app
         self.parentGui = parentGui
         self.title = title
+        self.parent_commands = None
+        self.parent_toolbar = None
         if parentGui is not None and not isinstance(parentGui, TaGui):
             print("Type of parentGui: {}".format(str(type(parentGui))))
             raise Exception("parentGui must inherit from TaGui!")
@@ -87,6 +90,10 @@ class TaGui:
                 self.root_box = toga.Box(style=Pack(direction=COLUMN))
             else:
                 self.root_box = parentGui.root_box
+        # save parent commands and toolbar
+        if toga.platform.current_platform == "android":
+            self.parent_commands = copy.copy(self.app.commands)
+            self.parent_toolbar = copy.copy(self.app.main_window.toolbar)
     # __init__
 
     def close(self):
@@ -96,6 +103,11 @@ class TaGui:
         """
         if toga.platform.current_platform in ("win32", "darwin"):
             self.window.close()
+        # restore parent commands and toolbar
+        if toga.platform.current_platform == "android":
+            self.app.commands = self.parent_commands
+            self.app.main_window._toolbar = self.parent_toolbar
+            self.app._impl.native.invalidateOptionsMenu()
         if toga.platform.current_platform in ("android", "ios"):
             self.parentGui.show()
     # close
@@ -205,8 +217,8 @@ class HtmlWindow (TaWindow):
     If no position is passed, the window will center on its parent
     """
 
-    def __init__(self, parentWindow, title, html_text, size=(200, 200), position=None, auto_close_duration=None,
-                 on_close=None):
+    def __init__(self, parentWindow, title, html_text, size=(200, 200), font_size=None, position=None,
+                 auto_close_duration=None, on_close=None):
         """
         Creates a window with a WebView.
 
@@ -221,6 +233,7 @@ class HtmlWindow (TaWindow):
         :type auto_close_duration: float or None
         :param on_close: The callable that will be called when the user closes the window
         """
+        self.font_size = font_size
         super().__init__(parentWindow, title, size=size, position=position, auto_close_duration=auto_close_duration,
                          on_close=on_close)
         self._mainBox = toga.Box(style=Pack(direction=COLUMN, padding=5))
@@ -233,7 +246,7 @@ class HtmlWindow (TaWindow):
         """Adds an OK button at the bottom."""
         _buttonBox = toga.Box(style=Pack(direction=ROW, padding=(5, 0, 0, 0)))  # top, right, bottom and left padding
         _buttonBox.add(toga.Label("", style=Pack(flex=1)))
-        _buttonBox.add(toga.Button("OK", on_press=self.handle_ok_button))
+        _buttonBox.add(toga.Button("OK", on_press=self.handle_ok_button, style=Pack(font_size=self.font_size)))
         _buttonBox.add(toga.Label("", style=Pack(flex=1)))
         self._mainBox.add(_buttonBox)
     # add_ok_button
@@ -274,5 +287,5 @@ def centerOnParent(parent_window, child_window):
 # centerOnParent
 
 
-version = "0.7.2"
-version_date = "2020-08-10 - 2022-02-17"
+version = "0.8.0"
+version_date = "2020-08-10 - 2022-02-22"
