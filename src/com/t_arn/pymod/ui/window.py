@@ -88,10 +88,13 @@ class TaGui:
         if toga.platform.current_platform in ("android", "ios"):
             if parentGui is None:
                 self.root_box = toga.Box(style=Pack(direction=COLUMN))
+                self.window.content = self.root_box
             else:
                 self.root_box = parentGui.root_box
-        # save parent commands and toolbar
         if toga.platform.current_platform == "android":
+            # correct window size
+            self.window.size = self.get_window_size()
+            # save parent commands and toolbar
             self.parent_commands = copy.copy(self.app.commands)
             self.parent_toolbar = copy.copy(self.app.main_window.toolbar)
     # __init__
@@ -111,6 +114,30 @@ class TaGui:
         if toga.platform.current_platform in ("android", "ios"):
             self.parentGui.show()
     # close
+    
+    def get_scale(self):
+        """
+        Returns the scale factor of the platform.
+        Multiply dp values with this factor to get px values.
+        """
+        if toga.platform.current_platform == "android":
+            return self.root_box._impl.viewport.scale
+        else:
+            return 1
+    # get_scale
+    
+    def get_window_size(self):
+        """
+        Returns the usable (width, height) of this window in dp
+        """
+        if toga.platform.current_platform == "android":
+            scale = self.get_scale()
+            width = int(self.root_box._impl.viewport.width / scale)
+            height = int(self.root_box._impl.viewport.height / scale)
+            return (width, height)
+        else:
+            return self.window.size
+    # get_window_size
 
     def show(self):
         """
@@ -123,9 +150,6 @@ class TaGui:
             self.window.content = self.main_box
             self.window.show()
         if toga.platform.current_platform in ("android", "ios"):
-            if self.parentGui is None:  # main GUI
-                if not self.window.content:
-                    self.window.content = self.root_box
             for child in self.root_box.children:
                 self.root_box.remove(child)
             self.root_box.add(self.main_box)
@@ -290,5 +314,5 @@ def centerOnParent(parent_window, child_window):
 # centerOnParent
 
 
-version = "0.8.0"
-version_date = "2020-08-10 - 2022-02-22"
+version = "0.9.0"
+version_date = "2020-08-10 - 2022-02-23"
