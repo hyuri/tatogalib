@@ -154,7 +154,8 @@ class TaGui:
                 self.root_box.remove(child)
             self.root_box.add(self.main_box)
             # setting app title
-            self.app._impl.native.setTitle(self.title)
+            if toga.platform.current_platform == "android":
+                self.app._impl.native.setTitle(self.title)
             self.window.show()
     # show
 
@@ -174,7 +175,7 @@ class TaWindow(toga.Window):
 
         :param toga.Window parentWindow: The toga.Window which is the parent of this TaWindow
         :param str title: The title for this window
-        :param size: The initial size (width, height) in pixel of this HtmlWindow
+        :param size: The initial size (width, height) in dip of this HtmlWindow
         :type size: tuple[(int, int)]
         :param position: The initial position (x, y) of this HtmlWindow. None centers it on parentWindow
         :type position: tuple[(int, int)] or None
@@ -248,7 +249,7 @@ class HtmlWindow (TaWindow):
 
         :param toga.Window parentWindow: The toga.Window which is the parent of this HtmlWindow
         :param str title: The title for this window
-        :param size: The initial size (width, height) in pixel of this HtmlWindow
+        :param size: The initial size (width, height) in dip of this HtmlWindow
         :type size: tuple[(int, int)]
         :param str html_text: The html text to display
         :param position: The initial position (x, y) of this HtmlWindow. None centers it on parentWindow
@@ -314,5 +315,5 @@ def centerOnParent(parent_window, child_window):
 # centerOnParent
 
 
-version = "0.9.0"
-version_date = "2020-08-10 - 2022-02-23"
+version = "0.9.2"
+version_date = "2020-08-10 - 2022-03-16"
