@@ -18,8 +18,6 @@ from pathlib import Path
 
 
 class I18nUtils:
-    version = '0.3'
-    version_date = '2020-07-03 - 2020-10-20'
     fallback_lang = None
     lang = None
     translation_dir = None
@@ -157,3 +155,7 @@ class I18nUtils:
         return _text
     # t
 # I18nUtils
+
+
+version = '0.3.1'
+version_date = '2020-07-03 - 2022-07-28'

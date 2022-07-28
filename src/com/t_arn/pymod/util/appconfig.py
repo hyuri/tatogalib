@@ -62,3 +62,7 @@ def write_config (config_dir, config):
 	with open(config_dir + '/config.json', 'w') as json_file:
 		json.dump(config, json_file, indent=2)
 # write_config
+
+
+version = "1.0.0"
+version_date = "2021-03-24 - 2022-07-28"
