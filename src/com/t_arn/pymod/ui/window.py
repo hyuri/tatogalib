@@ -80,12 +80,12 @@ class TaGui:
             self.window = self.app.main_window
         else:  # sub GUIs
             self.window = TaWindow(self.parentGui.window, title, **kwargs)
-            if toga.platform.current_platform in ("win32", "darwin"):
+            if toga.platform.current_platform in ("windows", "macOS"):
                 self.app.windows.add(self.window)
             else:
                 self.window = self.parentGui.window
         # create root_box on mobile platforms
-        if toga.platform.current_platform in ("android", "ios"):
+        if toga.platform.current_platform in ("android", "iOS"):
             if parentGui is None:
                 self.root_box = toga.Box(style=Pack(direction=COLUMN))
                 self.window.content = self.root_box
@@ -104,14 +104,14 @@ class TaGui:
         Closes the current GUI.
         On Android an iOS, calls parentGui.show() to restore the previous GUI
         """
-        if toga.platform.current_platform in ("win32", "darwin"):
+        if toga.platform.current_platform in ("windows", "macOS"):
             self.window.close()
         # restore parent commands and toolbar
         if toga.platform.current_platform == "android":
             self.app.commands = self.parent_commands
             self.app.main_window._toolbar = self.parent_toolbar
             self.app._impl.native.invalidateOptionsMenu()
-        if toga.platform.current_platform in ("android", "ios"):
+        if toga.platform.current_platform in ("android", "iOS"):
             self.parentGui.show()
     # close
     
@@ -146,10 +146,10 @@ class TaGui:
         """
         if self.main_box is None:
             self.build_gui()
-        if toga.platform.current_platform in ("win32", "darwin"):
+        if toga.platform.current_platform in ("windows", "macOS"):
             self.window.content = self.main_box
             self.window.show()
-        if toga.platform.current_platform in ("android", "ios"):
+        if toga.platform.current_platform in ("android", "iOS"):
             for child in self.root_box.children:
                 self.root_box.remove(child)
             self.root_box.add(self.main_box)
@@ -195,7 +195,7 @@ class TaWindow(toga.Window):
     # __init__
 
     def activate(self):
-        if toga.platform.current_platform == "win32":
+        if toga.platform.current_platform == "windows":
             self._impl.native.Activate()
     # activate
 
@@ -315,5 +315,5 @@ def centerOnParent(parent_window, child_window):
 # centerOnParent
 
 
-version = "0.9.2"
-version_date = "2020-08-10 - 2022-03-16"
+version = "0.9.3"
+version_date = "2020-08-10 - 2023-03-04"
