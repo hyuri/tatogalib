@@ -43,7 +43,7 @@ class TaGui:
 
         def build_gui(self):
             # create box for content
-            self.main_box = toga.Box(style=Pack(direction=COLUMN))
+            self.main_box = toga.Box(style=Pack(direction=COLUMN, flex=1))
             self.main_box.add(toga.Label("Hello"))
 
             # button bar
@@ -87,7 +87,7 @@ class TaGui:
         # create root_box on mobile platforms
         if toga.platform.current_platform in ("android", "iOS"):
             if parentGui is None:
-                self.root_box = toga.Box(style=Pack(direction=COLUMN))
+                self.root_box = toga.Box(style=Pack(direction=COLUMN, flex=1))
                 self.window.content = self.root_box
             else:
                 self.root_box = parentGui.root_box
@@ -261,7 +261,7 @@ class HtmlWindow (TaWindow):
         self.font_size = font_size
         super().__init__(parentWindow, title, size=size, position=position, auto_close_duration=auto_close_duration,
                          on_close=on_close)
-        self._mainBox = toga.Box(style=Pack(direction=COLUMN, padding=5))
+        self._mainBox = toga.Box(style=Pack(direction=COLUMN, padding=5, flex=1))
         self.webView = toga.WebView(style=Pack(flex=1))
         self.webView.set_content("data:text/html,", html_text)
         self._mainBox.add(self.webView)
@@ -315,5 +315,5 @@ def centerOnParent(parent_window, child_window):
 # centerOnParent
 
 
-version = "0.9.3"
-version_date = "2020-08-10 - 2023-03-04"
+version = "0.9.4"
+version_date = "2020-08-10 - 2023-03-12"
