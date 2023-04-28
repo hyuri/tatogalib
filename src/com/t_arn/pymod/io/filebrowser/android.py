@@ -7,7 +7,7 @@ class FileBrowser:
     
     def __init__(self, app, userapp):
         self.app = app
-        self.userapp = userapp
+        self.userapp = userapp  # just for debugging, will be removed later
     # __init__
     
     async def open_file_dialog(self, title, initial_uri=None, file_mime_types=None, multiselect=False):
