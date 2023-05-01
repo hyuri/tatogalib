@@ -5,19 +5,16 @@
 
 Welcome to taTogaLib's documentation!
 =====================================
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
-.. automodule:: com.t_arn.pymod.util.appconfig
-   :members:
-.. automodule:: com.t_arn.pymod.util.i18nUtils
-   :members:
-
 
 Indices and tables
-==================
+------------------
 
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+.. toctree::
+   :maxdepth: 3
+   :caption: Content:
+   
+   util/index
