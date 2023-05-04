@@ -40,7 +40,7 @@ class FileBrowserImpl:
         intent.setType("*/*")
         intent.addCategory(Intent.CATEGORY_OPENABLE)
         if initial_uri is not None and len(initial_uri) > 0: 
-            intent.putExtra("android.provider.extra.INITIAL_URI", Uri.parse(initial_uri)) 
+            intent.putExtra("android.provider.extra.INITIAL_URI", Uri.parse(initial_uri))
         if file_types is not None and len(file_types) > 0: 
             intent.putExtra(Intent.EXTRA_MIME_TYPES, file_types) 
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, multiselect) 
@@ -62,22 +62,7 @@ class FileBrowserImpl:
         return selected_uri
     # open_file_dialog
 
-    async def save_file_dialog(self, title, initial_uri=None, file_types=None):
-        """
-        Opens a file save dialog and returns the chosen file as a content URI-string. 
-        Returns None if nothing has been chosen
-          
-        :param str title: The title is ignored on Android 
-        :param initial_uri: The initial location shown in the file chooser. Must be a content URI-string, e.g. 
-            "content://com.android.externalstorage.documents/document/primary%3ADownload%2FTest-dir"
-        :type initial_uri: str or None 
-        :param file_types: The file types allowed to select. Must be file extensions e.g. 
-            ["doc", "pdf"].
-        :type file_types: list[str] or None 
-        
-        :returns: the URI-string of the selected file or None
-        :rtype: str or None
-        """
+    async def save_file_dialog(self, title, suggested_filename, initial_uri, file_types):
         extensions = file_types
         ftypes = []
         for ext in extensions:
@@ -94,6 +79,8 @@ class FileBrowserImpl:
         intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
         intent.setType("*/*")
         intent.addCategory(Intent.CATEGORY_OPENABLE)
+        if suggested_filename is not None and len(suggested_filename) > 0: 
+            intent.putExtra(Intent.EXTRA_TITLE, suggested_filename) 
         if initial_uri is not None and len(initial_uri) > 0: 
             intent.putExtra("android.provider.extra.INITIAL_URI", Uri.parse(initial_uri)) 
         if file_types is not None and len(file_types) > 0: 

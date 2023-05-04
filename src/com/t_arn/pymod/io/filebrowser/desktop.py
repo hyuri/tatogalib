@@ -10,7 +10,8 @@ class FileBrowserImpl:
     async def open_file_dialog(self, title, initial_uri, file_types, multiselect):
         selected_uri = []
         initial_path = self.uristring_to_path(uristring)
-        result = await self.interface.app.main_window.open_file_dialog (title, initial_directory=initial_path, 
+        result = await self.interface.app.main_window.open_file_dialog (
+            title, initial_directory=initial_path, 
             file_types=file_types, multiselect=multiselect, on_result=None)
         if result is None:
             return selected_uri
@@ -22,10 +23,10 @@ class FileBrowserImpl:
         return selected_uri
     # open_file_dialog
 
-    async def save_file_dialog(self, title, initial_uri=None, file_types=None):
+    async def save_file_dialog(title, suggested_filename, initial_uri, file_types)
         selected_uri = None
         try:
-            
+            result = await save_file_dialog(title, suggested_filename, file_types)
         except ValueError as ex:
             selected_uri = None
             self.interface.log(str(ex))
