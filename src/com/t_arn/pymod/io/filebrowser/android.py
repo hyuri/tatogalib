@@ -3,6 +3,9 @@ from android.content import Intent
 from android.net import Uri
 from android.database import Cursor
 from android.provider import OpenableColumns
+import java
+from java.lang import String
+import mimetypes
 
 
 class FileBrowser:
@@ -17,9 +20,17 @@ class FileBrowser:
         """
         self.app = app
         self.fnLog = fnLog  # for logging to user code
+        if not mimetypes.inited:
+            mimetypes.init()
+            mimetypes.add_type("application/vnd.openxmlformats-officedocument.wordprocessingml.document", ".docx", strict=False)
+            mimetypes.add_type("application/vnd.ms-word.document.macroEnabled.12", ".docm", strict=False)
+            mimetypes.add_type("application/vnd.ms-excel.sheet.macroEnabled.12", ".xlsm", strict=False)
+            mimetypes.add_type("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", ".xlsx", strict=False)
+            mimetypes.add_type("application/vnd.oasis.opendocument.text", ".odt", strict=False)
+            mimetypes.add_type("application/vnd.oasis.opendocument.spreadsheet", ".ods", strict=False)
     # __init__
     
-    async def open_file_dialog(self, title, initial_uri=None, file_mime_types=None, multiselect=False):
+    async def open_file_dialog(self, title, initial_uri=None, file_types=None, multiselect=False):
         """
         Opens an open file dialog and returns the chosen files as list of content URI-strings. 
         Returns [] if nothing has been chosen
@@ -28,21 +39,34 @@ class FileBrowser:
         :param initial_uri: The initial location shown in the file chooser. Must be a content URI-string, e.g. 
             "content://com.android.externalstorage.documents/document/primary%3ADownload%2FTest-dir"
         :type initial_uri: str or None 
-        :param file_mime_types: The file types allowed to select. Must be MIME types, e.g. 
-            ["application/pdf","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"].
-        :type file_mime_types: list[str] or None 
+        :param file_types: The file types allowed to select. Must be file extensions e.g. 
+            ["doc", "pdf"].
+        :type file_types: list[str] or None 
         :param bool multiselect: If True, then several files can be selected
         
         :returns: the URI-strings of the selected files
         :rtype: list[str]
         """
+        extensions = file_types
+        ftypes = []
+        for ext in extensions:
+            (mime_type, encoding) = mimetypes.guess_type("filename."+ext, strict=False)
+            if mime_type is None:
+                self.fnLog(f"Can't guess MIME type for {ext}")
+                ftypes = None
+                break
+            ftypes.append(mime_type)
+        if ftypes is not None:
+            file_types = java.jarray(String)(ftypes)
+        else:
+            file_types = None
         intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
         intent.setType("*/*")
         intent.addCategory(Intent.CATEGORY_OPENABLE)
         if initial_uri is not None and len(initial_uri) > 0: 
             intent.putExtra("android.provider.extra.INITIAL_URI", Uri.parse(initial_uri)) 
-        if file_mime_types is not None and len(file_mime_types) > 0: 
-            intent.putExtra(Intent.EXTRA_MIME_TYPES, file_mime_types) 
+        if file_types is not None and len(file_types) > 0: 
+            intent.putExtra(Intent.EXTRA_MIME_TYPES, file_types) 
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, multiselect) 
         selected_uri = []
         result = await self.app._impl.intent_result(Intent.createChooser(intent, title))
@@ -62,7 +86,7 @@ class FileBrowser:
         return selected_uri
     # open_file_dialog
 
-    async def save_file_dialog(self, title, initial_uri=None, file_mime_types=None):
+    async def save_file_dialog(self, title, initial_uri=None, file_types=None):
         """
         Opens a file save dialog and returns the chosen file as a content URI-string. 
         Returns None if nothing has been chosen
@@ -71,20 +95,33 @@ class FileBrowser:
         :param initial_uri: The initial location shown in the file chooser. Must be a content URI-string, e.g. 
             "content://com.android.externalstorage.documents/document/primary%3ADownload%2FTest-dir"
         :type initial_uri: str or None 
-        :param file_mime_types: The file types allowed to select. Must be MIME types, e.g. 
-            ["application/pdf","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"].
-        :type file_mime_types: list[str] or None 
+        :param file_types: The file types allowed to select. Must be file extensions e.g. 
+            ["doc", "pdf"].
+        :type file_types: list[str] or None 
         
         :returns: the URI-string of the selected file or None
         :rtype: str or None
         """
+        extensions = file_types
+        ftypes = []
+        for ext in extensions:
+            (mime_type, encoding) = mimetypes.guess_type("filename."+ext, strict=False)
+            if mime_type is None:
+                self.fnLog(f"Can't guess MIME type for {ext}")
+                ftypes = None
+                break
+            ftypes.append(mime_type)
+        if ftypes is not None:
+            file_types = java.jarray(String)(ftypes)
+        else:
+            file_types = None
         intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
         intent.setType("*/*")
         intent.addCategory(Intent.CATEGORY_OPENABLE)
         if initial_uri is not None and len(initial_uri) > 0: 
             intent.putExtra("android.provider.extra.INITIAL_URI", Uri.parse(initial_uri)) 
-        if file_mime_types is not None and len(file_mime_types) > 0: 
-            intent.putExtra(Intent.EXTRA_MIME_TYPES, file_mime_types) 
+        if file_types is not None and len(file_types) > 0: 
+            intent.putExtra(Intent.EXTRA_MIME_TYPES, file_types) 
         selected_uri = None
         result = await self.app._impl.intent_result(Intent.createChooser(intent, title))
         if result["resultCode"] == Activity.RESULT_OK: 
