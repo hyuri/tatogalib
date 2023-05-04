@@ -8,18 +8,10 @@ from java.lang import String
 import mimetypes
 
 
-class FileBrowser:
+class FileBrowserImpl:
     
-    def __init__(self, app, fnLog=None):
-        """
-        Creates a FileBrowser
-        
-        :param toga.App app: The current App object
-        :param callable fnLog: The callable which is called from the log method
-            It expects a string parameter
-        """
-        self.app = app
-        self.fnLog = fnLog  # for logging to user code
+    def __init__(self, interface):
+        self.interface = interface
         if not mimetypes.inited:
             mimetypes.init()
             mimetypes.add_type("application/vnd.openxmlformats-officedocument.wordprocessingml.document", ".docx", strict=False)
@@ -30,29 +22,13 @@ class FileBrowser:
             mimetypes.add_type("application/vnd.oasis.opendocument.spreadsheet", ".ods", strict=False)
     # __init__
     
-    async def open_file_dialog(self, title, initial_uri=None, file_types=None, multiselect=False):
-        """
-        Opens an open file dialog and returns the chosen files as list of content URI-strings. 
-        Returns [] if nothing has been chosen
-          
-        :param str title: The title is ignored on Android 
-        :param initial_uri: The initial location shown in the file chooser. Must be a content URI-string, e.g. 
-            "content://com.android.externalstorage.documents/document/primary%3ADownload%2FTest-dir"
-        :type initial_uri: str or None 
-        :param file_types: The file types allowed to select. Must be file extensions e.g. 
-            ["doc", "pdf"].
-        :type file_types: list[str] or None 
-        :param bool multiselect: If True, then several files can be selected
-        
-        :returns: the URI-strings of the selected files
-        :rtype: list[str]
-        """
+    async def open_file_dialog(self, title, initial_uri, file_types, multiselect):
         extensions = file_types
         ftypes = []
         for ext in extensions:
             (mime_type, encoding) = mimetypes.guess_type("filename."+ext, strict=False)
             if mime_type is None:
-                self.fnLog(f"Can't guess MIME type for {ext}")
+                interface.log(f"Can't guess MIME type for {ext}")
                 ftypes = None
                 break
             ftypes.append(mime_type)
@@ -69,7 +45,7 @@ class FileBrowser:
             intent.putExtra(Intent.EXTRA_MIME_TYPES, file_types) 
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, multiselect) 
         selected_uri = []
-        result = await self.app._impl.intent_result(Intent.createChooser(intent, title))
+        result = await self.interface.app._impl.intent_result(Intent.createChooser(intent, title))
         if result["resultCode"] == Activity.RESULT_OK: 
             if result["resultData"] is not None: 
                 data = result["resultData"].getData() 
@@ -107,7 +83,7 @@ class FileBrowser:
         for ext in extensions:
             (mime_type, encoding) = mimetypes.guess_type("filename."+ext, strict=False)
             if mime_type is None:
-                self.fnLog(f"Can't guess MIME type for {ext}")
+                interface.log(f"Can't guess MIME type for {ext}")
                 ftypes = None
                 break
             ftypes.append(mime_type)
@@ -123,7 +99,7 @@ class FileBrowser:
         if file_types is not None and len(file_types) > 0: 
             intent.putExtra(Intent.EXTRA_MIME_TYPES, file_types) 
         selected_uri = None
-        result = await self.app._impl.intent_result(Intent.createChooser(intent, title))
+        result = await self.interface.app._impl.intent_result(Intent.createChooser(intent, title))
         if result["resultCode"] == Activity.RESULT_OK: 
             if result["resultData"] is not None: 
                 data = result["resultData"].getData() 
@@ -133,21 +109,13 @@ class FileBrowser:
     # save_file_dialog
     
     def uri_infos(self, uristring):
-        """
-        Get name, size and type of the file referenced by the URI-string
-        
-        :param str uristring: The URI-string
-        
-        :returns: Dictionary with keys "display_name", "size" and "type"
-            It is empty on error
-        """
         infos = {}
         cursor = None
         if uristring is None:
             return infos
         try:
             uri = Uri.parse(uristring)
-            resolver = self.app._impl.native.getContentResolver()
+            resolver = self.interface.app._impl.native.getContentResolver()
             cursor = resolver.query(uri, None, None, None, None, None)
             if cursor is not None and cursor.moveToFirst():
                 index = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
@@ -160,20 +128,11 @@ class FileBrowser:
                 infos["size"] = size
                 infos["type"] = resolver.getType(uri)
         except BaseException as ex:
-            self.fnLog(str(ex))
+            interface.log(str(ex))
         finally:
             if cursor is not None:
                 cursor.close()
             return infos
     # uri_infos
     
-    def log(self, message):
-        """
-        Logs a message to the user code if fnLog was passed to the constructor
-        
-        :param str message: The message to be logged
-        """
-        if self.fnLog is not None:
-            self.fnLog(message)
-    # log
-# FileBrowser
+# FileBrowserImpl
