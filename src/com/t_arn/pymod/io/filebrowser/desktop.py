@@ -1,4 +1,8 @@
-import urllib
+import mimetypes
+import os
+from pathlib import Path
+from urllib.parse import urlparse, unquote
+from urllib.request import url2pathname
 
 
 class FileBrowserImpl:
@@ -23,10 +27,11 @@ class FileBrowserImpl:
         return selected_uri
     # open_file_dialog
 
-    async def save_file_dialog(title, suggested_filename, initial_uri, file_types)
+    async def save_file_dialog(title, suggested_filename, initial_uri, file_types): 
         selected_uri = None
         try:
-            result = await save_file_dialog(title, suggested_filename, file_types)
+            selected_uri = await self.interface.app.main_window.save_file_dialog(
+                title, suggested_filename, file_types=file_types)
         except ValueError as ex:
             selected_uri = None
             self.interface.log(str(ex))
@@ -36,23 +41,16 @@ class FileBrowserImpl:
     
     def uri_infos(self, uristring):
         infos = {}
-        cursor = None
         if uristring is None:
             return infos
         try:
-            uri = Uri.parse(uristring)
-            resolver = self.interface.app._impl.native.getContentResolver()
-            cursor = resolver.query(uri, None, None, None, None, None)
-            if cursor is not None and cursor.moveToFirst():
-                index = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-                infos["display_name"] = cursor.getString(index)
-                n = cursor.getString(index)
-                index = cursor.getColumnIndex(OpenableColumns.SIZE)
-                size = cursor.getString(index)
-                if size is None:
-                    size = -1
-                infos["size"] = size
-                infos["type"] = resolver.getType(uri)
+            path = Path(self.uristring_to_path(uristring))
+            infos["display_name"] = path.name
+            infos["size"] = path.stat().st_size
+            (mime_type, encoding) = mimetypes.guess_type(uri, strict=False)
+            if mime_type is None:
+                interface.log(f"Can't guess MIME type for {uri}")
+            infos["type"] = mime_type
         except BaseException as ex:
             self.interface.log(str(ex))
         finally:
@@ -63,9 +61,9 @@ class FileBrowserImpl:
     
     def path_to_uristring(self, path):
         result = None
-        if type(uristring) is not str:
+        if type(path) is not str:
             return result
-        result = "file://"+urllib.parse.quote_plus(path)
+        result = Path(path).as_uri()
         return result
     # path_to_uristring
         
@@ -73,8 +71,11 @@ class FileBrowserImpl:
         result = None
         if type(uristring) is not str or not uristring.startswith("file://"):
             return result
-        result = urllib.parse.unquote_plus(uristring)
-        return result[7:]
+        parsed = urlparse(uristring)
+        host = “{0}{0}{mnt}{0}”.format(os.path.sep, mnt=parsed.netloc)
+        return os.path.normpath(
+            os.path.join(host, url2pathname(unquote(parsed.path)))
+        )
     # uristring_to_path
     
 # FileBrowserImpl
