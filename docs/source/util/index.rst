@@ -1,5 +1,5 @@
-util
-====
+com.t_arn.pymod.util
+====================
 
 .. toctree::
    :maxdepth: 2

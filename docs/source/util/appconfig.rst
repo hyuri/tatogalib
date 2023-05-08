@@ -1,5 +1,5 @@
-appconfig
-=========
+appconfig module
+================
 .. toctree::
    :maxdepth: 2
    

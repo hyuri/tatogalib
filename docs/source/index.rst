@@ -17,4 +17,6 @@ Indices and tables
    :maxdepth: 3
    :caption: Content:
    
+   ui/index
    util/index
+   
