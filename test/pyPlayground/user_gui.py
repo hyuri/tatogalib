@@ -6,12 +6,16 @@ from com.t_arn.pymod.ui.window import TaWindow, TaGui
 import com.t_arn.pymod.ui.window as tawindow
 from platform import python_version
 import sys
-
+from filebrowser import FileBrowser
+from uriinputstream import UriInputStream
+# from urioutputstream import UriOutputStream
 
 class MainGui(TaGui):
     main_box = None
     message_area = None
     _state_data = {}
+    ti_source = None
+    ti_target = None
 
     def __init__(self, app, parentGui, title, **kwargs):
         super().__init__(app, parentGui, title, **kwargs)
@@ -102,6 +106,16 @@ class MainGui(TaGui):
             self.app.commands.add(cmdDebug)
 
         # add content to main_box
+        btn_source = toga.Button("Source File", on_press=self.handle_btn_source)
+        self.main_box.add(btn_source)
+        self.ti_source = toga.TextInput(readonly=False, style=Pack(flex=1))
+        self.main_box.add(self.ti_source)
+        btn_target = toga.Button("Target File", on_press=self.handle_btn_target)
+        self.main_box.add(btn_target)
+        self.ti_target = toga.TextInput(readonly=False, style=Pack(flex=1))
+        self.main_box.add(self.ti_target)
+        btn_copy = toga.Button("Copy!", on_press=self.handle_btn_copy)
+        self.main_box.add(btn_target)
         self.message_area = toga.MultilineTextInput(
             value="", readonly=False, style=Pack(flex=1)
         )
@@ -115,17 +129,50 @@ class MainGui(TaGui):
         self.main_box.add(_button_box)
     # build_gui
 
-    async def handle_btn_action(self, widget):
+    async def handle_btn_source(self, widget):
         try:
-            # self.fnPrintln("Hello")
-            # self.fnPrintln(str(G.objApp.metadata))
-            # from uriinputstream import UriInputStream
-            # uis = UriInputStream("file://C:/temp/tempfile.tmp")
-            # s = uis.read(124)
-            from filebrowser import FileBrowser
+            fb = FileBrowser(self.app, self.fnPrintln)
+            initial = "content://com.android.externalstorage.documents/document/primary%3A!Daten"
+            urilist = await fb.open_file_dialog("Wähle eine Quellen Datei", 
+                file_types=["xlsx","xls","pdf"], multiselect=False, initial_uri=None) 
+            if len(urilist) == 0:
+                return
+            self.ti_source.value = str(urilist[0])
+            self.fnPrintln(str(fb.uri_infos(urilist[0])))
+        except BaseException as ex:
+           G.write_debug_message(str(ex))
+           self.fnPrintln("\n"+str(ex))
+    # handle_btn_source
+
+    async def handle_btn_target(self, widget):
+        try:
             fb = FileBrowser(self.app, self)
-            uri = await fb.open_file_dialog("Wähle eine Datei", multiselect=True)
-            self.fnPrintln(str(uri))
+            initial = "content://com.android.externalstorage.documents/document/primary%3A!Daten"
+            uri = await fb.save_file_dialog("Wähle eine Ziel Datei",
+                "test.txt", file_types=["xls","pdf"], initial_uri=initial)
+            self.ti_target.value = str(uri)
+            self.fnPrintln(str(fb.uri_infos(uri)))
+        except BaseException as ex:
+           G.write_debug_message(str(ex))
+           self.fnPrintln("\n"+str(ex))
+    # handle_btn_target
+
+    def handle_btn_copy(self, widget):
+        uis = UriInputStream(self.ti_source.value)
+        uos = UriOutputStream(self.ti_target.value)
+        # s = uis.read(124)
+        uis.close()
+        uos.close()
+    # handle_btn_copy
+
+    def handle_btn_action(self, widget):
+        try:
+            from filebrowser.desktop import FileBrowserImpl
+            fb = FileBrowserImpl(self)
+            path = "C:\\Program Files\\test.txt"
+            uri = fb.path_to_uristring(path)
+            self.fnPrintln(uri)
+            self.fnPrintln(fb.uristring_to_path(uri))
         except BaseException as ex:
            G.write_debug_message(str(ex))
            self.fnPrintln("\n"+str(ex))
