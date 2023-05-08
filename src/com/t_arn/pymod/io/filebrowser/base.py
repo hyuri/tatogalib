@@ -15,7 +15,7 @@ class FileBrowser:
         if toga.platform.current_platform == "android":
             from .android import FileBrowserImpl
         if toga.platform.current_platform == "windows":
-            from .windows import FileBrowserImpl
+            from .desktop import FileBrowserImpl
         self.impl = FileBrowserImpl(self)
     # __init__
     

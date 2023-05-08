@@ -134,7 +134,8 @@ class MainGui(TaGui):
             fb = FileBrowser(self.app, self.fnPrintln)
             initial = "content://com.android.externalstorage.documents/document/primary%3A!Daten"
             urilist = await fb.open_file_dialog("Wähle eine Quellen Datei", 
-                file_types=["xlsx","xls","pdf"], multiselect=False, initial_uri=None) 
+                file_types=["xlsx","xls","pdf"], multiselect=True, initial_uri=None) 
+            self.fnPrintln(str(urilist))
             if len(urilist) == 0:
                 return
             self.ti_source.value = str(urilist[0])

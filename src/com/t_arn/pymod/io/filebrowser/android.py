@@ -28,7 +28,7 @@ class FileBrowserImpl:
         for ext in extensions:
             (mime_type, encoding) = mimetypes.guess_type("filename."+ext, strict=False)
             if mime_type is None:
-                interface.log(f"Can't guess MIME type for {ext}")
+                self.interface.log(f"Can't guess MIME type for {ext}")
                 ftypes = None
                 break
             ftypes.append(mime_type)
@@ -68,7 +68,7 @@ class FileBrowserImpl:
         for ext in extensions:
             (mime_type, encoding) = mimetypes.guess_type("filename."+ext, strict=False)
             if mime_type is None:
-                interface.log(f"Can't guess MIME type for {ext}")
+                self.interface.log(f"Can't guess MIME type for {ext}")
                 ftypes = None
                 break
             ftypes.append(mime_type)
@@ -115,7 +115,7 @@ class FileBrowserImpl:
                 infos["size"] = size
                 infos["type"] = resolver.getType(uri)
         except BaseException as ex:
-            interface.log(str(ex))
+            self.interface.log(str(ex))
         finally:
             if cursor is not None:
                 cursor.close()
