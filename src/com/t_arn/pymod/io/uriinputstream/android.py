@@ -9,7 +9,7 @@
     # __init__
     
     # RawIOBase methods
-    def read(self, maxsize=-1):
+    def read(self, maxsize):
         if maxsize == -1:
             return self.readall()
         bytesobj = self.stream.readNbytes(maxsize)
@@ -32,10 +32,6 @@
         return bytes(self.stream.readAllBytes())
     # readall
     
-    def write(self, bytesobj):
-        raise OSError(22, "not writable")
-    # write
-    
     # IOBase methods
     def close(self):
         if self.stream is not None:
@@ -52,14 +48,6 @@
         raise OSError(9, "No file descriptor available")
     # fileno
     
-    def flush(self):
-        pass
-    # flush
-    
-    def isatty(self):
-        return False
-    # isatty
-        
     def readable(self):
         return True
     # readable
@@ -76,12 +64,4 @@
         raise OSError(22, "not seekable")
     # tell
 
-    def truncate(self, size=None):
-        raise OSError(22, "not writable")
-    # truncate
-
-    def writable(self):
-        return False
-    # writable
-        
 # UriInputStreamImpl

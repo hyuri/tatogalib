@@ -15,35 +15,54 @@ class UriInputStream:
         if toga.platform.current_platform == "android":
             from .android import UriInputStreamImpl
         if toga.platform.current_platform == "windows":
-            from .windows import UriInputStreamImpl
-        self.impl = UriInputStreamImpl(self)
-        
-        context = Python.getPlatform().getApplication()
-        self.stream = context.getContentResolver().openInputStream(uri)
+            from .desktop import UriInputStreamImpl
+        self.impl = UriInputStreamImpl(self, uri)
     # __init__
     
     def close(self):
-        self.stream.close()
-        self.stream = None
+        self.impl.close()
     # close
     
     def closed(self):
-        return self.stream is None
+        return self.impl.closed
     # closed
     
     def read(self, maxsize=-1):
-        if maxsize == -1:
-            return self.readall()
+        return self.impl.read(maxsize)
     # read
     
-    def readinto(byteobj):
-        pass
+    def readinto(bytesobj):
+        return self.impl.readinto(bytesobj)
     # readinto
     
     def readall(self):
-        return bytes(self.stream.readAllBytes())
+        return self.impl.readall()
     # readall
     
+    def readable(self):
+        return self.impl.readable()
+    # readable
+    
+    def write(self, bytesobj):
+        raise OSError(22, "not writable")
+    # write
+
+    def flush(self):
+        pass
+    # flush
+    
+    def isatty(self):
+        return False
+    # isatty
+        
+    def truncate(self, size=None):
+        raise OSError(22, "not writable")
+    # truncate
+
+    def writable(self):
+        return False
+    # writable
+
     def log(self, message):
         """
         Logs a message to the user code if fnLog was passed to the constructor
