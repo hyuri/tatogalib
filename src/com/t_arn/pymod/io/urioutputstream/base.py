@@ -1,26 +1,29 @@
 import toga
 
-class UriInputStream:
+class UriOutputStream:
     
-    def __init__(self, app, uri, fnLog=None):
+    def __init__(self, app, uri, mode, fnLog=None):
         """
-        Creates a UriInputStream
+        Creates a UriOutputStream
         
         :param toga.App app: The current App object
         :param URI uri: The URI of the stream
+        :param str mode: "w" for overwriting, "a" for appending
         :param callable fnLog: The callable which is called from the log method
             It expects a string parameter
         """
         self.uri = uri
+        self.mode = mode
         self.fnLog = fnLog  # for logging to user code
         if toga.platform.current_platform == "android":
-            from .android import UriInputStreamImpl
+            from .android import UriOutputStreamImpl
         if toga.platform.current_platform == "windows":
-            from .desktop import UriInputStreamImpl
-        self.impl = UriInputStreamImpl(self, uri)
+            from .desktop import UriOutputStreamImpl
+        self.impl = UriOutputStreamImpl(self, uri, mode)
     # __init__
     
     def close(self):
+        self.flush()
         self.impl.close()
     # close
     
@@ -29,27 +32,27 @@ class UriInputStream:
     # closed
     
     def read(self, maxsize=-1):
-        return self.impl.read(maxsize)
+        raise OSError(22, "not readable")
     # read
     
     def readinto(bytesobj):
-        return self.impl.readinto(bytesobj)
+        raise OSError(22, "not readable")
     # readinto
     
     def readall(self):
-        return self.impl.readall()
+        raise OSError(22, "not readable")
     # readall
     
     def readable(self):
-        return self.impl.readable()
+        return False
     # readable
     
     def write(self, bytesobj):
-        raise OSError(22, "not writable")
+        return self.impl.write(bytesobj)
     # write
 
     def flush(self):
-        pass
+        self.impl.flush()
     # flush
     
     def isatty(self):
@@ -57,11 +60,11 @@ class UriInputStream:
     # isatty
         
     def truncate(self, size=None):
-        raise OSError(22, "not writable")
+        return impl.truncate(size)
     # truncate
 
     def writable(self):
-        return False
+        return True
     # writable
 
     def log(self, message):
@@ -74,4 +77,4 @@ class UriInputStream:
             self.fnLog(message)
     # log
 
-# UriInputStreamImpl
+# UriOutputStreamImpl
