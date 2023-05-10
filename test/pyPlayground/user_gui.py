@@ -6,7 +6,7 @@ from com.t_arn.pymod.ui.window import TaWindow, TaGui
 import com.t_arn.pymod.ui.window as tawindow
 from platform import python_version
 import sys
-from filebrowser import FileBrowser
+from urifilebrowser import UriFileBrowser
 from uriinputstream import UriInputStream
 # from urioutputstream import UriOutputStream
 
@@ -131,7 +131,7 @@ class MainGui(TaGui):
 
     async def handle_btn_source(self, widget):
         try:
-            fb = FileBrowser(self.app, self.fnPrintln)
+            fb = UriFileBrowser(self.app, self.fnPrintln)
             initial = "content://com.android.externalstorage.documents/document/primary%3A!Daten"
             urilist = await fb.open_file_dialog("Wähle eine Quellen Datei", 
                 file_types=["xlsx","xls","pdf"], multiselect=True, initial_uri=None) 
@@ -147,7 +147,7 @@ class MainGui(TaGui):
 
     async def handle_btn_target(self, widget):
         try:
-            fb = FileBrowser(self.app, self)
+            fb = UriFileBrowser(self.app, self)
             initial = "content://com.android.externalstorage.documents/document/primary%3A!Daten"
             uri = await fb.save_file_dialog("Wähle eine Ziel Datei",
                 "test.txt", file_types=["xls","pdf"], initial_uri=initial)
@@ -168,8 +168,8 @@ class MainGui(TaGui):
 
     def handle_btn_action(self, widget):
         try:
-            from filebrowser.desktop import FileBrowserImpl
-            fb = FileBrowserImpl(self)
+            from urifilebrowser.desktop import UriFileBrowserImpl
+            fb = UriFileBrowserImpl(self)
             path = "C:\\Program Files\\test.txt"
             uri = fb.path_to_uristring(path)
             self.fnPrintln(uri)

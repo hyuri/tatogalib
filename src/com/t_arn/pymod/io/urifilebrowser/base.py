@@ -1,10 +1,10 @@
 import toga
 
-class FileBrowser:
+class UriFileBrowser:
     
     def __init__(self, app, fnLog=None):
         """
-        Creates a FileBrowser
+        Creates a UriFileBrowser
         
         :param toga.App app: The current App object
         :param callable fnLog: The callable which is called from the log method
@@ -13,10 +13,10 @@ class FileBrowser:
         self.app = app
         self.fnLog = fnLog  # for logging to user code
         if toga.platform.current_platform == "android":
-            from .android import FileBrowserImpl
+            from .android import UriFileBrowserImpl
         if toga.platform.current_platform == "windows":
-            from .desktop import FileBrowserImpl
-        self.impl = FileBrowserImpl(self)
+            from .desktop import UriFileBrowserImpl
+        self.impl = UriFileBrowserImpl(self)
     # __init__
     
     async def open_file_dialog(self, title, initial_uri=None, file_types=None, multiselect=False):
@@ -90,4 +90,4 @@ class FileBrowser:
             self.fnLog(message)
     # log
     
-# FileBrowser
+# UriFileBrowser

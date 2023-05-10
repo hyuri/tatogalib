@@ -5,7 +5,7 @@ from urllib.parse import urlparse, unquote
 from urllib.request import url2pathname
 
 
-class FileBrowserImpl:
+class UriFileBrowserImpl:
     
     def __init__(self, interface):
         self.interface = interface
@@ -78,4 +78,4 @@ class FileBrowserImpl:
         )
     # uristring_to_path
     
-# FileBrowserImpl
+# UriFileBrowserImpl

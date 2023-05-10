@@ -8,7 +8,7 @@ from java.lang import String
 import mimetypes
 
 
-class FileBrowserImpl:
+class UriFileBrowserImpl:
     
     def __init__(self, interface):
         self.interface = interface
@@ -122,4 +122,4 @@ class FileBrowserImpl:
             return infos
     # uri_infos
     
-# FileBrowserImpl
+# UriFileBrowserImpl
