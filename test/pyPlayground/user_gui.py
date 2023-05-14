@@ -8,6 +8,7 @@ from platform import python_version
 import sys
 from urifilebrowser import UriFileBrowser
 from uriinputstream import UriInputStream
+from urifile import UriFile
 # from urioutputstream import UriOutputStream
 
 class MainGui(TaGui):
@@ -139,7 +140,10 @@ class MainGui(TaGui):
             if len(urilist) == 0:
                 return
             self.ti_source.value = str(urilist[0])
-            self.fnPrintln(str(fb.uri_infos(urilist[0])))
+            urifile = UriFile(self.app, urilist[0])
+            self.fnPrintln(str(urifile.display_name))
+            self.fnPrintln(str(urifile.size))
+            self.fnPrintln(str(urifile.mime_type))
         except BaseException as ex:
            G.write_debug_message(str(ex))
            self.fnPrintln("\n"+str(ex))
