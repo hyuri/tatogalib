@@ -115,8 +115,13 @@ class MainGui(TaGui):
         self.main_box.add(btn_target)
         self.ti_target = toga.TextInput(readonly=False, style=Pack(flex=1))
         self.main_box.add(self.ti_target)
-        btn_copy = toga.Button("Copy!", on_press=self.handle_btn_copy)
-        self.main_box.add(btn_target)
+        # btn_copy = toga.Button("Copy!", on_press=self.handle_btn_copy)
+        # self.main_box.add(btn_copy)
+        btn_folder = toga.Button("Choose folder", on_press=self.handle_btn_folder)
+        self.main_box.add(btn_folder)
+        self.ti_folder = toga.TextInput(readonly=False, style=Pack(flex=1))
+        self.main_box.add(self.ti_folder)
+        
         self.message_area = toga.MultilineTextInput(
             value="", readonly=False, style=Pack(flex=1)
         )
@@ -169,6 +174,20 @@ class MainGui(TaGui):
         uis.close()
         uos.close()
     # handle_btn_copy
+    
+    async def handle_btn_folder(self, widget):
+        try:
+            fb = UriFileBrowser(self.app, self.fnPrintln)
+            initial = "content://com.android.externalstorage.documents/document/primary%3A!Daten"
+            uri = await fb.select_folder_dialog("Wähle ein Verzeichnis", initial_uri=initial) 
+            self.fnPrintln(str(uri))
+            if uri is None: 
+                return
+            self.ti_folder.value = str(uri)
+        except BaseException as ex:
+           G.write_debug_message(str(ex))
+           self.fnPrintln("\n"+str(ex))
+    # handle_btn_folder
 
     def handle_btn_action(self, widget):
         try:

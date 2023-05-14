@@ -68,17 +68,25 @@ class UriFileBrowser:
         return result
     # save_file_dialog
     
-    def uri_infos(self, uristring):
+    async def select_folder_dialog(self, title, initial_uri=None): 
         """
-        Get name, size and type of the file referenced by the URI-string
-        
-        :param str uristring: The URI-string
-        
-        :returns: Dictionary with keys "display_name", "size" and "type"
-            It is empty on error
+            Opens a select folder dialog and returns the chosen folder. 
+            Returns None if nothing has been chosen
+              
+            :param str title: The title is ignored on Android 
+            :param initial_uri: The initial location shown in the file chooser. 
+                On Android, this must be a content URI-string, e.g. 
+                "content://com.android.externalstorage.documents/document/primary%3ADownload%2FTest-dir"
+                On desktops, it must be file URI-strings, e.g.
+                "file://C:/Program%20Files"
+            :type initial_uri: str or None 
+            
+            :returns: the URI-string of the selected folder
+            :rtype: str or None
         """
-        return self.impl.uri_infos(uristring)
-    # uri_infos
+        result = await self.impl.select_folder_dialog(title, initial_uri)
+        return result
+    # select_folder_dialog
     
     def log(self, message):
         """

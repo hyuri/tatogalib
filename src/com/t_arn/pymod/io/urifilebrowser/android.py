@@ -94,32 +94,19 @@ class UriFileBrowserImpl:
                     selected_uri = data.toString()
         return selected_uri
     # save_file_dialog
-    
-    def uri_infos(self, uristring):
-        infos = {}
-        cursor = None
-        if uristring is None:
-            return infos
-        try:
-            uri = Uri.parse(uristring)
-            resolver = self.interface.app._impl.native.getContentResolver()
-            cursor = resolver.query(uri, None, None, None, None, None)
-            if cursor is not None and cursor.moveToFirst():
-                index = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-                infos["display_name"] = cursor.getString(index)
-                n = cursor.getString(index)
-                index = cursor.getColumnIndex(OpenableColumns.SIZE)
-                size = cursor.getString(index)
-                if size is None:
-                    size = -1
-                infos["size"] = size
-                infos["type"] = resolver.getType(uri)
-        except BaseException as ex:
-            self.interface.log(str(ex))
-        finally:
-            if cursor is not None:
-                cursor.close()
-            return infos
-    # uri_infos
+
+    async def select_folder_dialog(self, title, initial_uri=None): 
+        intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+        if initial_uri is not None and len(initial_uri) > 0: 
+            intent.putExtra("android.provider.extra.INITIAL_URI", Uri.parse(initial_uri))
+        selected_uri = None
+        result = await self.interface.app._impl.intent_result(Intent.createChooser(intent, title))
+        if result["resultCode"] == Activity.RESULT_OK: 
+            if result["resultData"] is not None: 
+                data = result["resultData"].getData() 
+                if data is not None:
+                    selected_uri = data.toString()
+        return selected_uri
+    # select_folder_dialog
     
 # UriFileBrowserImpl
