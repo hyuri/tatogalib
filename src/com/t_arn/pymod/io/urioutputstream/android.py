@@ -1,13 +1,15 @@
-﻿class UriOutputStreamImpl:
+﻿from android.net import Uri
+
+class UriOutputStreamImpl:
     
-    def __init__(self, interface, uri, mode):
+    def __init__(self, interface, mode):
         self.interface = interface
-        self.uri = uri
         if mode == "a":
             mode = "wa"
         self.mode = mode
         self.eof = False
         context = interface.app._impl.native
+        uri = Uri.parse(interface.uristring)
         self.stream = context.getContentResolver().openOutputStream(uri, mode)
     # __init__
     

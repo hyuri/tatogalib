@@ -1,4 +1,6 @@
 import toga
+from ..uriinputstream import UriInputStream
+from ..urioutputstream import UriOutputStream
 
 class UriFile:
     
@@ -52,4 +54,60 @@ class UriFile:
         return self.impl.size
     # size
     
+    def copy_to(self, urifile):
+        """
+        Copy the binary file represented by this UriFile to the file 
+        represented by urifile.
+        
+        :param UriFile urifile: The target file
+        
+        :returns: True on success, False on failure
+        :rtype: boolean
+        """
+        buffer = None
+        instream = None
+        outstream = None
+        result = True
+        try: 
+            instream = self.open_raw_inputstream()
+            outstream = urifile.open_raw_outputstream("w")
+            while True: 
+                buffer = instream.read(4096)
+                if len(buffer) > 0:
+                    outstream.write(buffer)
+                if len(buffer) < 4096: 
+                    break
+        except BaseException as ex:
+            result = False
+            self.fnLog(str(ex))
+        finally: 
+            if instream is not None: 
+                instream.close()
+            if outstream is not None: 
+                outstream.flush()
+                outstream.close()
+            return result
+    # copy_to
+    
+    def open_raw_inputstream(self):
+        """
+        Opens a raw stream for reading from file represented by this UriFile
+        
+        :returns: the binary stream to write to
+        :rtype: RawIOBase
+        """
+        return UriInputStream(self.app, self.uristring, self.fnLog)
+    # open_raw_inputstream
+        
+    def open_raw_outputstream(self, mode):
+        """
+        Opens a raw stream for writing to the file represented by this UriFile
+        
+        :param str mode: "w" for overwriting, "a" for appending
+        
+        :returns: the binary stream to write to
+        :rtype: RawIOBase
+        """
+        return UriOutputStream(self.app, self.uristring, mode, self.fnLog)
+    # open_raw_outputstream
 # UriFile

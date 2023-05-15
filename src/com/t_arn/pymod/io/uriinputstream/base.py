@@ -2,22 +2,22 @@ import toga
 
 class UriInputStream:
     
-    def __init__(self, app, uri, fnLog=None):
+    def __init__(self, app, uristring, fnLog=None):
         """
         Creates a UriInputStream
         
         :param toga.App app: The current App object
-        :param URI uri: The URI of the stream
+        :param str uristring: The URI-string of the stream
         :param callable fnLog: The callable which is called from the log method
             It expects a string parameter
         """
-        self.uri = uri
+        self.uristring = uristring
         self.fnLog = fnLog  # for logging to user code
         if toga.platform.current_platform == "android":
             from .android import UriInputStreamImpl
         if toga.platform.current_platform == "windows":
             from .desktop import UriInputStreamImpl
-        self.impl = UriInputStreamImpl(self, uri)
+        self.impl = UriInputStreamImpl(self)
     # __init__
     
     def close(self):

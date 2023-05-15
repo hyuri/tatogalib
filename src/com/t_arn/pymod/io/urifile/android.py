@@ -45,4 +45,5 @@ class UriFileImpl:
         return self.docfile.length()
     # size
 
+
 # UriFileImpl

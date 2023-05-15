@@ -1,10 +1,12 @@
-﻿class UriInputStreamImpl:
+﻿from android.net import Uri
+
+class UriInputStreamImpl:
     
-    def __init__(self, interface, uri):
+    def __init__(self, interface):
         self.interface = interface
-        self.uri = uri
         self.eof = False
         context = interface.app._impl.native
+        uri = Uri.parse(interface.uristring)
         self.stream = context.getContentResolver().openInputStream(uri)
     # __init__
     
