@@ -141,14 +141,17 @@ class MainGui(TaGui):
             initial = "content://com.android.externalstorage.documents/document/primary%3A!Daten"
             urilist = await fb.open_file_dialog("Wähle eine Quellen Datei", 
                 file_types=["xlsx","xls","pdf"], multiselect=True, initial_uri=None) 
+            self.fnPrintln("")
             self.fnPrintln(str(urilist))
             if len(urilist) == 0:
                 return
             self.ti_source.value = str(urilist[0])
             urifile = UriFile(self.app, urilist[0])
-            self.fnPrintln(str(urifile.display_name))
-            self.fnPrintln(str(urifile.size))
-            self.fnPrintln(str(urifile.mime_type))
+            self.fnPrintln(f"name: {urifile.display_name}")
+            self.fnPrintln(f"size: {urifile.size}")
+            self.fnPrintln(f"mime_type: {urifile.mime_type}")
+            self.fnPrintln(f"isfile: {urifile.isfile}")
+            self.fnPrintln(f"exists: {urifile.exists}")
         except BaseException as ex:
            G.write_debug_message(str(ex))
            self.fnPrintln("\n"+str(ex))
@@ -180,10 +183,16 @@ class MainGui(TaGui):
             fb = UriFileBrowser(self.app, self.fnPrintln)
             initial = "content://com.android.externalstorage.documents/document/primary%3A!Daten"
             uri = await fb.select_folder_dialog("Wähle ein Verzeichnis", initial_uri=initial) 
+            self.fnPrintln("")
             self.fnPrintln(str(uri))
             if uri is None: 
                 return
             self.ti_folder.value = str(uri)
+            urifile = UriFile(self.app, uri, is_file=False)
+            self.fnPrintln(f"name: {urifile.display_name}")
+            self.fnPrintln(f"mime_type: {urifile.mime_type}")
+            self.fnPrintln(f"isdir: {urifile.isdir}")
+            self.fnPrintln(f"exists: {urifile.exists}")
         except BaseException as ex:
            G.write_debug_message(str(ex))
            self.fnPrintln("\n"+str(ex))
@@ -191,12 +200,15 @@ class MainGui(TaGui):
 
     def handle_btn_action(self, widget):
         try:
-            from urifilebrowser.desktop import UriFileBrowserImpl
-            fb = UriFileBrowserImpl(self)
-            path = "C:\\Program Files\\test.txt"
-            uri = fb.path_to_uristring(path)
-            self.fnPrintln(uri)
-            self.fnPrintln(fb.uristring_to_path(uri))
+            from android.net import Uri
+            urifile = UriFile(self.app, self.ti_folder.value)
+            uri = Uri.parse(self.ti_folder.value)
+            df = urifile.impl.docfile
+            self.fnPrintln(f"name: {df.getName()}")
+            self.fnPrintln(f"isfile: {df.isFile()}")
+            self.fnPrintln(f"isdir: {df.isDirectory()}")
+            self.fnPrintln(f"exists: {df.exists()}")
+            self.fnPrintln(f"is docuri: {df.isDocumentUri(self.app._impl.native, uri)}")
         except BaseException as ex:
            G.write_debug_message(str(ex))
            self.fnPrintln("\n"+str(ex))
