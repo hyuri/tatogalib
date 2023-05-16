@@ -11,6 +11,7 @@ class UriInputStream:
         :param callable fnLog: The callable which is called from the log method
             It expects a string parameter
         """
+        self.app = app
         self.uristring = uristring
         self.fnLog = fnLog  # for logging to user code
         if toga.platform.current_platform == "android":

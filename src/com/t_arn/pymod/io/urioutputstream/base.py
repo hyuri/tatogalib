@@ -12,6 +12,7 @@ class UriOutputStream:
         :param callable fnLog: The callable which is called from the log method
             It expects a string parameter
         """
+        self.app = app
         self.uristring = uristring
         self.mode = mode
         self.fnLog = fnLog  # for logging to user code

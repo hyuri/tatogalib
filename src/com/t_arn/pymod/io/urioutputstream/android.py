@@ -15,7 +15,7 @@ class UriOutputStreamImpl:
     
     # RawIOBase methods
     def write(self, bytesobj):
-        pass  # todo: implement
+        self.stream.write(bytesobj)
     # wtite
     
     # IOBase methods
@@ -24,6 +24,10 @@ class UriOutputStreamImpl:
             self.stream.close()
         self.stream = None
     # close
+    
+    def flush(self):
+        self.stream.flush()
+    # flush
     
     @property
     def closed(self):

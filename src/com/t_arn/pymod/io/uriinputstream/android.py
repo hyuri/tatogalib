@@ -14,8 +14,8 @@ class UriInputStreamImpl:
     def read(self, maxsize):
         if maxsize == -1:
             return self.readall()
-        bytesobj = self.stream.readNbytes(maxsize)
-        if len(bytesobj == 0:
+        bytesobj = self.stream.readNBytes(maxsize)
+        if len(bytesobj) == 0:
             self.eof = True
             bytesobj = None
         return bytesobj

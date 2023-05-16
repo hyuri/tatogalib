@@ -9,7 +9,7 @@ import sys
 from urifilebrowser import UriFileBrowser
 from uriinputstream import UriInputStream
 from urifile import UriFile
-# from urioutputstream import UriOutputStream
+
 
 class MainGui(TaGui):
     main_box = None
@@ -115,8 +115,8 @@ class MainGui(TaGui):
         self.main_box.add(btn_target)
         self.ti_target = toga.TextInput(readonly=False, style=Pack(flex=1))
         self.main_box.add(self.ti_target)
-        # btn_copy = toga.Button("Copy!", on_press=self.handle_btn_copy)
-        # self.main_box.add(btn_copy)
+        btn_copy = toga.Button("Copy!", on_press=self.handle_btn_copy)
+        self.main_box.add(btn_copy)
         btn_folder = toga.Button("Choose folder", on_press=self.handle_btn_folder)
         self.main_box.add(btn_folder)
         self.ti_folder = toga.TextInput(readonly=False, style=Pack(flex=1))
@@ -140,18 +140,14 @@ class MainGui(TaGui):
             fb = UriFileBrowser(self.app, self.fnPrintln)
             initial = "content://com.android.externalstorage.documents/document/primary%3A!Daten"
             urilist = await fb.open_file_dialog("Wähle eine Quellen Datei", 
-                file_types=["xlsx","xls","pdf"], multiselect=True, initial_uri=None) 
-            self.fnPrintln("")
-            self.fnPrintln(str(urilist))
+                file_types=["xlsx","xls","pdf"], multiselect=True, initial_uri=initial) 
             if len(urilist) == 0:
                 return
             self.ti_source.value = str(urilist[0])
             urifile = UriFile(self.app, urilist[0])
+            self.fnPrintln("")
             self.fnPrintln(f"name: {urifile.display_name}")
             self.fnPrintln(f"size: {urifile.size}")
-            self.fnPrintln(f"mime_type: {urifile.mime_type}")
-            self.fnPrintln(f"isfile: {urifile.isfile}")
-            self.fnPrintln(f"exists: {urifile.exists}")
         except BaseException as ex:
            G.write_debug_message(str(ex))
            self.fnPrintln("\n"+str(ex))
@@ -160,22 +156,31 @@ class MainGui(TaGui):
     async def handle_btn_target(self, widget):
         try:
             fb = UriFileBrowser(self.app, self)
-            initial = "content://com.android.externalstorage.documents/document/primary%3A!Daten"
-            uri = await fb.save_file_dialog("Wähle eine Ziel Datei",
-                "test.txt", file_types=["xls","pdf"], initial_uri=initial)
-            self.ti_target.value = str(uri)
-            self.fnPrintln(str(fb.uri_infos(uri)))
+            initial = "content://com.android.providers.downloads.documents/document"
+            uristring = await fb.save_file_dialog("Wähle eine Ziel Datei",
+                "test.pdf", file_types=["xls","pdf"], initial_uri=initial)
+            self.ti_target.value = str(uristring)
+            if uristring is None:
+                return
+            urifile = UriFile(self.app, uristring)
+            self.fnPrintln("")
+            self.fnPrintln(f"name: {urifile.display_name}")
+            self.fnPrintln(f"size: {urifile.size}")
         except BaseException as ex:
            G.write_debug_message(str(ex))
            self.fnPrintln("\n"+str(ex))
     # handle_btn_target
 
     def handle_btn_copy(self, widget):
-        uis = UriInputStream(self.ti_source.value)
-        uos = UriOutputStream(self.ti_target.value)
-        # s = uis.read(124)
-        uis.close()
-        uos.close()
+        try:
+            source = UriFile(self.app, self.ti_source.value, fnLog=self.fnPrintln)
+            target = UriFile(self.app, self.ti_target.value)
+            self.fnPrint("\nCopying...")
+            ok = source.copy_to(target)
+            self.fnPrintln(f"done, ok={ok}")
+        except BaseException as ex:
+           G.write_debug_message(str(ex))
+           self.fnPrintln("\n"+str(ex))
     # handle_btn_copy
     
     async def handle_btn_folder(self, widget):
