@@ -1,49 +1,72 @@
 from android.net import Uri
+from android.content import ContentValues
+from android.provider import DocumentsContract
 from androidx.documentfile.provider import DocumentFile
-
+import java
 
 class UriFileImpl:
+    """
+    https://stackoverflow.com/questions/35744654/storage-access-framework-set-last-modified-date-of-local-documentfile
+    public boolean setLastModified(DocumentFile file, Context context, long time)
+    {
+        ContentValues updateValues = new ContentValues();
+        updateValues.put(DocumentsContract.Document.COLUMN_LAST_MODIFIED, time);
+        int updated = context.getContentResolver().update(file.getUri(), updateValues, null, null);
+        return updated == 1;
+    }
+    """
     
     def __init__(self, interface, is_file=True):
             self.interface = interface
             self.context = interface.app._impl.native
             self.resolver = self.context.getContentResolver()
-            uri = Uri.parse(interface.uristring)
+            self.uri = Uri.parse(interface.uristring)
             if is_file:
-                self.docfile = DocumentFile.fromSingleUri(self.context, uri)
+                self.docfile = DocumentFile.fromSingleUri(self.context, self.uri)
             else:
-                self.docfile = DocumentFile.fromTreeUri(self.context, uri)
+                self.docfile = DocumentFile.fromTreeUri(self.context, self.uri)
         # __init__
     
-    @property
-    def display_name(self):
+    def get_display_name(self):
         return self.docfile.getName()
-    # display_name
+    # get_display_name
     
-    @property
     def exists(self):
         return self.docfile.exists()
     # exists
     
-    @property
     def isdir(self):
         return self.docfile.isDirectory()
     # isdir
 
-    @property
     def isfile(self):
         return self.docfile.isFile()
-    # isfilr
+    # isfile
     
-    @property
-    def mime_type(self):
+    def get_lastmodified(self): 
+        return self.docfile.lastModified()
+    # get_lastmodified
+        
+    def set_lastmodified(self, unixtime):
+        # not working, always results in "Update not supported" exception
+        try:
+            updateValues = ContentValues()
+            updateValues.put(DocumentsContract.Document.COLUMN_LAST_MODIFIED, java.jlong(unixtime))
+            self.interface.fnLog("calling update")
+            updated = self.resolver.update(self.uri, updateValues, None, None)
+        except Exception as ex:
+            updated = 0
+            self.interface.fnLog(str(ex))
+        finally:
+            return updated == 1
+    # set_lastmodified
+    
+    def get_mime_type(self):
         return self.docfile.getType()
-    # mime_type
+    # get_mime_type
     
-    @property
-    def size(self):
+    def get_size(self):
         return self.docfile.length()
-    # size
-
+    # get_size
 
 # UriFileImpl

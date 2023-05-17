@@ -26,32 +26,38 @@ class UriFile:
 
     @property
     def display_name(self):
-        return self.impl.display_name
+        return self.impl.get_display_name()
     # display_name
     
-    @property
     def exists(self):
-        return self.impl.exists
+        return self.impl.exists()
     # exists
     
-    @property
     def isdir(self):
-        return self.impl.isdir
+        return self.impl.isdir()
     # isdir
 
-    @property
     def isfile(self):
-        return self.impl.isfile
-    # isfilr
+        return self.impl.isfile()
+    # isfile
+    
+    @property
+    def lastmodified(self): 
+        return self.impl.get_lastmodified()
+        
+    @lastmodified.setter
+    def lastmodified(self, unixtime):
+        self.impl.set_lastmodified(unixtime)
+    # lastmodified    
 
     @property
     def mime_type(self):
-        return self.impl.mime_type
+        return self.impl.get_mime_type
     # mime_type
     
     @property
     def size(self):
-        return self.impl.size
+        return self.impl.get_size()
     # size
     
     def copy_to(self, urifile):
@@ -77,7 +83,13 @@ class UriFile:
                     outstream.write(buffer)
                 if len(buffer) < 4096: 
                     break
+            instream.close()
+            instream = None
+            outstream.flush()
+            outstream.close()
+            outstream = None
         except BaseException as ex:
+            # todo: delete target again
             result = False
             self.fnLog(str(ex))
         finally: 

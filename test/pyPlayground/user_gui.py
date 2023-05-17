@@ -140,7 +140,7 @@ class MainGui(TaGui):
             fb = UriFileBrowser(self.app, self.fnPrintln)
             initial = "content://com.android.externalstorage.documents/document/primary%3A!Daten"
             urilist = await fb.open_file_dialog("Wähle eine Quellen Datei", 
-                file_types=["xlsx","xls","pdf"], multiselect=True, initial_uri=initial) 
+                file_types=["xlsx","pdf","rar"], multiselect=True, initial_uri=initial) 
             if len(urilist) == 0:
                 return
             self.ti_source.value = str(urilist[0])
@@ -174,7 +174,7 @@ class MainGui(TaGui):
     def handle_btn_copy(self, widget):
         try:
             source = UriFile(self.app, self.ti_source.value, fnLog=self.fnPrintln)
-            target = UriFile(self.app, self.ti_target.value)
+            target = UriFile(self.app, self.ti_target.value, fnLog=self.fnPrintln)
             self.fnPrint("\nCopying...")
             ok = source.copy_to(target)
             self.fnPrintln(f"done, ok={ok}")
@@ -196,8 +196,8 @@ class MainGui(TaGui):
             urifile = UriFile(self.app, uri, is_file=False)
             self.fnPrintln(f"name: {urifile.display_name}")
             self.fnPrintln(f"mime_type: {urifile.mime_type}")
-            self.fnPrintln(f"isdir: {urifile.isdir}")
-            self.fnPrintln(f"exists: {urifile.exists}")
+            self.fnPrintln(f"isdir: {urifile.isdir()}")
+            self.fnPrintln(f"exists: {urifile.exists()}")
         except BaseException as ex:
            G.write_debug_message(str(ex))
            self.fnPrintln("\n"+str(ex))
