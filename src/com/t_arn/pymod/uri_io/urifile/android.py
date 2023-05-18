@@ -52,11 +52,11 @@ class UriFileImpl:
         try:
             updateValues = ContentValues()
             updateValues.put(DocumentsContract.Document.COLUMN_LAST_MODIFIED, java.jlong(unixtime))
-            self.interface.fnLog("calling update")
+            self.interface.log("calling update")
             updated = self.resolver.update(self.uri, updateValues, None, None)
         except Exception as ex:
             updated = 0
-            self.interface.fnLog(str(ex))
+            self.interface.log(str(ex))
         finally:
             return updated == 1
     # set_lastmodified

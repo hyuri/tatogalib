@@ -13,7 +13,7 @@ class UriInputStream:
         """
         self.app = app
         self.uristring = uristring
-        self.fnLog = fnLog  # for logging to user code
+        self._fnlog = fnLog  # for logging to user code
         if toga.platform.current_platform == "android":
             from .android import UriInputStreamImpl
         if toga.platform.current_platform == "windows":
@@ -71,8 +71,8 @@ class UriInputStream:
         
         :param str message: The message to be logged
         """
-        if self.fnLog is not None:
-            self.fnLog(message)
+        if self._fnlog is not None:
+            self._fnlog(message)
     # log
 
 # UriInputStreamImpl

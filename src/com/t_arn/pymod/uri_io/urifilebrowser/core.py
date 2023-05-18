@@ -11,7 +11,7 @@ class UriFileBrowser:
             It expects a string parameter
         """
         self.app = app
-        self.fnLog = fnLog  # for logging to user code
+        self._fnlog = fnLog  # for logging to user code
         if toga.platform.current_platform == "android":
             from .android import UriFileBrowserImpl
         if toga.platform.current_platform == "windows":
@@ -94,8 +94,8 @@ class UriFileBrowser:
         
         :param str message: The message to be logged
         """
-        if self.fnLog is not None:
-            self.fnLog(message)
+        if self._fnlog is not None:
+            self._fnlog(message)
     # log
     
 # UriFileBrowser

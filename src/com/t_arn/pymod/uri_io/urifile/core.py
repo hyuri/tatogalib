@@ -16,7 +16,7 @@ class UriFile:
         """
         self.app = app
         self.uristring = uristring
-        self.fnLog = fnLog  # for logging to user code
+        self._fnlog = fnLog  # for logging to user code
         if toga.platform.current_platform == "android":
             from .android import UriFileImpl
         if toga.platform.current_platform == "windows":
@@ -91,7 +91,7 @@ class UriFile:
         except BaseException as ex:
             # todo: delete target again
             result = False
-            self.fnLog(str(ex))
+                self.log(str(ex))
         finally: 
             if instream is not None: 
                 instream.close()
@@ -101,6 +101,16 @@ class UriFile:
             return result
     # copy_to
     
+    def log(self, message):
+        """
+        Logs a message to the user code if fnLog was passed to the constructor
+        
+        :param str message: The message to be logged
+        """
+        if self._fnlog is not None:
+            self._fnlog(message)
+    # log
+
     def open_raw_inputstream(self):
         """
         Opens a raw stream for reading from file represented by this UriFile
@@ -108,7 +118,7 @@ class UriFile:
         :returns: the binary stream to write to
         :rtype: RawIOBase
         """
-        return UriInputStream(self.app, self.uristring, self.fnLog)
+        return UriInputStream(self.app, self.uristring, self._fnlog)
     # open_raw_inputstream
         
     def open_raw_outputstream(self, mode):
@@ -120,6 +130,6 @@ class UriFile:
         :returns: the binary stream to write to
         :rtype: RawIOBase
         """
-        return UriOutputStream(self.app, self.uristring, mode, self.fnLog)
+        return UriOutputStream(self.app, self.uristring, mode, self._fnlog)
     # open_raw_outputstream
 # UriFile
