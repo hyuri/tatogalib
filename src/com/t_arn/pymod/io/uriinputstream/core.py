@@ -18,31 +18,31 @@ class UriInputStream:
             from .android import UriInputStreamImpl
         if toga.platform.current_platform == "windows":
             from .desktop import UriInputStreamImpl
-        self.impl = UriInputStreamImpl(self)
+        self._impl = UriInputStreamImpl(self)
     # __init__
     
     def close(self):
-        self.impl.close()
+        self._impl.close()
     # close
     
     def closed(self):
-        return self.impl.closed
+        return self._impl.closed
     # closed
     
     def read(self, maxsize=-1):
-        return self.impl.read(maxsize)
+        return self._impl.read(maxsize)
     # read
     
     def readinto(bytesobj):
-        return self.impl.readinto(bytesobj)
+        return self._impl.readinto(bytesobj)
     # readinto
     
     def readall(self):
-        return self.impl.readall()
+        return self._impl.readall()
     # readall
     
     def readable(self):
-        return self.impl.readable()
+        return self._impl.readable()
     # readable
     
     def write(self, bytesobj):

@@ -1,1 +1,1 @@
-from .base import UriFile
+from .core import UriFile

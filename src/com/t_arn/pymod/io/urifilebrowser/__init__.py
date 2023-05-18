@@ -1,1 +1,1 @@
-from .base import UriFileBrowser
+from .core import UriFileBrowser

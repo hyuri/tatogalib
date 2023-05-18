@@ -1,1 +1,1 @@
-﻿from .base import UriInputStream
+﻿from .core import UriInputStream

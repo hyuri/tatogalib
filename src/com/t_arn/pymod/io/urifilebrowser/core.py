@@ -16,7 +16,7 @@ class UriFileBrowser:
             from .android import UriFileBrowserImpl
         if toga.platform.current_platform == "windows":
             from .desktop import UriFileBrowserImpl
-        self.impl = UriFileBrowserImpl(self)
+        self._impl = UriFileBrowserImpl(self)
     # __init__
     
     async def open_file_dialog(self, title, initial_uri=None, file_types=None, multiselect=False):
@@ -39,7 +39,7 @@ class UriFileBrowser:
         :returns: the URI-strings of the selected files
         :rtype: list[str]
         """
-        result = await self.impl.open_file_dialog(title, initial_uri, file_types, multiselect)
+        result = await self._impl.open_file_dialog(title, initial_uri, file_types, multiselect)
         return result
     # open_file_dialog
 
@@ -64,7 +64,7 @@ class UriFileBrowser:
         :returns: the URI-string of the selected file or None
         :rtype: str or None
         """
-        result = await self.impl.save_file_dialog(title, suggested_filename, initial_uri, file_types)
+        result = await self._impl.save_file_dialog(title, suggested_filename, initial_uri, file_types)
         return result
     # save_file_dialog
     
@@ -84,7 +84,7 @@ class UriFileBrowser:
             :returns: the URI-string of the selected folder
             :rtype: str or None
         """
-        result = await self.impl.select_folder_dialog(title, initial_uri)
+        result = await self._impl.select_folder_dialog(title, initial_uri)
         return result
     # select_folder_dialog
     

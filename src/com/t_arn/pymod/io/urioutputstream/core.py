@@ -20,16 +20,16 @@ class UriOutputStream:
             from .android import UriOutputStreamImpl
         if toga.platform.current_platform == "windows":
             from .desktop import UriOutputStreamImpl
-        self.impl = UriOutputStreamImpl(self, mode)
+        self._impl = UriOutputStreamImpl(self, mode)
     # __init__
     
     def close(self):
         self.flush()
-        self.impl.close()
+        self._impl.close()
     # close
     
     def closed(self):
-        return self.impl.closed
+        return self._impl.closed
     # closed
     
     def read(self, maxsize=-1):
@@ -49,11 +49,11 @@ class UriOutputStream:
     # readable
     
     def write(self, bytesobj):
-        return self.impl.write(bytesobj)
+        return self._impl.write(bytesobj)
     # write
 
     def flush(self):
-        self.impl.flush()
+        self._impl.flush()
     # flush
     
     def isatty(self):
@@ -61,7 +61,7 @@ class UriOutputStream:
     # isatty
         
     def truncate(self, size=None):
-        return impl.truncate(size)
+        return _impl.truncate(size)
     # truncate
 
     def writable(self):

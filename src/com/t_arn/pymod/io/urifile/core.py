@@ -6,10 +6,10 @@ class UriFile:
     
     def __init__(self, app, uristring, is_file=True, fnLog=None):
         """
-        Creates a UriFile
+        Creates a UriFile which represents a file or a folder
         
         :param toga.App app: The current App object
-        :param str uristring: A URI-string representing this this UriFile object
+        :param str uristring: A URI-string representing this UriFile object
         :param boolean is_file: True when uristring represents a file, False for a folder
         :param callable fnLog: The callable which is called from the log method
             It expects a string parameter
@@ -20,44 +20,44 @@ class UriFile:
         if toga.platform.current_platform == "android":
             from .android import UriFileImpl
         if toga.platform.current_platform == "windows":
-            from .desktop import UriFieImpl
-        self.impl = UriFileImpl(self, is_file)
+            from .desktop import UriFileImpl
+        self._impl = UriFileImpl(self, is_file)
     # __init__
 
     @property
     def display_name(self):
-        return self.impl.get_display_name()
+        return self._impl.get_display_name()
     # display_name
     
     def exists(self):
-        return self.impl.exists()
+        return self._impl.exists()
     # exists
     
     def isdir(self):
-        return self.impl.isdir()
+        return self._impl.isdir()
     # isdir
 
     def isfile(self):
-        return self.impl.isfile()
+        return self._impl.isfile()
     # isfile
     
     @property
     def lastmodified(self): 
-        return self.impl.get_lastmodified()
+        return self._impl.get_lastmodified()
         
     @lastmodified.setter
     def lastmodified(self, unixtime):
-        self.impl.set_lastmodified(unixtime)
+        self._impl.set_lastmodified(unixtime)
     # lastmodified    
 
     @property
     def mime_type(self):
-        return self.impl.get_mime_type
+        return self._impl.get_mime_type
     # mime_type
     
     @property
     def size(self):
-        return self.impl.get_size()
+        return self._impl.get_size()
     # size
     
     def copy_to(self, urifile):
