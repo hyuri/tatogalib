@@ -6,9 +6,8 @@ from com.t_arn.pymod.ui.window import TaWindow, TaGui
 import com.t_arn.pymod.ui.window as tawindow
 from platform import python_version
 import sys
-from urifilebrowser import UriFileBrowser
-from uriinputstream import UriInputStream
-from urifile import UriFile
+from uri_io.urifilebrowser import UriFileBrowser
+from uri_io.urifile import UriFile
 
 
 class MainGui(TaGui):
