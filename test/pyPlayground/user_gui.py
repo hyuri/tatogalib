@@ -120,6 +120,8 @@ class MainGui(TaGui):
         self.main_box.add(btn_folder)
         self.ti_folder = toga.TextInput(readonly=False, style=Pack(flex=1))
         self.main_box.add(self.ti_folder)
+        btn_delete = toga.Button("Delete source file", on_press=self.handle_btn_delete)
+        self.main_box.add(btn_delete)
         
         self.message_area = toga.MultilineTextInput(
             value="", readonly=False, style=Pack(flex=1)
@@ -181,6 +183,13 @@ class MainGui(TaGui):
            G.write_debug_message(str(ex))
            self.fnPrintln("\n"+str(ex))
     # handle_btn_copy
+    
+    def handle_btn_delete(self, widget): 
+        self.fnPrint("\nDeleting...")
+        source = UriFile(self.app, self.ti_source.value, fnLog=self.fnPrintln)
+        ok = source.delete()
+        self.fnPrintln(f"done, ok={ok}")
+    # handle_btn_delete
     
     async def handle_btn_folder(self, widget):
         try:

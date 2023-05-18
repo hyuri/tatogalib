@@ -26,6 +26,10 @@ class UriFileImpl:
             else:
                 self.docfile = DocumentFile.fromTreeUri(self.context, self.uri)
         # __init__
+        
+    def delete(self): 
+        return self.docfile.delete()
+    # delete
     
     def get_display_name(self):
         return self.docfile.getName()

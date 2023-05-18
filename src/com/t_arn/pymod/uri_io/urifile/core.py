@@ -29,18 +29,6 @@ class UriFile:
         return self._impl.get_display_name()
     # display_name
     
-    def exists(self):
-        return self._impl.exists()
-    # exists
-    
-    def isdir(self):
-        return self._impl.isdir()
-    # isdir
-
-    def isfile(self):
-        return self._impl.isfile()
-    # isfile
-    
     @property
     def lastmodified(self): 
         return self._impl.get_lastmodified()
@@ -89,17 +77,39 @@ class UriFile:
             outstream.close()
             outstream = None
         except BaseException as ex:
-            # todo: delete target again
-            result = False
-                self.log(str(ex))
-        finally: 
             if instream is not None: 
                 instream.close()
             if outstream is not None: 
                 outstream.flush()
                 outstream.close()
+            urifile.delete()
+            result = False
+            self.log(str(ex))
+        finally: 
             return result
     # copy_to
+    
+    def delete(self): 
+        """
+        Deletes a file
+        
+        :returns: True on success, False on failure
+        :rtype: boolean
+        """
+        return self._impl.delete()
+    # delete
+    
+    def exists(self):
+        return self._impl.exists()
+    # exists
+    
+    def isdir(self):
+        return self._impl.isdir()
+    # isdir
+
+    def isfile(self):
+        return self._impl.isfile()
+    # isfile
     
     def log(self, message):
         """
