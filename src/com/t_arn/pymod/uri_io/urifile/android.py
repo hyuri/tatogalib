@@ -5,16 +5,6 @@ from androidx.documentfile.provider import DocumentFile
 import java
 
 class UriFileImpl:
-    """
-    https://stackoverflow.com/questions/35744654/storage-access-framework-set-last-modified-date-of-local-documentfile
-    public boolean setLastModified(DocumentFile file, Context context, long time)
-    {
-        ContentValues updateValues = new ContentValues();
-        updateValues.put(DocumentsContract.Document.COLUMN_LAST_MODIFIED, time);
-        int updated = context.getContentResolver().update(file.getUri(), updateValues, null, null);
-        return updated == 1;
-    }
-    """
     
     def __init__(self, interface, is_file=True):
             self.interface = interface
@@ -53,6 +43,7 @@ class UriFileImpl:
         
     def set_lastmodified(self, unixtime):
         # not working, always results in "Update not supported" exception
+        # https://stackoverflow.com/questions/35744654/storage-access-framework-set-last-modified-date-of-local-documentfil
         try:
             updateValues = ContentValues()
             updateValues.put(DocumentsContract.Document.COLUMN_LAST_MODIFIED, java.jlong(unixtime))

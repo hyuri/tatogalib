@@ -39,7 +39,7 @@ class UriFile:
     @property
     def lastmodified(self): 
         """
-        The last modification time (long) of the file or folder.
+        The last modification time (int) of the file or folder.
         It is the amount of seconds since 1970-01-01T00:00:00
         """
         return self._impl.get_lastmodified()
@@ -49,7 +49,7 @@ class UriFile:
         """
         Sets the last modification time (long) of the file or folder.
         
-        :param long unixtime: amount of seconds since 1970-01-01T00:00:00
+        :param int unixtime: amount of seconds since 1970-01-01T00:00:00
         
         :returns: True on success, False on failure
         :rtype: boolean
@@ -60,7 +60,8 @@ class UriFile:
     @property
     def mime_type(self):
         """
-        The MIME type (e.g. "application/pdf") of the file
+        The MIME type (e.g. "application/pdf") of the file.
+        Returns None if type cannot be evaluated
         """
         return self._impl.get_mime_type
     # mime_type
