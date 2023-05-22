@@ -4,7 +4,6 @@ class UriInputStreamImpl:
     
     def __init__(self, interface):
         self.interface = interface
-        self.eof = False
         context = interface.app._impl.native
         uri = Uri.parse(interface.uristring)
         self.stream = context.getContentResolver().openInputStream(uri)
@@ -16,7 +15,6 @@ class UriInputStreamImpl:
             return self.readall()
         bytesobj = self.stream.readNBytes(maxsize)
         if len(bytesobj) == 0:
-            self.eof = True
             bytesobj = None
         return bytesobj
     # read
@@ -24,13 +22,11 @@ class UriInputStreamImpl:
     def readinto(self, bytesobj):
         i = self.stream.read(bytesobj)
         if i == -1:
-            self.eof = True
             i = None
         return i
     # readinto
     
     def readall(self):
-        self.eof = True
         return bytes(self.stream.readAllBytes())
     # readall
     
@@ -41,7 +37,6 @@ class UriInputStreamImpl:
         self.stream = None
     # close
     
-    @property
     def closed(self):
         return self.stream is None
     # closed

@@ -28,13 +28,14 @@ class UriInputStream:
         self._impl.close()
     # close
     
+    @property
     def closed(self):
         """
         Checks if the stream is closed
         
         :returns: True when closed, False otherwise
         """
-        return self._impl.closed
+        return self._impl.closed()
     # closed
     
     def read(self, maxsize=-1):
