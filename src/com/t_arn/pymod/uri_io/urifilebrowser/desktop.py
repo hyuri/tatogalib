@@ -1,6 +1,6 @@
 import mimetypes
 from pathlib import Path
-import ..urifile
+from .. import urifile
 
 class UriFileBrowserImpl:
     
@@ -10,23 +10,23 @@ class UriFileBrowserImpl:
     
     async def open_file_dialog(self, title, initial_uri, file_types, multiselect):
         selected_uri = []
-        initial_path = urifile.uristring_to_path(initial_uri)
+        initial_path = urifile.uristring_to_ospath(initial_uri)
         result = await self.interface.app.main_window.open_file_dialog (
             title, initial_directory=initial_path, 
             file_types=file_types, multiselect=multiselect, on_result=None)
         if result is None:
             return selected_uri
         if multiselect is False:
-            result = str(result)  # handle bug in toga open_file_dialog
-            selected_uri.append(urifile.path_to_uristring(result))
+            result = str(result)
+            selected_uri.append(urifile.ospath_to_uristring(result))
         else:
             for fname in result:
-                fname = str(fname)  # handle bug in toga open_file_dialog
-                selected_uri.append(urifile.path_to_uristring(fname))
+                fname = str(fname)
+                selected_uri.append(urifile.ospath_to_uristring(fname))
         return selected_uri
     # open_file_dialog
 
-    async def save_file_dialog(title, suggested_filename, initial_uri, file_types): 
+    async def save_file_dialog(self, title, suggested_filename, initial_uri, file_types): 
         selected_uri = None
         try:
             selected_uri = await self.interface.app.main_window.save_file_dialog(
@@ -35,7 +35,7 @@ class UriFileBrowserImpl:
             selected_uri = None
             self.interface.log(str(ex))
         finally:
-            return selected_uri
+            return str(selected_uri)
     # save_file_dialog
     
     def uri_infos(self, uristring):
@@ -43,7 +43,7 @@ class UriFileBrowserImpl:
         if uristring is None:
             return infos
         try:
-            path = Path(urifile.uristring_to_path(uristring))
+            path = Path(urifile.uristring_to_ospath(uristring))
             infos["display_name"] = path.name
             infos["size"] = path.stat().st_size
             (mime_type, encoding) = mimetypes.guess_type(uristring, strict=False)

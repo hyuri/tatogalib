@@ -1,7 +1,7 @@
 import mimetypes
 import os
 from pathlib import Path
-import ..urifile
+from .. import urifile
 
 
 class UriFileImpl:
