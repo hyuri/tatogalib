@@ -21,6 +21,7 @@ class UriOutputStreamImpl:
     # IOBase methods
     def close(self):
         if self.stream is not None:
+            self.flush()
             self.stream.close()
         self.stream = None
     # close

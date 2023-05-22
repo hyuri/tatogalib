@@ -26,25 +26,46 @@ class UriFile:
 
     @property
     def display_name(self):
+        """
+        The name (str) of the file or folder
+        """
         return self._impl.get_display_name()
     # display_name
     
     @property
     def lastmodified(self): 
+        """
+        The last modification time (long) of the file or folder.
+        It is the amount of seconds since 1970-01-01T00:00:00
+        """
         return self._impl.get_lastmodified()
         
     @lastmodified.setter
     def lastmodified(self, unixtime):
+        """
+        Sets the last modification time (long) of the file or folder.
+        
+        :param long unixtime: amount of seconds since 1970-01-01T00:00:00
+        
+        :returns: True on success, False on failure
+        :rtype: boolean
+        """
         self._impl.set_lastmodified(unixtime)
     # lastmodified    
 
     @property
     def mime_type(self):
+        """
+        The MIME type (e.g. "application/pdf") of the file
+        """
         return self._impl.get_mime_type
     # mime_type
     
     @property
     def size(self):
+        """
+        The size (long) of the file
+        """
         return self._impl.get_size()
     # size
     
@@ -91,7 +112,7 @@ class UriFile:
     
     def delete(self): 
         """
-        Deletes a file
+        Deletes the file
         
         :returns: True on success, False on failure
         :rtype: boolean
@@ -100,14 +121,32 @@ class UriFile:
     # delete
     
     def exists(self):
+        """
+        Checks if the file or folder exists
+        
+        :returns: True when exists, False otherwise
+        :rtype: boolean
+        """
         return self._impl.exists()
     # exists
     
     def isdir(self):
+        """
+        Checks if the UriFile represents an existing folder
+        
+        :returns: True or False
+        :rtype: boolean
+        """
         return self._impl.isdir()
     # isdir
 
     def isfile(self):
+        """
+        Checks if the UriFile represents an existing file
+                
+        :returns: True or False
+        :rtype: boolean
+        """
         return self._impl.isfile()
     # isfile
     
@@ -123,9 +162,9 @@ class UriFile:
 
     def open_raw_inputstream(self):
         """
-        Opens a raw stream for reading from file represented by this UriFile
+        Opens a rawIO stream for reading from the file represented by this UriFile
         
-        :returns: the binary stream to write to
+        :returns: the binary stream to read from
         :rtype: RawIOBase
         """
         return UriInputStream(self.app, self.uristring, self._fnlog)
@@ -133,7 +172,7 @@ class UriFile:
         
     def open_raw_outputstream(self, mode):
         """
-        Opens a raw stream for writing to the file represented by this UriFile
+        Opens a rawIO stream for writing to the file represented by this UriFile
         
         :param str mode: "w" for overwriting, "a" for appending
         

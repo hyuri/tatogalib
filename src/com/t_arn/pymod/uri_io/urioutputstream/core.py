@@ -4,7 +4,7 @@ class UriOutputStream:
     
     def __init__(self, app, uristring, mode, fnLog=None):
         """
-        Creates a UriOutputStream
+        Creates a UriOutputStream which wraps a RawIOBase stream
         
         :param toga.App app: The current App object
         :param str uristring: The URI-string of the stream
@@ -24,47 +24,89 @@ class UriOutputStream:
     # __init__
     
     def close(self):
+        """
+        Flushes and closes the stream
+        """
         self.flush()
         self._impl.close()
     # close
     
     def closed(self):
+        """
+        Checks if the stream is closed
+                
+        :returns: True when closed, False otherwise
+        """
         return self._impl.closed
     # closed
     
     def read(self, maxsize=-1):
+        """
+        This method will raise an OS error when it is called
+        """
         raise OSError(22, "not readable")
     # read
     
     def readinto(bytesobj):
+        """
+        This method will raise an OS error when it is called
+        """
         raise OSError(22, "not readable")
     # readinto
     
     def readall(self):
+        """
+        This method will raise an OS error when it is called
+        """
         raise OSError(22, "not readable")
     # readall
     
     def readable(self):
+        """
+        This method always returns False
+        """
         return False
     # readable
     
     def write(self, bytesobj):
+        """
+        Writes bytes to the stream
+        
+        :returns: The amount of bytes written
+        :rtype: int
+        """
         return self._impl.write(bytesobj)
     # write
 
     def flush(self):
+        """
+        Flushes the write buffer of stream if applicable 
+        """
         self._impl.flush()
     # flush
     
     def isatty(self):
+        """
+        This method always returns False
+        """
         return False
     # isatty
         
     def truncate(self, size=None):
+        """
+        Resizes the stream to the given size.
+        This is currently unimplemented on Android
+        
+        :returns: The new size in bytes
+        :rtype: int
+        """
         return _impl.truncate(size)
     # truncate
 
     def writable(self):
+        """
+        This method always returns True
+        """
         return True
     # writable
 

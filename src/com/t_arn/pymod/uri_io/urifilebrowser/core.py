@@ -4,7 +4,7 @@ class UriFileBrowser:
     
     def __init__(self, app, fnLog=None):
         """
-        Creates a UriFileBrowser
+        Creates a UriFileBrowser which allows to browse for files and folders
         
         :param toga.App app: The current App object
         :param callable fnLog: The callable which is called from the log method
@@ -21,7 +21,7 @@ class UriFileBrowser:
     
     async def open_file_dialog(self, title, initial_uri=None, file_types=None, multiselect=False):
         """
-        Opens an open file dialog and returns the chosen files as list of URI-strings. 
+        Opens an open file dialog and returns the chosen files as a list of URI-strings. 
         Returns [] if nothing has been chosen
           
         :param str title: The title is ignored on Android 
@@ -52,8 +52,7 @@ class UriFileBrowser:
             On Android, this is ignored
         :param str suggested_filename: The filename to suggest
         :param initial_uri: The initial location shown in the file chooser. 
-            On Android, this must be a content URI-string, e.g. 
-            "content://com.android.externalstorage.documents/document/primary%3ADownload%2FTest-dir"
+            Not supported on Android
             On desktops, it must be file URI-strings, e.g.
             "file://C:/Program%20Files"
         :type initial_uri: str or None 
@@ -70,7 +69,7 @@ class UriFileBrowser:
     
     async def select_folder_dialog(self, title, initial_uri=None): 
         """
-            Opens a select folder dialog and returns the chosen folder. 
+            Opens a select folder dialog and returns the chosen folder as a URI-string. 
             Returns None if nothing has been chosen
               
             :param str title: The title is ignored on Android 

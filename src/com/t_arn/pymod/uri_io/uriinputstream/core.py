@@ -4,7 +4,7 @@ class UriInputStream:
     
     def __init__(self, app, uristring, fnLog=None):
         """
-        Creates a UriInputStream
+        Creates a UriInputStream which wraps a RawIOBase stream
         
         :param toga.App app: The current App object
         :param str uristring: The URI-string of the stream
@@ -22,46 +22,96 @@ class UriInputStream:
     # __init__
     
     def close(self):
+        """
+        Closes the stream
+        """
         self._impl.close()
     # close
     
     def closed(self):
+        """
+        Checks if the stream is closed
+        
+        :returns: True when closed, False otherwise
+        """
         return self._impl.closed
     # closed
     
     def read(self, maxsize=-1):
+        """
+        Reads maxsize bytes from the stream. If less than maxbytes are returned,
+        we reached the end of the stream
+        
+        :param int maxsize: the amount of bytes to read. When -1, all available
+            bytes are read
+            
+        :returns: the read bytes
+        :rtype: bytes
+        """
         return self._impl.read(maxsize)
     # read
     
     def readinto(bytesobj):
+        """
+        Read bytes into the byte-like object
+        
+        :returns: the number of bytes read or None when no more bytes available
+        :rtype: int or None
+        """
         return self._impl.readinto(bytesobj)
     # readinto
     
     def readall(self):
+        """
+        Reads all available bytes
+        
+        :returns: the read bytes
+        :rtype: bytes
+        """
         return self._impl.readall()
     # readall
     
     def readable(self):
+        """
+        Checks if the stream is readable
+        
+        :returns: True when readable, False otherwise
+        """
         return self._impl.readable()
     # readable
     
     def write(self, bytesobj):
+        """
+        This method will raise an OS error when it is called
+        """
         raise OSError(22, "not writable")
     # write
 
     def flush(self):
+        """
+        This method is doing nothing on this stream
+        """
         pass
     # flush
     
     def isatty(self):
+        """
+        This method always returns False
+        """
         return False
     # isatty
         
     def truncate(self, size=None):
+        """
+        This method will raise an OS error when it is called
+        """
         raise OSError(22, "not writable")
     # truncate
 
     def writable(self):
+        """
+        This method always returns False
+        """
         return False
     # writable
 
