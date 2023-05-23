@@ -1,0 +1,22 @@
+Install Sphinx
+==============
+
+pip install -e c:\Projects\Python\Toga\core
+pip install i18n[yaml]
+pip install sphinx
+mkdir docs
+cd docs
+sphinx-quickstart
+
+Adjust sphinx configuration
+===========================
+https://eikonomega.medium.com/getting-started-with-sphinx-autodoc-part-1-2cebbbca5365
+
+Create docs
+===========
+Set Release date in docs/conf.py
+Add new modules to docs/source/index.rst (automodule lines)
+make clean
+make html
+  or
+make singlehtml

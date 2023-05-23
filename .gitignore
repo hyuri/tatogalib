@@ -48,5 +48,5 @@ Thumbs.db
 *.mov
 *.wmv
 
-docs/build/
 venv_tatogalib/
+docs/build/

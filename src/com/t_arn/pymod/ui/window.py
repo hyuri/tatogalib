@@ -4,12 +4,12 @@ window
 
 Module with several handy Python window classes for the toga module
 
-Copyright (c) 2020 Tom Arn, www.t-arn.com
+  Copyright (c) 2020 Tom Arn, www.t-arn.com
 
 For suggestions and questions:
 <sw@t-arn.com>
 
-This file is distributed under the terms of the LGPL
+This file is distributed under the terms of the MIT license
 """
 
 import copy
@@ -26,33 +26,37 @@ class TaGui:
     build_gui() must create the main_box and add all content there.
     Then, the window can be shown by calling the show() method of the class
 
-    Example code (works the same for the main GUI and sub GUIs):
-    # in app.py:
-    mygui = user_gui.MainGui(
-        self, None, "Main GUI", size=(600, 480)  # using None for the parentGui marks the main gui
-    )
-    mygui.show()
+    Example code (works the same for the main GUI and sub GUIs)::
 
-    # in user_gui:
-    class MainGui(TaGui):
+        # in app.py:
+        mygui = user_gui.MainGui(
+            self, None, "Main GUI", size=(600, 480)  # using None for the parentGui marks the main gui
+        )
+        mygui.show()
 
-        def __init__(self, app, parentGui, title, **kwargs):
-            self.main_box = None
-            super().__init__(app, parentGui, title, **kwargs)
-        # __init__
+        # in user_gui:
+        class MainGui(TaGui):
 
-        def build_gui(self):
-            # create box for content
-            self.main_box = toga.Box(style=Pack(direction=COLUMN, flex=1))
-            self.main_box.add(toga.Label("Hello"))
+            def __init__(self, app, parentGui, title, **kwargs):
+                self.main_box = None
+                super().__init__(app, parentGui, title, **kwargs)
+            # __init__
 
-            # button bar
-            box_buttons = toga.Box(style=Pack(direction=ROW, padding=(5, 0, 0, 0)))  # top, right, bottom and left padding
-            box_buttons.add(toga.Label("", style=Pack(flex=1)))
-            box_buttons.add(toga.Button("OK", on_press=self.handle_OK_button))
-            box_buttons.add(toga.Label("", style=Pack(flex=1)))
-            self.main_box.add(box_buttons)
-        # build_gui
+            def build_gui(self):
+                # create box for content
+                self.main_box = toga.Box(style=Pack(direction=COLUMN, flex=1))
+                self.main_box.add(toga.Label("Hello"))
+
+                # button bar
+                box_buttons = toga.Box(style=Pack(direction=ROW, padding=(5, 0, 0, 0)))  # top, right, bottom and left padding
+                box_buttons.add(toga.Label("", style=Pack(flex=1)))
+                box_buttons.add(toga.Button("OK", on_press=self.handle_OK_button))
+                box_buttons.add(toga.Label("", style=Pack(flex=1)))
+                self.main_box.add(box_buttons)
+            # build_gui
+
+    Currently supported platforms: windows, android, macOS
+
     """
 
     def __init__(self, app, parentGui, title, **kwargs):
@@ -315,5 +319,5 @@ def centerOnParent(parent_window, child_window):
 # centerOnParent
 
 
-version = "0.9.4"
-version_date = "2020-08-10 - 2023-03-12"
+version = "0.9.5"
+version_date = "2020-08-10 - 2023-05-03"

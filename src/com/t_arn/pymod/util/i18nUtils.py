@@ -76,8 +76,8 @@ class I18nUtils:
         """
         Returns the default language of the app.
 
-        :returns: get_default_system_language() if it is
-        in get_app_languages(). Otherwise, it will return self.fallbackLang
+        :returns: get_default_system_language() if it is 
+            in get_app_languages(). Otherwise, it will return self.fallbackLang
         :rtype: str
         """
         def_lang = I18nUtils.get_default_system_language()
