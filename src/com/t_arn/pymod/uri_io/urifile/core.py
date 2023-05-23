@@ -58,7 +58,7 @@ class UriFile:
         The MIME type (e.g. "application/pdf") of the file.
         Returns None if type cannot be evaluated
         """
-        return self._impl.get_mime_type
+        return self._impl.get_mime_type()
     # mime_type
     
     @property

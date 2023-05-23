@@ -26,7 +26,7 @@ class UriFileBrowserImpl:
         return selected_uri
     # open_file_dialog
 
-    async def save_file_dialog(self, title, suggested_filename, initial_uri, file_types): 
+    async def save_file_dialog(self, title, suggested_filename, file_types): 
         selected_uri = None
         try:
             selected_uri = await self.interface.app.main_window.save_file_dialog(
@@ -38,6 +38,21 @@ class UriFileBrowserImpl:
         finally:
             return selected_uri
     # save_file_dialog
+    
+    async def select_folder_dialog(self, title, initial_uri=None): 
+        selected_uri = None
+        try:
+            initial_path = urifile.uristring_to_ospath(initial_uri)
+            selected_uri = await self.interface.app.main_window.select_folder_dialog(
+                title, initial_path)
+            if selected_uri is not None:
+                selected_uri = urifile.ospath_to_uristring(str(selected_uri))
+        except ValueError as ex:
+            selected_uri = None
+            self.interface.log(str(ex))
+        finally:
+            return selected_uri
+    # select_folder_dialog
     
     def uri_infos(self, uristring):
         infos = {}

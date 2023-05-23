@@ -14,8 +14,11 @@ class UriFileImpl:
 
     def delete(self): 
         if self.isfile():
-            self.path.unlink(missing_ok=True)
-        return self.exists()
+            try:
+                self.path.unlink(missing_ok=True)
+            except Exception as ex:
+                self.interface.log(str(ex))
+        return not self.exists()
     # delete
     
     def get_display_name(self):
@@ -51,8 +54,8 @@ class UriFileImpl:
     # set_lastmodified
     
     def get_mime_type(self):
-        (mime_type, encoding) = mimetypes.guess_type(str(self.path), strict=False)
-        return mime_type
+        (mimetype, encoding) = mimetypes.guess_type(str(self.path), strict=False)
+        return mimetype
     # get_mime_type
     
     def get_size(self):

@@ -62,7 +62,7 @@ class UriFileBrowserImpl:
         return selected_uri
     # open_file_dialog
 
-    async def save_file_dialog(self, title, suggested_filename, initial_uri, file_types):
+    async def save_file_dialog(self, title, suggested_filename, file_types):
         extensions = file_types
         ftypes = []
         for ext in extensions:

@@ -43,7 +43,7 @@ class UriFileBrowser:
         return result
     # open_file_dialog
 
-    async def save_file_dialog(self, title, suggested_filename, initial_uri=None, file_types=None):
+    async def save_file_dialog(self, title, suggested_filename, file_types=None):
         """
         Opens a file save dialog and returns the chosen file as a URI-string. 
         Returns None if nothing has been chosen
@@ -51,11 +51,6 @@ class UriFileBrowser:
         :param str title: The title for the dialog
             On Android, this is ignored
         :param str suggested_filename: The filename to suggest
-        :param initial_uri: The initial location shown in the file chooser. 
-            Not supported on Android
-            On desktops, it must be file URI-strings, e.g.
-            "file://C:/Program%20Files"
-        :type initial_uri: str or None 
         :param file_types: The file types allowed to select. Must be file extensions e.g. 
             ["doc", "pdf"].
         :type file_types: list[str] or None 
@@ -63,7 +58,7 @@ class UriFileBrowser:
         :returns: the URI-string of the selected file or None
         :rtype: str or None
         """
-        result = await self._impl.save_file_dialog(title, suggested_filename, initial_uri, file_types)
+        result = await self._impl.save_file_dialog(title, suggested_filename, file_types)
         return result
     # save_file_dialog
     
