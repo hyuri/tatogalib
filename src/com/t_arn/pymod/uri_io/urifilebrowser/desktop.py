@@ -73,3 +73,7 @@ class UriFileBrowserImpl:
     # uri_infos
     
 # UriFileBrowserImpl
+
+
+version = "1.0.0"
+version_date = "2023-05-23 - 2023-05-23"

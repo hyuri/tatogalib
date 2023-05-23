@@ -63,3 +63,7 @@ class UriFileImpl:
     # get_size
 
 # UriFileImpl
+
+
+version = "0.5.0"
+version_date = "2023-05-23 - 2023-05-23"

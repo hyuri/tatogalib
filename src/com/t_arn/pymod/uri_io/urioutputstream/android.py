@@ -60,3 +60,7 @@ class UriOutputStreamImpl:
     # truncate
 
 # UriOutputStreamImpl
+
+
+version = "0.8.0"
+version_date = "2023-05-23 - 2023-05-23"

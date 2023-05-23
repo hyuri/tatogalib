@@ -93,3 +93,7 @@ class UriFileBrowser:
     # log
     
 # UriFileBrowser
+
+
+version = "1.0.0"
+version_date = "2023-05-23 - 2023-05-23"

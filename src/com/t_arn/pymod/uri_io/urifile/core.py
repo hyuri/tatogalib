@@ -183,3 +183,7 @@ class UriFile:
     # open_raw_outputstream
     
 # UriFile
+
+
+version = "0.5.0"
+version_date = "2023-05-23 - 2023-05-23"
