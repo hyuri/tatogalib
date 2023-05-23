@@ -31,11 +31,12 @@ class UriFileBrowserImpl:
         try:
             selected_uri = await self.interface.app.main_window.save_file_dialog(
                 title, suggested_filename, file_types=file_types)
+            selected_uri = urifile.ospath_to_uristring(str(selected_uri))
         except ValueError as ex:
             selected_uri = None
             self.interface.log(str(ex))
         finally:
-            return str(selected_uri)
+            return selected_uri
     # save_file_dialog
     
     def uri_infos(self, uristring):

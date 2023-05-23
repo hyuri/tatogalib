@@ -1,12 +1,12 @@
-import ..urifile
+from .. import urifile
 
 class UriOutputStreamImpl:
     
     def __init__(self, interface, mode):
         self.interface = interface
-        self.ospath = urifile.uristring_to_ospath(interface.uristring)
+        ospath = urifile.uristring_to_ospath(interface.uristring)
         mode = mode + "b"
-        self.stream = open(self.stream, mode, buffering=0)
+        self.stream = open(ospath, mode, buffering=0)
     # __init__
     
     # RawIOBase methods

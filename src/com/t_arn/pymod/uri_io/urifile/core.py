@@ -40,17 +40,16 @@ class UriFile:
         """
         return self._impl.get_lastmodified()
         
-    @lastmodified.setter
-    def lastmodified(self, unixtime):
+    def set_lastmodified(self, unixtime):
         """
-        Sets the last modification time (long) of the file or folder.
+        Sets the last modification time (int) of the file or folder.
         
         :param int unixtime: amount of seconds since 1970-01-01T00:00:00
         
         :returns: True on success, False on failure
         :rtype: boolean
         """
-        self._impl.set_lastmodified(unixtime)
+        return self._impl.set_lastmodified(unixtime)
     # lastmodified    
 
     @property
