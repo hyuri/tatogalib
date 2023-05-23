@@ -52,9 +52,11 @@ class UriInputStream:
         return self._impl.read(maxsize)
     # read
     
-    def readinto(bytesobj):
+    def readinto(self, bytesobj):
         """
         Read bytes into the byte-like object
+        
+        :param bytes bytesobj: The byte-like object to read into
         
         :returns: the number of bytes read or None when no more bytes available
         :rtype: int or None
@@ -98,6 +100,8 @@ class UriInputStream:
     def isatty(self):
         """
         This method always returns False
+        
+        :returns: False
         """
         return False
     # isatty

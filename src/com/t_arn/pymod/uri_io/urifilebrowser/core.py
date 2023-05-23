@@ -26,10 +26,8 @@ class UriFileBrowser:
           
         :param str title: The title is ignored on Android 
         :param initial_uri: The initial location shown in the file chooser. 
-            On Android, this must be a content URI-string, e.g. 
-            "content://com.android.externalstorage.documents/document/primary%3ADownload%2FTest-dir"
-            On desktops, it must be file URI-strings, e.g.
-            "file://C:/Program%20Files"
+            On Android, this must be a content URI-string.
+            On desktops, it must be a file URI-string
         :type initial_uri: str or None 
         :param file_types: The file types allowed to select. Must be file extensions e.g. 
             ["doc", "pdf"].
@@ -69,10 +67,8 @@ class UriFileBrowser:
               
             :param str title: The title is ignored on Android 
             :param initial_uri: The initial location shown in the file chooser. 
-                On Android, this must be a content URI-string, e.g. 
-                "content://com.android.externalstorage.documents/document/primary%3ADownload%2FTest-dir"
-                On desktops, it must be file URI-strings, e.g.
-                "file://C:/Program%20Files"
+                On Android, this must be a content URI-string.
+                On desktops, it must be a file URI-string
             :type initial_uri: str or None 
             
             :returns: the URI-string of the selected folder

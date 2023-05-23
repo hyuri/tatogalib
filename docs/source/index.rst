@@ -18,5 +18,6 @@ Indices and tables
    :caption: Content:
    
    ui/index
+   uri_io/index
    util/index
    

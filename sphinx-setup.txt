@@ -18,3 +18,5 @@ Set Release date in docs/conf.py
 Add new modules to docs/source/index.rst (automodule lines)
 make clean
 make html
+  or
+make singlehtml

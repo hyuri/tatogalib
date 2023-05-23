@@ -48,7 +48,7 @@ class UriOutputStream:
         raise OSError(22, "not readable")
     # read
     
-    def readinto(bytesobj):
+    def readinto(self, bytesobj):
         """
         This method will raise an OS error when it is called
         """
@@ -65,6 +65,8 @@ class UriOutputStream:
     def readable(self):
         """
         This method always returns False
+        
+        :returns: False
         """
         return False
     # readable
@@ -72,6 +74,8 @@ class UriOutputStream:
     def write(self, bytesobj):
         """
         Writes bytes to the stream
+        
+        :param bytes bytesobj: The bytes to be written
         
         :returns: The amount of bytes written
         :rtype: int
@@ -89,6 +93,8 @@ class UriOutputStream:
     def isatty(self):
         """
         This method always returns False
+        
+        :returns: False
         """
         return False
     # isatty
@@ -97,6 +103,8 @@ class UriOutputStream:
         """
         Resizes the stream to the given size.
         This is currently unimplemented on Android
+        
+        :param int size: The new size in bytes
         
         :returns: The new size in bytes
         :rtype: int
@@ -107,6 +115,8 @@ class UriOutputStream:
     def writable(self):
         """
         This method always returns True
+        
+        :returns: True
         """
         return True
     # writable

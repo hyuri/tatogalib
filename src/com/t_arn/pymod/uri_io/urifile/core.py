@@ -64,7 +64,7 @@ class UriFile:
     @property
     def size(self):
         """
-        The size (long) of the file
+        The size (int) of the file
         """
         return self._impl.get_size()
     # size
