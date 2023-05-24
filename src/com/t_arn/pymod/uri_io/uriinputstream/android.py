@@ -1,10 +1,11 @@
 ﻿from android.net import Uri
+import toga
 
 class UriInputStreamImpl:
     
     def __init__(self, interface):
         self.interface = interface
-        context = interface.app._impl.native
+        context = toga.App.app._impl.native
         uri = Uri.parse(interface.uristring)
         self.stream = context.getContentResolver().openInputStream(uri)
     # __init__

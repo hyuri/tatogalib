@@ -3,12 +3,14 @@ from android.content import ContentValues
 from android.provider import DocumentsContract
 from androidx.documentfile.provider import DocumentFile
 import java
+import toga
 
 class UriFileImpl:
     
     def __init__(self, interface, is_file=True):
             self.interface = interface
-            self.context = interface.app._impl.native
+            
+            self.context = toga.App.app._impl.native
             self.resolver = self.context.getContentResolver()
             self.uri = Uri.parse(interface.uristring)
             if is_file:

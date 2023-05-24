@@ -2,15 +2,13 @@ import toga
 
 class UriFileBrowser:
     
-    def __init__(self, app, fnLog=None):
+    def __init__(self, fnLog=None):
         """
         Creates a UriFileBrowser which allows to browse for files and folders
         
-        :param toga.App app: The current App object
         :param callable fnLog: The callable which is called from the log method
             It expects a string parameter
         """
-        self.app = app
         self._fnlog = fnLog  # for logging to user code
         if toga.platform.current_platform == "android":
             from .android import UriFileBrowserImpl

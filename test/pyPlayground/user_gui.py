@@ -138,7 +138,7 @@ class MainGui(TaGui):
 
     async def handle_btn_source(self, widget):
         try:
-            fb = UriFileBrowser(self.app, self.fnPrintln)
+            fb = UriFileBrowser(self.fnPrintln)
             # initial = "content://com.android.externalstorage.documents/document/primary%3A!Daten"
             initial = "file:///C:/Projects/Python/_Docs"
             urilist = await fb.open_file_dialog("Wähle eine Quellen Datei", 
@@ -146,7 +146,7 @@ class MainGui(TaGui):
             if len(urilist) == 0:
                 return
             self.ti_source.value = str(urilist[0])
-            urifile = UriFile(self.app, urilist[0], fnLog=self.fnPrintln)
+            urifile = UriFile(urilist[0], fnLog=self.fnPrintln)
             self.fnPrintln("")
             self.fnPrintln(f"name: {urifile.display_name}")
             self.fnPrintln(f"mime_type: {urifile.mime_type}")
@@ -158,13 +158,13 @@ class MainGui(TaGui):
 
     async def handle_btn_target(self, widget):
         try:
-            fb = UriFileBrowser(self.app, self.fnPrintln)
+            fb = UriFileBrowser(self.fnPrintln)
             uristring = await fb.save_file_dialog("Wähle eine Ziel Datei",
                 "test.pdf", file_types=["xls","pdf"])
             self.ti_target.value = str(uristring)
             if uristring is None:
                 return
-            urifile = UriFile(self.app, uristring)
+            urifile = UriFile(uristring)
             self.fnPrintln("")
             self.fnPrintln(f"name: {urifile.display_name}")
             self.fnPrintln(f"exists: {urifile.exists()}")
@@ -178,8 +178,8 @@ class MainGui(TaGui):
 
     def handle_btn_copy(self, widget):
         try:
-            source = UriFile(self.app, self.ti_source.value, fnLog=self.fnPrintln)
-            target = UriFile(self.app, self.ti_target.value, fnLog=self.fnPrintln)
+            source = UriFile(self.ti_source.value, fnLog=self.fnPrintln)
+            target = UriFile(self.ti_target.value, fnLog=self.fnPrintln)
             self.fnPrint("\nCopying...")
             ok = source.copy_to(target)
             self.fnPrintln(f"done, ok={ok}")
@@ -192,23 +192,23 @@ class MainGui(TaGui):
     
     def handle_btn_delete(self, widget): 
         self.fnPrint("\nDeleting...")
-        source = UriFile(self.app, self.ti_source.value, fnLog=self.fnPrintln)
+        source = UriFile(self.ti_source.value, fnLog=self.fnPrintln)
         ok = source.delete()
         self.fnPrintln(f"done, ok={ok}")
     # handle_btn_delete
     
     async def handle_btn_folder(self, widget):
         try:
-            fb = UriFileBrowser(self.app, self.fnPrintln)
-            # initial = "content://com.android.externalstorage.documents/document/primary%3A!Daten"
-            initial = "file:///C:/Program%20Files"
+            fb = UriFileBrowser(self.fnPrintln)
+            initial = "content://com.android.externalstorage.documents/document/primary%3A!Daten"
+            # initial = "file:///C:/Program%20Files"
             uri = await fb.select_folder_dialog("Wähle ein Verzeichnis", initial_uri=initial) 
             self.fnPrintln("")
             self.fnPrintln(str(uri))
             if uri is None: 
                 return
             self.ti_folder.value = str(uri)
-            urifile = UriFile(self.app, uri, is_file=False)
+            urifile = UriFile(uri, is_file=False)
             self.fnPrintln(f"name: {urifile.display_name}")
             self.fnPrintln(f"mime_type: {urifile.mime_type}")
             self.fnPrintln(f"isdir: {urifile.isdir()}")

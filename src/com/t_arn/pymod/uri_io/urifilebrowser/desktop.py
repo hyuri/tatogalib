@@ -1,17 +1,19 @@
 import mimetypes
 from pathlib import Path
+import toga
 from .. import urifile
 
 class UriFileBrowserImpl:
     
     def __init__(self, interface):
         self.interface = interface
+        self.app = toga.App.app
     # __init__
     
     async def open_file_dialog(self, title, initial_uri, file_types, multiselect):
         selected_uri = []
         initial_path = urifile.uristring_to_ospath(initial_uri)
-        result = await self.interface.app.main_window.open_file_dialog (
+        result = await self.app.main_window.open_file_dialog (
             title, initial_directory=initial_path, 
             file_types=file_types, multiselect=multiselect, on_result=None)
         if result is None:
@@ -29,7 +31,7 @@ class UriFileBrowserImpl:
     async def save_file_dialog(self, title, suggested_filename, file_types): 
         selected_uri = None
         try:
-            selected_uri = await self.interface.app.main_window.save_file_dialog(
+            selected_uri = await self.app.main_window.save_file_dialog(
                 title, suggested_filename, file_types=file_types)
             selected_uri = urifile.ospath_to_uristring(str(selected_uri))
         except ValueError as ex:
@@ -43,7 +45,7 @@ class UriFileBrowserImpl:
         selected_uri = None
         try:
             initial_path = urifile.uristring_to_ospath(initial_uri)
-            selected_uri = await self.interface.app.main_window.select_folder_dialog(
+            selected_uri = await self.app.main_window.select_folder_dialog(
                 title, initial_path)
             if selected_uri is not None:
                 selected_uri = urifile.ospath_to_uristring(str(selected_uri))

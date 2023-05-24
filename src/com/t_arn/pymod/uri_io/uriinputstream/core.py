@@ -2,16 +2,14 @@ import toga
 
 class UriInputStream:
     
-    def __init__(self, app, uristring, fnLog=None):
+    def __init__(self, uristring, fnLog=None):
         """
         Creates a UriInputStream which wraps a RawIOBase stream
         
-        :param toga.App app: The current App object
         :param str uristring: The URI-string of the stream
         :param callable fnLog: The callable which is called from the log method
             It expects a string parameter
         """
-        self.app = app
         self.uristring = uristring
         self._fnlog = fnLog  # for logging to user code
         if toga.platform.current_platform == "android":

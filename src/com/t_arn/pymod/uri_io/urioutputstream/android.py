@@ -1,4 +1,5 @@
 ﻿from android.net import Uri
+import toga
 
 class UriOutputStreamImpl:
     
@@ -8,7 +9,7 @@ class UriOutputStreamImpl:
             mode = "wa"
         self.mode = mode
         self.eof = False
-        context = interface.app._impl.native
+        context = toga.App.app._impl.native
         uri = Uri.parse(interface.uristring)
         self.stream = context.getContentResolver().openOutputStream(uri, mode)
     # __init__

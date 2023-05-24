@@ -4,17 +4,15 @@ from ..urioutputstream import UriOutputStream
 
 class UriFile:
     
-    def __init__(self, app, uristring, is_file=True, fnLog=None):
+    def __init__(self, uristring, is_file=True, fnLog=None):
         """
         Creates a UriFile which represents a file or a folder
         
-        :param toga.App app: The current App object
         :param str uristring: A URI-string representing this UriFile object
         :param boolean is_file: True when uristring represents a file, False for a folder
         :param callable fnLog: The callable which is called from the log method
             It expects a string parameter
         """
-        self.app = app
         self.uristring = uristring
         self._fnlog = fnLog  # for logging to user code
         if toga.platform.current_platform == "android":
@@ -167,7 +165,7 @@ class UriFile:
         :returns: the binary stream to read from
         :rtype: RawIOBase
         """
-        return UriInputStream(self.app, self.uristring, self._fnlog)
+        return UriInputStream(self.uristring, self._fnlog)
     # open_raw_inputstream
         
     def open_raw_outputstream(self, mode):
@@ -179,7 +177,7 @@ class UriFile:
         :returns: the binary stream to write to
         :rtype: RawIOBase
         """
-        return UriOutputStream(self.app, self.uristring, mode, self._fnlog)
+        return UriOutputStream(self.uristring, mode, self._fnlog)
     # open_raw_outputstream
     
 # UriFile

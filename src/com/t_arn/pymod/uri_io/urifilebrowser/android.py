@@ -6,12 +6,14 @@ from android.provider import OpenableColumns
 import java
 from java.lang import String
 import mimetypes
+import toga
 
 
 class UriFileBrowserImpl:
     
     def __init__(self, interface):
         self.interface = interface
+        self.app = toga.App.app
         if not mimetypes.inited:
             mimetypes.init()
             mimetypes.add_type("application/vnd.openxmlformats-officedocument.wordprocessingml.document", ".docx", strict=False)
@@ -45,7 +47,7 @@ class UriFileBrowserImpl:
             intent.putExtra(Intent.EXTRA_MIME_TYPES, file_types) 
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, multiselect) 
         selected_uri = []
-        result = await self.interface.app._impl.intent_result(Intent.createChooser(intent, title))
+        result = await self.app._impl.intent_result(Intent.createChooser(intent, title))
         if result["resultCode"] == Activity.RESULT_OK: 
             if result["resultData"] is not None: 
                 data = result["resultData"].getData() 
@@ -81,12 +83,10 @@ class UriFileBrowserImpl:
         intent.addCategory(Intent.CATEGORY_OPENABLE)
         if suggested_filename is not None and len(suggested_filename) > 0: 
             intent.putExtra(Intent.EXTRA_TITLE, suggested_filename) 
-        if initial_uri is not None and len(initial_uri) > 0: 
-            intent.putExtra("android.provider.extra.INITIAL_URI", Uri.parse(initial_uri)) 
         if file_types is not None and len(file_types) > 0: 
             intent.putExtra(Intent.EXTRA_MIME_TYPES, file_types) 
         selected_uri = None
-        result = await self.interface.app._impl.intent_result(Intent.createChooser(intent, title))
+        result = await self.app._impl.intent_result(Intent.createChooser(intent, title))
         if result["resultCode"] == Activity.RESULT_OK: 
             if result["resultData"] is not None: 
                 data = result["resultData"].getData() 
@@ -100,7 +100,7 @@ class UriFileBrowserImpl:
         if initial_uri is not None and len(initial_uri) > 0: 
             intent.putExtra("android.provider.extra.INITIAL_URI", Uri.parse(initial_uri))
         selected_uri = None
-        result = await self.interface.app._impl.intent_result(Intent.createChooser(intent, title))
+        result = await self.app._impl.intent_result(Intent.createChooser(intent, title))
         if result["resultCode"] == Activity.RESULT_OK: 
             if result["resultData"] is not None: 
                 data = result["resultData"].getData() 
