@@ -12,12 +12,23 @@ class UriInputStream:
         """
         self.uristring = uristring
         self._fnlog = fnLog  # for logging to user code
+        self._impl = None
         if toga.platform.current_platform == "android":
             from .android import UriInputStreamImpl
         if toga.platform.current_platform == "windows":
             from .desktop import UriInputStreamImpl
         self._impl = UriInputStreamImpl(self)
     # __init__
+    
+    def __enter__(self):
+        return self
+    # __enter
+    
+    def __exit__(self, exc_type, exc_value, traceback):
+        if self._impl is not None:
+            self.close()
+        return False  # propagate exceptions
+    # __exit__
     
     def close(self):
         """

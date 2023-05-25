@@ -21,6 +21,19 @@ class UriOutputStream:
         self._impl = UriOutputStreamImpl(self, mode)
     # __init__
     
+    def __enter__(self):
+        return self
+    # __enter
+    
+    def __exit__(self, exc_type, exc_value, traceback):
+        if self._impl is not None:
+            try:
+                self.close()
+            except BaseException as ex:
+                pass
+        return False  # propagate exceptions
+    # __exit__
+
     def close(self):
         """
         Flushes and closes the stream
