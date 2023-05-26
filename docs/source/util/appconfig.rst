@@ -3,7 +3,7 @@ appconfig module
 .. toctree::
    :maxdepth: 2
    
-.. automodule:: com.t_arn.pymod.util.appconfig
+.. automodule:: tatogalib.util.appconfig
    :members:
-.. autoattribute:: com.t_arn.pymod.util.appconfig.version
-.. autoattribute:: com.t_arn.pymod.util.appconfig.version_date
+.. autoattribute:: tatogalib.util.appconfig.version
+.. autoattribute:: tatogalib.util.appconfig.version_date

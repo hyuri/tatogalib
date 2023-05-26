@@ -9,7 +9,7 @@
 project = 'taTogaLib'
 copyright = '2023, Tom Arn'
 author = 'Tom Arn'
-release = '2023-05-23'
+release = '2023-05-26'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

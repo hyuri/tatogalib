@@ -1,5 +1,5 @@
-com.t_arn.pymod.uri_io
-======================
+tatogalib.uri_io
+================
 
 uri_io is a cross-platform package for dealing with files and folders.
 Files and folders are identified by URI-strings. On Android, they are content URI-strings,

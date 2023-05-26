@@ -1,5 +1,5 @@
-com.t_arn.pymod.ui
-==================
+tatogalib.ui
+============
 
 .. toctree::
    :maxdepth: 2
