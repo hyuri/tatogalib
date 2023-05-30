@@ -179,6 +179,17 @@ class UriFile:
         """
         return UriOutputStream(self.uristring, mode, self._fnlog)
     # open_raw_outputstream
+
+    def open_text_inputstream(self, encoding):
+        """
+        Opens a text stream for reading from the file represented by this UriFile
+        
+        :param str encoding: The encoding to use for converting the bytes to text
+        :returns: the text stream to read from
+        :rtype: TextIOWrapper
+        """
+        return UriTextInputStream(self.uristring, encoding, self._fnlog)
+    # open_raw_inputstream
     
 # UriFile
 

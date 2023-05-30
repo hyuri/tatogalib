@@ -122,6 +122,8 @@ class MainGui(TaGui):
         self.main_box.add(self.ti_folder)
         btn_delete = toga.Button("Delete source file", on_press=self.handle_btn_delete)
         self.main_box.add(btn_delete)
+        btn_read = toga.Button("Read text source file", on_press=self.handle_btn_read)
+        self.main_box.add(btn_read)   
         
         self.message_area = toga.MultilineTextInput(
             value="", readonly=False, style=Pack(flex=1)
@@ -217,6 +219,22 @@ class MainGui(TaGui):
            G.write_debug_message(str(ex))
            self.fnPrintln("\n"+str(ex))
     # handle_btn_folder
+
+    def handle_btn_read(self, widget):
+        try:
+            source = UriFile(self.ti_source.value, fnLog=self.fnPrintln)
+            self.fnPrint("\nReading...")
+            f = source.open_text_inputstream("utf-8")
+            bytesobj = f.read()
+            f.close()
+            self.fnPrintln(f"done, ok={ok}")
+            self.fnPrintln(str(b))
+            for b in bytesobj:
+                self.fnPrint(f"{ord(b)} ")
+        except BaseException as ex:
+           G.write_debug_message(str(ex))
+           self.fnPrintln("\n"+str(ex))
+    # handle_btn_copy
 
     def handle_btn_action(self, widget):
         try:

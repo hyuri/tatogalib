@@ -1,4 +1,4 @@
-﻿from android.net import Uri
+from android.net import Uri
 import toga
 
 class UriInputStreamImpl:
