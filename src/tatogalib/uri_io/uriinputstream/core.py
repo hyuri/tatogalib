@@ -119,9 +119,11 @@ class UriInputStream:
     
     def seekable(self):
         """
-        This method always returns False
+        Checks if the stream is seekable
+                
+        :returns: True when seekable, False otherwise
         """
-        return False
+        return self._impl.seekable()
     # seekable
 
     def truncate(self, size=None):
@@ -148,7 +150,7 @@ class UriInputStream:
             self._fnlog(message)
     # log
 
-# UriInputStreamImpl
+# UriInputStream
 
 
 class UriTextInputStream():
