@@ -1,5 +1,5 @@
 import toga
-from ..uriinputstream import UriInputStream
+from ..uriinputstream import UriInputStream, UriTextInputStream
 from ..urioutputstream import UriOutputStream
 
 class UriFile:
