@@ -224,11 +224,12 @@ class MainGui(TaGui):
         try:
             source = UriFile(self.ti_source.value, fnLog=self.fnPrintln)
             self.fnPrint("\nReading...")
-            f = source.open_text_inputstream("utf-8")
+            f = source.open_text_inputstream("utf-8-sig")
             bytesobj = f.read()
+            self.fnPrintln("read ok")
             f.close()
-            self.fnPrintln(f"done, ok={ok}")
-            self.fnPrintln(str(b))
+            self.fnPrintln(f"done")
+            self.fnPrintln(str(bytesobj))
             for b in bytesobj:
                 self.fnPrint(f"{ord(b)} ")
         except BaseException as ex:

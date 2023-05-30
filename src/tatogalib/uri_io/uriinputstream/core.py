@@ -170,11 +170,8 @@ class UriTextInputStream():
         self.uristring = uristring
         self.encoding = encoding
         self._fnlog = fnLog  # for logging to user code
-        self.log("create UriInputStream")
         self._raw = UriInputStream(uristring, fnLog)
-        self.log("create io.BufferedReader")
         self._br = io.BufferedReader(self._raw)
-        self.log("create io.TextIOWrapper")
         self.stream = io.TextIOWrapper(self._br, encoding=encoding, errors=None, newline=None, line_buffering=False, write_through=False)
     # __init__
 
@@ -206,7 +203,7 @@ class UriTextInputStream():
         
         :returns: True when closed, False otherwise
         """
-        return self.stream.closed()
+        return self.stream is None
     # closed
     
     def read(self, maxsize=-1):
@@ -220,7 +217,6 @@ class UriTextInputStream():
         :returns: the read bytes
         :rtype: bytes
         """
-        self.log("read()")
         return self.stream.read(maxsize)
     # read
     

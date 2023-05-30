@@ -29,7 +29,7 @@ class UriInputStreamImpl:
     # close
     
     def closed(self):
-        return self.stream.closed
+        return self.stream is None
     # closed
 
     def fileno(self):
