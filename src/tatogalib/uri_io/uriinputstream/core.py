@@ -208,14 +208,13 @@ class UriTextInputStream():
     
     def read(self, maxsize=-1):
         """
-        Reads maxsize bytes from the stream. If less than maxbytes are returned,
-        we reached the end of the stream
+        Reads maxsize characters from the stream.
         
-        :param int maxsize: the amount of bytes to read. When -1, all available
-            bytes are read
+        :param int maxsize: The maximum amount of characters to read. 
+            When -1, all available characters are read
             
-        :returns: the read bytes
-        :rtype: bytes
+        :returns: The read chatacters
+        :rtype: str
         """
         return self.stream.read(maxsize)
     # read
@@ -250,6 +249,19 @@ class UriTextInputStream():
         """
         return self.stream.readable()
     # readable
+    
+    def readline(self, maxsize=-1):
+        """
+        Read until newline or EOF and return a single str. If the stream is already 
+        at EOF, an empty string is returned.
+        
+        :param int maxsize: The maximum amount of characters to read
+        
+        :returns: A single string
+        :rtype: str
+        """
+        return self.stream.readline(maxsize)
+    # readline
     
     def write(self, bytesobj):
         """
