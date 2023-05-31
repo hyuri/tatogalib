@@ -3,19 +3,24 @@ from pathlib import Path
 import toga
 from .. import urifile
 
+
 class UriFileBrowserImpl:
-    
     def __init__(self, interface):
         self.interface = interface
         self.app = toga.App.app
+
     # __init__
-    
+
     async def open_file_dialog(self, title, initial_uri, file_types, multiselect):
         selected_uri = []
         initial_path = urifile.uristring_to_ospath(initial_uri)
-        result = await self.app.main_window.open_file_dialog (
-            title, initial_directory=initial_path, 
-            file_types=file_types, multiselect=multiselect, on_result=None)
+        result = await self.app.main_window.open_file_dialog(
+            title,
+            initial_directory=initial_path,
+            file_types=file_types,
+            multiselect=multiselect,
+            on_result=None,
+        )
         if result is None:
             return selected_uri
         if multiselect is False:
@@ -26,27 +31,31 @@ class UriFileBrowserImpl:
                 fname = str(fname)
                 selected_uri.append(urifile.ospath_to_uristring(fname))
         return selected_uri
+
     # open_file_dialog
 
-    async def save_file_dialog(self, title, suggested_filename, file_types): 
+    async def save_file_dialog(self, title, suggested_filename, file_types):
         selected_uri = None
         try:
             selected_uri = await self.app.main_window.save_file_dialog(
-                title, suggested_filename, file_types=file_types)
+                title, suggested_filename, file_types=file_types
+            )
             selected_uri = urifile.ospath_to_uristring(str(selected_uri))
         except ValueError as ex:
             selected_uri = None
             self.interface.log(str(ex))
         finally:
             return selected_uri
+
     # save_file_dialog
-    
-    async def select_folder_dialog(self, title, initial_uri=None): 
+
+    async def select_folder_dialog(self, title, initial_uri=None):
         selected_uri = None
         try:
             initial_path = urifile.uristring_to_ospath(initial_uri)
             selected_uri = await self.app.main_window.select_folder_dialog(
-                title, initial_path)
+                title, initial_path
+            )
             if selected_uri is not None:
                 selected_uri = urifile.ospath_to_uristring(str(selected_uri))
         except ValueError as ex:
@@ -54,8 +63,9 @@ class UriFileBrowserImpl:
             self.interface.log(str(ex))
         finally:
             return selected_uri
+
     # select_folder_dialog
-    
+
     def uri_infos(self, uristring):
         infos = {}
         if uristring is None:
@@ -72,8 +82,10 @@ class UriFileBrowserImpl:
             self.interface.log(str(ex))
         finally:
             return infos
+
     # uri_infos
-    
+
+
 # UriFileBrowserImpl
 
 

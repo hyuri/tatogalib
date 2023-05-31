@@ -101,6 +101,7 @@ class TaGui:
             # save parent commands and toolbar
             self.parent_commands = copy.copy(self.app.commands)
             self.parent_toolbar = copy.copy(self.app.main_window.toolbar)
+
     # __init__
 
     def close(self):
@@ -117,8 +118,9 @@ class TaGui:
             self.app._impl.native.invalidateOptionsMenu()
         if toga.platform.current_platform in ("android", "iOS"):
             self.parentGui.show()
+
     # close
-    
+
     def get_scale(self):
         """
         Returns the scale factor of the platform.
@@ -128,8 +130,9 @@ class TaGui:
             return self.root_box._impl.viewport.scale
         else:
             return 1
+
     # get_scale
-    
+
     def get_window_size(self):
         """
         Returns the usable (width, height) of this window in dp
@@ -141,6 +144,7 @@ class TaGui:
             return (width, height)
         else:
             return self.window.size
+
     # get_window_size
 
     def show(self):
@@ -161,7 +165,9 @@ class TaGui:
             if toga.platform.current_platform == "android":
                 self.app._impl.native.setTitle(self.title)
             self.window.show()
+
     # show
+
 
 # TaGui
 
@@ -173,7 +179,15 @@ class TaWindow(toga.Window):
     - auto centered on parent window
     """
 
-    def __init__(self, parentWindow, title, size=(200, 200), position=None, auto_close_duration=None, on_close=None):
+    def __init__(
+        self,
+        parentWindow,
+        title,
+        size=(200, 200),
+        position=None,
+        auto_close_duration=None,
+        on_close=None,
+    ):
         """
         Creates a new taWindow.
 
@@ -196,11 +210,13 @@ class TaWindow(toga.Window):
             position = (100, 100)
             self._centerOnParent = True
         super().__init__(title=title, size=size, position=position)
+
     # __init__
 
     def activate(self):
         if toga.platform.current_platform == "windows":
             self._impl.native.Activate()
+
     # activate
 
     def close(self):
@@ -209,6 +225,7 @@ class TaWindow(toga.Window):
             self._timer.cancel()
             self._timer = None
         super().close()
+
     # close
 
     def window_close_handler(self, window):
@@ -235,19 +252,30 @@ class TaWindow(toga.Window):
         if self._auto_close_duration is not None or self._user_on_close is not None:
             self.on_close = self.window_close_handler
         super().show()
+
     # show
+
 
 # TaWindow
 
 
-class HtmlWindow (TaWindow):
+class HtmlWindow(TaWindow):
     """
     Class which shows a taWindow with html content.
     If no position is passed, the window will center on its parent
     """
 
-    def __init__(self, parentWindow, title, html_text, size=(200, 200), font_size=None, position=None,
-                 auto_close_duration=None, on_close=None):
+    def __init__(
+        self,
+        parentWindow,
+        title,
+        html_text,
+        size=(200, 200),
+        font_size=None,
+        position=None,
+        auto_close_duration=None,
+        on_close=None,
+    ):
         """
         Creates a window with a WebView.
 
@@ -263,34 +291,53 @@ class HtmlWindow (TaWindow):
         :param on_close: The callable that will be called when the user closes the window
         """
         self.font_size = font_size
-        super().__init__(parentWindow, title, size=size, position=position, auto_close_duration=auto_close_duration,
-                         on_close=on_close)
+        super().__init__(
+            parentWindow,
+            title,
+            size=size,
+            position=position,
+            auto_close_duration=auto_close_duration,
+            on_close=on_close,
+        )
         self._mainBox = toga.Box(style=Pack(direction=COLUMN, padding=5, flex=1))
         self.webView = toga.WebView(style=Pack(flex=1))
         self.webView.set_content("data:text/html,", html_text)
         self._mainBox.add(self.webView)
+
     # __init__
 
     def add_ok_button(self):
         """Adds an OK button at the bottom."""
-        _buttonBox = toga.Box(style=Pack(direction=ROW, padding=(5, 0, 0, 0)))  # top, right, bottom and left padding
+        _buttonBox = toga.Box(
+            style=Pack(direction=ROW, padding=(5, 0, 0, 0))
+        )  # top, right, bottom and left padding
         _buttonBox.add(toga.Label("", style=Pack(flex=1)))
         if self.font_size is None:
             _buttonBox.add(toga.Button("OK", on_press=self.handle_ok_button))
         else:
-            _buttonBox.add(toga.Button("OK", on_press=self.handle_ok_button, style=Pack(font_size=self.font_size)))
+            _buttonBox.add(
+                toga.Button(
+                    "OK",
+                    on_press=self.handle_ok_button,
+                    style=Pack(font_size=self.font_size),
+                )
+            )
         _buttonBox.add(toga.Label("", style=Pack(flex=1)))
         self._mainBox.add(_buttonBox)
+
     # add_ok_button
 
     def handle_ok_button(self, widget):
         self.close()
+
     # handle_ok_button
 
     def show(self):
         self.content = self._mainBox
         super().show()
+
     # show
+
 
 # HtmlWindow
 
@@ -299,12 +346,15 @@ class HtmlMessageBox(HtmlWindow):
     """
     Class which displays a modal HtmlWindow
     """
+
     # todo: implement modal behavior
 
     def __init__(self, parentWindow, title, html_text, size=(200, 200)):
         super().__init__(parentWindow, title, html_text, size)
         self.add_ok_button()
+
     # __init__
+
 
 # HtmlMessageBox
 
@@ -316,6 +366,8 @@ def centerOnParent(parent_window, child_window):
         _x = int(_location[0] + (_parentSize[0] - child_window.size[0]) / 2)
         _y = int(_location[1] + (_parentSize[1] - child_window.size[1]) / 2)
         child_window.position = (_x, _y)
+
+
 # centerOnParent
 
 

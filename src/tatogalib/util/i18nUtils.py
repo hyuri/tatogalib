@@ -38,6 +38,7 @@ class I18nUtils:
         else:
             self.lang = lang
         self.load_i18n(translation_dir)
+
     # __init__
 
     def get_app_languages(self):
@@ -50,10 +51,11 @@ class I18nUtils:
         _languages = []
         _p = Path(self.translation_dir)
         for _child in _p.iterdir():
-            if _child.name.endswith('.yml'):
+            if _child.name.endswith(".yml"):
                 _languages.append(_child.stem)
         # for
         return _languages
+
     # get_app_languages
 
     @staticmethod
@@ -65,18 +67,19 @@ class I18nUtils:
         :returns: The default language of the system or 'en'
         :rtype: str
         """
-        lang = 'en'
+        lang = "en"
         default_locale = locale.getdefaultlocale()
         if default_locale is not None:
             lang = default_locale[0][0:2]
         return lang
+
     # get_default_system_language
 
     def get_default_app_language(self):
         """
         Returns the default language of the app.
 
-        :returns: get_default_system_language() if it is 
+        :returns: get_default_system_language() if it is
             in get_app_languages(). Otherwise, it will return self.fallbackLang
         :rtype: str
         """
@@ -84,6 +87,7 @@ class I18nUtils:
         if def_lang not in self.get_app_languages():
             def_lang = self.fallback_lang
         return def_lang
+
     # get_default_app_language
 
     def get_error_translation(self, text):
@@ -97,16 +101,17 @@ class I18nUtils:
         :returns: The translated error text if found. Otherwise the original error text
         :rtype: str
         """
-        _key = text.replace('.', '')
-        _key = 'python.error.' + _key
+        _key = text.replace(".", "")
+        _key = "python.error." + _key
         _trans = self.t(_key)
         if _trans != _key:
             return _trans
         else:
             return text
+
     # get_error_translation
 
-    def load_i18n(self, dir_name=''):
+    def load_i18n(self, dir_name=""):
         """
         Loads the translation files from the passed directory or (when not passed) from
         the default translation directory which is in __init__
@@ -114,14 +119,15 @@ class I18nUtils:
 
         :param str dir_name: The path to the directory with the translation files
         """
-        if dir_name == '':
+        if dir_name == "":
             dir_name = self.translation_dir
-        i18n.set('skip_locale_root_data', True)
-        i18n.set('filename_format', '{locale}.{format}')
-        i18n.set('enable_memoization', True)
-        i18n.set('locale', self.lang)
-        i18n.set('fallback', self.fallback_lang)
+        i18n.set("skip_locale_root_data", True)
+        i18n.set("filename_format", "{locale}.{format}")
+        i18n.set("enable_memoization", True)
+        i18n.set("locale", self.lang)
+        i18n.set("fallback", self.fallback_lang)
         i18n.load_path.append(dir_name)
+
     # load_i18n
 
     @staticmethod
@@ -138,24 +144,27 @@ class I18nUtils:
         :rtype: str
         """
         _text = i18n.t(key, **kwargs)
-        if _text == '':
+        if _text == "":
             _text = key
-        if _text.startswith('{') and _text.endswith('}'):
+        if _text.startswith("{") and _text.endswith("}"):
             # fix for BabelEdit not supporting dictionaries and python-i18n not supporting
             # dictionaries formatted as strings
             _dict = eval(_text)
-            if kwargs['count'] == -1:
+            if kwargs["count"] == -1:
                 pass  # return the dictionary
-            elif kwargs['count'] == 0:
-                _text = _dict['zero']
-            elif kwargs['count'] == 1:
-                _text = _dict['one']
+            elif kwargs["count"] == 0:
+                _text = _dict["zero"]
+            elif kwargs["count"] == 1:
+                _text = _dict["one"]
             else:
-                _text = _dict['many']
+                _text = _dict["many"]
         return _text
+
     # t
+
+
 # I18nUtils
 
 
-version = '0.3.1'
-version_date = '2020-07-03 - 2022-07-28'
+version = "0.3.1"
+version_date = "2020-07-03 - 2022-07-28"

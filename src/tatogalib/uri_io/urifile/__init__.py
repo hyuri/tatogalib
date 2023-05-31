@@ -9,9 +9,9 @@ def ospath_to_uristring(ospath):
     """
     Converts an os.path to an URI-string (file://)
     Returns None if conversion is not possible
-    
+
     :param str ospath: The path string
-    
+
     :returns: The URI-string
     :rtype: str or None
     """
@@ -20,6 +20,8 @@ def ospath_to_uristring(ospath):
         return result
     result = Path(ospath).as_uri()
     return result
+
+
 # path_to_uristring
 
 
@@ -28,9 +30,9 @@ def uristring_to_ospath(uristring):
     Converts a URI-string to an os.path. This will generally only be possible
     for file:// URI-strings.
     Returns None if conversion is not possible
-    
-    :param str uristring: The URI-string 
-    
+
+    :param str uristring: The URI-string
+
     :returns: The path string
     :rtype: str or None
     """
@@ -39,7 +41,7 @@ def uristring_to_ospath(uristring):
         return result
     parsed = urlparse(uristring)
     host = "{0}{0}{mnt}{0}".format(os.path.sep, mnt=parsed.netloc)
-    return os.path.normpath(
-        os.path.join(host, url2pathname(unquote(parsed.path)))
-    )
+    return os.path.normpath(os.path.join(host, url2pathname(unquote(parsed.path))))
+
+
 # uristring_to_path
