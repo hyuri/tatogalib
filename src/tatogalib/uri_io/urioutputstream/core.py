@@ -16,7 +16,7 @@ class UriOutputStream:
         self.uristring = uristring
         self.mode = mode
         if mode != "wb" and mode != "ab":
-            raise ValueError('Invalid mode! Valid modes are "wb" or "ab"')
+            raise ValueError(f'UriOutputStream: Invalid mode "{mode}"! Valid modes are "wb" or "ab"')
         self._fnlog = fnLog  # for logging to user code
         if toga.platform.current_platform == "android":
             from .android import UriOutputStreamImpl
@@ -195,12 +195,12 @@ class UriTextOutputStream:
         self.uristring = uristring
         self.mode = mode
         if mode != "wt" and mode != "at":
-            raise ValueError('Invalid mode! Valid modes are "wt" and "at"')
+            raise ValueError(f'UriTextOutputStream: Invalid mode "{mode}"! Valid modes are "wt" and "at"')
 
         self.encoding = encoding
         self.newline = newline
         self._fnlog = fnLog  # for logging to user code
-        self.stream = UriOutputStream(uristring, mode, fnLog)
+        self.stream = UriOutputStream(uristring, mode[0] + "b", fnLog)
 
     # __init__
 

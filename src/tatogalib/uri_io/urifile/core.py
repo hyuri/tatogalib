@@ -170,74 +170,18 @@ class UriFile:
 
     # log
 
-    def _open_raw_inputstream(self):
-        """
-        Opens a rawIO stream for reading from the file represented by this UriFile
-
-        :returns: the binary stream to read from
-        :rtype: UriInputStream (RawIOBase)
-        """
-        return UriInputStream(self.uristring, self._fnlog)
-
-    # _open_raw_inputstream
-
-    def _open_raw_outputstream(self, mode):
-        """
-        Opens a rawIO stream for writing to the file represented by this UriFile
-
-        :param str mode: "wb" for overwriting, "ab" for appending
-
-        :returns: the binary stream to write to
-        :rtype: UriOutputStream (RawIOBase)
-        """
-        return UriOutputStream(self.uristring, mode, self._fnlog)
-
-    # _open_raw_outputstream
-
-    def _open_text_inputstream(self, encoding):
-        """
-        Opens a text stream for reading from the file represented by this UriFile
-
-        :param str encoding: The encoding to use for converting the bytes to text,
-            e.g. "utf-8-sig"
-
-        :returns: the text stream to read from
-        :rtype: UriTextInputStream (TextIOWrapper)
-        """
-        return UriTextInputStream(self.uristring, encoding, self._fnlog)
-
-    # _open_text_inputstream
-
-    def _open_text_outputstream(self, mode, encoding, newline=None):
-        """
-        Opens a text stream for writing to the file represented by this UriFile
-
-        :param str mode: "wt" for overwriting, "at" for appending
-        :param str encoding: The encoding to use for converting the text to bytes,
-            e.g. "utf-8"
-        :param str newline: The characters to mark the end-of-line.
-            It can be ``\\n``, ``\\r``, ``\\r\\n`` or None. When None, the system default
-            value is used.
-
-        :returns: the text stream to write to
-        :rtype: UriTextOutputStream
-        """
-        return UriTextOutputStream(self.uristring, mode, encoding, newline, self._fnlog)
-
-    # _open_text_outputstream
-
-    def open(self, mode, encoding, newline=None):
+    def open(self, mode, encoding="utf-8", newline=None):
         """
         Opens a binary or text stream for reading or writing.
         The ``mode`` parameter must contain the operation and the data type of the stream to open.
         Valid operations are (r)ead, (w)rite and (a)ppend. Valid data types are (b)inary and (t)ext.
-        ``encoding`` is only relevant opening text streams for reading or writing.
+        ``encoding`` is only relevant when opening text streams for reading or writing.
         ``newline`` is only relevant when opening a text stream for writing.
         When reading from a text stream, ``newline`` is ignored and all kinds of newline characters
         are converted to ``\\n``.
 
         :param str mode: The mode for opening a stream, e.g. "wt"
-        :param str encoding: The encoding to use for converting the text to bytes, e.g. "utf-8"
+        :param str encoding: The encoding to use for converting the text to bytes, e.g. "utf-8-sig"
         :param str newline: The characters to mark the end-of-line.
             It can be ``\\n``, ``\\r``, ``\\r\\n`` or None. When None, the system default
             value is used when writing to a text stream.
@@ -246,31 +190,33 @@ class UriFile:
         :rtype: UriInputStream, UriTextInputStream, UriOutputStream or UriTextOutputStream
         """
         (operation, data_type) = self._validate_open_mode(mode)
+        mode = operation + data_type
         if operation == "r" and data_type == "b":
-            return self._open_raw_inputstream()
+            return UriInputStream(self.uristring, self._fnlog)
         elif operation == "r" and data_type == "t":
-            return self._open_text_inputstream(encoding)
+            return UriTextInputStream(self.uristring, encoding, self._fnlog)
         elif operation in "wa" and data_type == "b":
-            return self._open_raw_outputstream(operation + data_type)
+            return UriOutputStream(self.uristring, mode, self._fnlog)
         elif operation in "wa" and data_type == "t":
-            return self._open_text_outputstream(
-                operation + data_type, encoding, newline
+            return UriTextOutputStream(
+                self.uristring, mode, encoding, newline, self._fnlog
             )
-        # open
+            
+    # open
 
-    def _validate_open_mode(mode):
-        valid_modes = '"rb", "rt", "wb", "wt", "ab", "at"'
+    def _validate_open_mode(self, mode):
+        errmsg = f'Invalid mode "{mode}"! Valid modes are "rb", "rt", "wb", "wt", "ab", "at"'
         operation = ""
         data_type = ""
         for c in mode:
-            if c == "w" or c == "r" or c == "a":
+            if c in "rwa":
                 operation = operation + c
-            elif c == "b" or c == "t":
+            elif c in "bt":
                 data_type = data_type + c
             else:
-                raise ValueError(f"Invalid mode! {valid_modes}")
+                raise ValueError(errmsg)
         if len(operation) != 1 or len(data_type) != 1:
-            raise ValueError(f"Invalid mode! {valid_modes}")
+            raise ValueError(errmsg)
         return (operation, data_type)
 
     # _validate_open_mode
