@@ -7,6 +7,8 @@ class UriOutputStreamImpl:
         self.interface = interface
         if mode == "a":
             mode = "wa"
+        if mode == "w":
+            mode = "wt"
         self.mode = mode
         self.eof = False
         context = toga.App.app._impl.native
@@ -59,6 +61,10 @@ class UriOutputStreamImpl:
     def truncate(self, size=None):
         pass  # todo: implement
     # truncate
+    
+    def writable(self):
+        return True
+    # writable
 
 # UriOutputStreamImpl
 

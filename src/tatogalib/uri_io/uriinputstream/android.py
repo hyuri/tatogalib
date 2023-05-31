@@ -61,6 +61,11 @@ class UriInputStreamImpl:
     def tell(self):
         raise OSError(22, "not seekable")
     # tell
+    
+    def writable(self):
+        return False
+    # writable
+    
 
 # UriInputStreamImpl
 

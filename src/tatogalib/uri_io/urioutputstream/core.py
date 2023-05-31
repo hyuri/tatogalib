@@ -1,3 +1,4 @@
+import os
 import toga
 
 class UriOutputStream:
@@ -110,7 +111,16 @@ class UriOutputStream:
         """
         return False
     # isatty
-        
+    
+    def seekable(self):
+        """
+        Checks if the stream is seekable
+                
+        :returns: True when seekable, False otherwise
+        """
+        return self._impl.seekable()
+    # seekable
+
     def truncate(self, size=None):
         """
         Resizes the stream to the given size.
@@ -121,16 +131,16 @@ class UriOutputStream:
         :returns: The new size in bytes
         :rtype: int
         """
-        return _impl.truncate(size)
+        return self._impl.truncate(size)
     # truncate
 
     def writable(self):
         """
-        This method always returns True
-        
-        :returns: True
+        Checks if the stream is writable
+                
+        :returns: True when writable, False otherwise
         """
-        return True
+        return self._impl.writable()
     # writable
 
     def log(self, message):
@@ -143,8 +153,173 @@ class UriOutputStream:
             self._fnlog(message)
     # log
 
-# UriOutputStreamImpl
+# UriOutputStream
 
 
-version = "0.8.0"
-version_date = "2023-05-23 - 2023-05-23"
+class UriTextOutputStream:
+    
+    def __init__(self, uristring, mode, encoding, newline=None, fnLog=None):
+        """
+        Creates a UriTextOutputStream which wraps a UriOutputStream.
+        This class supports the context manager protocol.
+        
+        :param str uristring: The URI-string of the stream
+        :param str mode: "w" for overwriting, "a" for appending
+        :param str encoding: The encoding of the text, e.g. "utf-8"
+        :param str newline: The characters to mark the end-of-line. 
+            It can be \\n, \\r, \\r\\n or None. When None, the system default
+            value is used.
+        :param callable fnLog: The callable which is called from the log method
+            It expects a string parameter
+        """
+        self.uristring = uristring
+        self.mode = mode
+        self.encoding = encoding
+        self.newline = newline
+        self._fnlog = fnLog  # for logging to user code
+        self.stream = UriOutputStream(uristring, mode, fnLog)
+    # __init__
+    
+    def __enter__(self):
+        return self
+    # __enter
+    
+    def __exit__(self, exc_type, exc_value, traceback):
+        if self.stream is not None:
+            try:
+                self.close()
+            except BaseException as ex:
+                pass
+        return False  # propagate exceptions
+    # __exit__
+
+    def close(self):
+        """
+        Flushes and closes the stream
+        """
+        if self.stream is not None:
+            self.flush()
+            self.stream.close()
+        self.stream = None
+    # close
+    
+    @property
+    def closed(self):
+        """
+        Checks if the stream is closed
+                
+        :returns: True when closed, False otherwise
+        """
+        return self.stream is None
+    # closed
+    
+    def read(self, maxsize=-1):
+        """
+        This method will raise an OS error when it is called
+        """
+        raise OSError(22, "not readable")
+    # read
+    
+    def readinto(self, bytesobj):
+        """
+        This method will raise an OS error when it is called
+        """
+        raise OSError(22, "not readable")
+    # readinto
+    
+    def readall(self):
+        """
+        This method will raise an OS error when it is called
+        """
+        raise OSError(22, "not readable")
+    # readall
+    
+    def readable(self):
+        """
+        This method always returns False
+        
+        :returns: False
+        """
+        return False
+    # readable
+    
+    def write(self, string):
+        """
+        Writes a string to the stream
+        
+        :param str string: The string to be written
+        
+        :returns: The amount of characters written
+        :rtype: int
+        """
+        sep = self.newline
+        if sep is None:
+            sep = os.linesep
+        string2 = string.replace("\n", sep)
+        bytesobj = bytes(string2, self.encoding)
+        self.stream.write(bytesobj)
+        return len(string2)
+    # write
+
+    def flush(self):
+        """
+        Flushes the write buffer of stream if applicable 
+        """
+        self.stream.flush()
+    # flush
+    
+    def isatty(self):
+        """
+        This method always returns False
+        
+        :returns: False
+        """
+        return False
+    # isatty
+        
+    def seekable(self):
+        """
+        Checks if the stream is seekable
+                
+        :returns: True when seekable, False otherwise
+        """
+        return self.stream.seekable()
+    # seekable
+
+    def truncate(self, size=None):
+        """
+        Resizes the stream to the given size.
+        This is currently unimplemented on Android
+        
+        :param int size: The new size in bytes
+        
+        :returns: The new size in bytes
+        :rtype: int
+        """
+        return self.stream.truncate(size)
+    # truncate
+
+    def writable(self):
+        """
+        Checks if the stream is writable
+                
+        :returns: True when writable, False otherwise
+        """
+        return self.stream.writable()
+    # writable
+
+    def log(self, message):
+        """
+        Logs a message to the user code if fnLog was passed to the constructor
+        
+        :param str message: The message to be logged
+        """
+        if self._fnlog is not None:
+            self._fnlog(message)
+    # log
+
+# UriTextOutputStream
+
+
+version = "0.9.0"
+version_date = "2023-05-23 - 2023-05-31"

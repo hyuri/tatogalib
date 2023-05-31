@@ -122,9 +122,11 @@ class MainGui(TaGui):
         self.main_box.add(self.ti_folder)
         btn_delete = toga.Button("Delete source file", on_press=self.handle_btn_delete)
         self.main_box.add(btn_delete)
-        btn_read = toga.Button("Read text source file", on_press=self.handle_btn_read)
+        btn_read = toga.Button("Read text from source file", on_press=self.handle_btn_read)
         self.main_box.add(btn_read)   
-        
+        btn_write = toga.Button("Write text to target file", on_press=self.handle_btn_write)
+        self.main_box.add(btn_write)   
+                
         self.message_area = toga.MultilineTextInput(
             value="", readonly=False, style=Pack(flex=1)
         )
@@ -162,7 +164,7 @@ class MainGui(TaGui):
         try:
             fb = UriFileBrowser(self.fnPrintln)
             uristring = await fb.save_file_dialog("Wähle eine Ziel Datei",
-                "test.pdf", file_types=["xls","pdf"])
+                "test.pdf", file_types=["xls","pdf","txt"])
             self.ti_target.value = str(uristring)
             if uristring is None:
                 return
@@ -235,7 +237,24 @@ class MainGui(TaGui):
         except BaseException as ex:
            G.write_debug_message(str(ex))
            self.fnPrintln("\n"+str(ex))
-    # handle_btn_copy
+    # handle_btn_read
+
+    def handle_btn_write(self, widget):
+        try:
+            text = self.message_area.value
+            target = UriFile(self.ti_target.value, fnLog=self.fnPrintln)
+            self.fnPrintln("\nOpen for writing...")
+            f = target.open_text_outputstream("w", "utf-8", "\r\n")
+            self.fnPrintln("Writing...")
+            size = f.write(text)
+            self.fnPrintln(f"{size} chars written")
+            self.fnPrintln("Closing...")
+            f.close()
+            self.fnPrintln("Done!")
+        except BaseException as ex:
+           G.write_debug_message(str(ex))
+           self.fnPrintln("\n"+str(ex))
+    # handle_btn_write
 
     def handle_btn_action(self, widget):
         try:

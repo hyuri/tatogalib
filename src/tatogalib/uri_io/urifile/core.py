@@ -1,6 +1,6 @@
 import toga
 from ..uriinputstream import UriInputStream, UriTextInputStream
-from ..urioutputstream import UriOutputStream
+from ..urioutputstream import UriOutputStream, UriTextOutputStream
 
 class UriFile:
     
@@ -163,7 +163,7 @@ class UriFile:
         Opens a rawIO stream for reading from the file represented by this UriFile
         
         :returns: the binary stream to read from
-        :rtype: RawIOBase
+        :rtype: UriInputStream (RawIOBase)
         """
         return UriInputStream(self.uristring, self._fnlog)
     # open_raw_inputstream
@@ -175,7 +175,7 @@ class UriFile:
         :param str mode: "w" for overwriting, "a" for appending
         
         :returns: the binary stream to write to
-        :rtype: RawIOBase
+        :rtype: UriOutputStream (RawIOBase)
         """
         return UriOutputStream(self.uristring, mode, self._fnlog)
     # open_raw_outputstream
@@ -184,15 +184,34 @@ class UriFile:
         """
         Opens a text stream for reading from the file represented by this UriFile
         
-        :param str encoding: The encoding to use for converting the bytes to text
+        :param str encoding: The encoding to use for converting the bytes to text,
+            e.g. "utf-8-sig"
+        
         :returns: the text stream to read from
-        :rtype: TextIOWrapper
+        :rtype: UriTextInputStream (TextIOWrapper)
         """
         return UriTextInputStream(self.uristring, encoding, self._fnlog)
-    # open_raw_inputstream
+    # open_text_inputstream
     
+    def open_text_outputstream(self, mode, encoding, newline=None):
+        """
+        Opens a text stream for writing to the file represented by this UriFile
+        
+        :param str mode: "w" for overwriting, "a" for appending
+        :param str encoding: The encoding to use for converting the text to bytes, 
+            e.g. "utf-8"
+        :param str newline: The characters to mark the end-of-line. 
+            It can be \\n, \\r, \\r\\n or None. When None, the system default
+            value is used.
+            
+        :returns: the text stream to write to
+        :rtype: UriTextOutputStream
+        """
+        return UriTextOutputStream(self.uristring, mode, encoding, newline, self._fnlog)
+    # open_text_outputstream
+
 # UriFile
 
 
-version = "0.5.0"
-version_date = "2023-05-23 - 2023-05-23"
+version = "0.6.0"
+version_date = "2023-05-23 - 2023-05-31"

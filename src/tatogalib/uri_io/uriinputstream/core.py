@@ -163,7 +163,7 @@ class UriTextInputStream():
         This class supports the context manager protocol.
         
         :param str uristring: The URI-string of the stream
-        :param str encoding: The encoding of the text
+        :param str encoding: The encoding of the text, e.g. "utf-8-sig"
         :param callable fnLog: The callable which is called from the log method
             It expects a string parameter
         """
@@ -190,8 +190,6 @@ class UriTextInputStream():
         Closes the stream
         """
         if self.stream is not None:
-            self._raw.close()
-            self._br.close()
             self.stream.close()
         self.stream = None
     # close
@@ -218,18 +216,6 @@ class UriTextInputStream():
         """
         return self.stream.read(maxsize)
     # read
-    
-    def readinto(self, bytesobj):
-        """
-        Read bytes into the byte-like object
-        
-        :param bytes bytesobj: The byte-like object to read into
-        
-        :returns: the number of bytes read or None when no more bytes available
-        :rtype: int or None
-        """
-        return self.stream.readinto(bytesobj)
-    # readinto
     
     def readall(self):
         """
@@ -263,7 +249,7 @@ class UriTextInputStream():
         return self.stream.readline(maxsize)
     # readline
     
-    def write(self, bytesobj):
+    def write(self, string):
         """
         This method will raise an OS error when it is called
         """
