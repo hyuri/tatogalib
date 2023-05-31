@@ -174,8 +174,8 @@ class UriTextInputStream:
     def __init__(self, uristring, encoding, fnLog=None):
         """
         Creates a UriTextInputStream which wraps a TextIOWrapper.
-        Valid line endings are \\n, \\r or \\n\\r. They are all
-        translated to \\n.
+        Valid line endings are ``\\n``, ``\\r`` or ``\\n\\r``. They are all
+        translated to ``\\n``.
         This class supports the context manager protocol.
 
         :param str uristring: The URI-string of the stream

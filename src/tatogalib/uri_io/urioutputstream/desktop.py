@@ -5,7 +5,6 @@ class UriOutputStreamImpl:
     def __init__(self, interface, mode):
         self.interface = interface
         ospath = urifile.uristring_to_ospath(interface.uristring)
-        mode = mode + "b"
         self.stream = open(ospath, mode, buffering=0)
 
     # __init__

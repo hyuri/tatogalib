@@ -10,3 +10,8 @@ UriOutputStream class
 ---------------------
 .. autoclass:: tatogalib.uri_io.urioutputstream.core.UriOutputStream
    :members:
+
+UriTextOutputStream class
+-------------------------
+.. autoclass:: tatogalib.uri_io.urioutputstream.core.UriTextOutputStream
+   :members:

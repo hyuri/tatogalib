@@ -226,7 +226,7 @@ class MainGui(TaGui):
         try:
             source = UriFile(self.ti_source.value, fnLog=self.fnPrintln)
             self.fnPrint("\nReading...")
-            f = source.open_text_inputstream("utf-8-sig")
+            f = source.open("rt", "utf-8-sig")
             bytesobj = f.read()
             self.fnPrintln("read ok")
             f.close()
@@ -244,7 +244,7 @@ class MainGui(TaGui):
             text = self.message_area.value
             target = UriFile(self.ti_target.value, fnLog=self.fnPrintln)
             self.fnPrintln("\nOpen for writing...")
-            f = target.open_text_outputstream("w", "utf-8", "\r\n")
+            f = target.open("wt", "utf-8", "\r\n")
             self.fnPrintln("Writing...")
             size = f.write(text)
             self.fnPrintln(f"{size} chars written")

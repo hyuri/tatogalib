@@ -9,12 +9,14 @@ class UriOutputStream:
         This class supports the context manager protocol.
 
         :param str uristring: The URI-string of the stream
-        :param str mode: "w" for overwriting, "a" for appending
+        :param str mode: "wb" for overwriting, "ab" for appending
         :param callable fnLog: The callable which is called from the log method
             It expects a string parameter
         """
         self.uristring = uristring
         self.mode = mode
+        if mode != "wb" and mode != "ab":
+            raise ValueError('Invalid mode! Valid modes are "wb" or "ab"')
         self._fnlog = fnLog  # for logging to user code
         if toga.platform.current_platform == "android":
             from .android import UriOutputStreamImpl
@@ -180,16 +182,21 @@ class UriTextOutputStream:
         This class supports the context manager protocol.
 
         :param str uristring: The URI-string of the stream
-        :param str mode: "w" for overwriting, "a" for appending
-        :param str encoding: The encoding of the text, e.g. "utf-8"
+        :param str mode: "wt" for overwriting, "at" for appending
+        :param str encoding: The encoding of the text, e.g. "utf-8".
+            Do not use "utf-8-sig" when you intend to ``write`` several times to the stream or
+            you will have the BOM marker not only at the beginning, but also within the file.
         :param str newline: The characters to mark the end-of-line.
-            It can be \\n, \\r, \\r\\n or None. When None, the system default
-            value is used.
+            It can be ``\\n``, ``\\r``, ``\\r\\n`` or None. When None, the system default
+            value for the platform is used.
         :param callable fnLog: The callable which is called from the log method
             It expects a string parameter
         """
         self.uristring = uristring
         self.mode = mode
+        if mode != "wt" and mode != "at":
+            raise ValueError('Invalid mode! Valid modes are "wt" and "at"')
+
         self.encoding = encoding
         self.newline = newline
         self._fnlog = fnLog  # for logging to user code

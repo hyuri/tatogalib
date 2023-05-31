@@ -5,9 +5,9 @@ import toga
 class UriOutputStreamImpl:
     def __init__(self, interface, mode):
         self.interface = interface
-        if mode == "a":
+        if "a" in mode:
             mode = "wa"
-        if mode == "w":
+        if "w" in mode:
             mode = "wt"
         self.mode = mode
         self.eof = False
