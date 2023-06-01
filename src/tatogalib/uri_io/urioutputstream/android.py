@@ -7,7 +7,7 @@ class UriOutputStreamImpl:
         self.interface = interface
         if "a" in mode:
             mode = "wa"
-        if "w" in mode:
+        elif "w" in mode:
             mode = "wt"
         self.mode = mode
         self.eof = False
