@@ -221,6 +221,13 @@ class UriFile:
 
     # _validate_open_mode
 
+    def request_persistent_access(self):
+        """
+        Get permanent access to the file or folder.
+        This is only relevant for Android and is ignored on other platforms.
+        """
+        self._impl.request_persistent_access()
+    # request_persistent_access
 
 # UriFile
 

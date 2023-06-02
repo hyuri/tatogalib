@@ -114,19 +114,43 @@ class MainGui(TaGui):
         self.main_box.add(btn_target)
         self.ti_target = toga.TextInput(readonly=False, style=Pack(flex=1))
         self.main_box.add(self.ti_target)
-        btn_copy = toga.Button("Copy!", on_press=self.handle_btn_copy)
-        self.main_box.add(btn_copy)
         btn_folder = toga.Button("Choose folder", on_press=self.handle_btn_folder)
         self.main_box.add(btn_folder)
         self.ti_folder = toga.TextInput(readonly=False, style=Pack(flex=1))
         self.main_box.add(self.ti_folder)
-        btn_delete = toga.Button("Delete source file", on_press=self.handle_btn_delete)
-        self.main_box.add(btn_delete)
-        btn_read = toga.Button("Read text from source file", on_press=self.handle_btn_read)
-        self.main_box.add(btn_read)   
-        btn_write = toga.Button("Write text to target file", on_press=self.handle_btn_write)
-        self.main_box.add(btn_write)   
-                
+        # commands for testing uri_io
+        uri_group = toga.command.Group(text="uri_io", parent=toga.Group.COMMANDS, order=50)
+        self.app.commands.add(toga.Command(
+            self.handle_read,
+            text="Read text from source file",
+            group=uri_group,
+            order=10,
+        ))
+        self.app.commands.add(toga.Command(
+            self.handle_copy,
+            text="Copy file",
+            group=uri_group,
+            order=20,
+        ))
+        self.app.commands.add(toga.Command(
+            self.handle_delete,
+            text="Delete source file",
+            group=uri_group,
+            order=30,
+        ))
+        self.app.commands.add(toga.Command(
+            self.handle_write,
+            text="Write text to target file",
+            group=uri_group,
+            order=40,
+        ))
+        self.app.commands.add(toga.Command(
+            self.handle_persist_access,
+            text="Persist access to target file",
+            group=uri_group,
+            order=50,
+        ))
+        
         self.message_area = toga.MultilineTextInput(
             value="", readonly=False, style=Pack(flex=1)
         )
@@ -180,7 +204,7 @@ class MainGui(TaGui):
            self.fnPrintln("\n"+str(ex))
     # handle_btn_target
 
-    def handle_btn_copy(self, widget):
+    def handle_copy(self, widget):
         try:
             source = UriFile(self.ti_source.value, fnLog=self.fnPrintln)
             target = UriFile(self.ti_target.value, fnLog=self.fnPrintln)
@@ -192,14 +216,14 @@ class MainGui(TaGui):
         except BaseException as ex:
            G.write_debug_message(str(ex))
            self.fnPrintln("\n"+str(ex))
-    # handle_btn_copy
+    # handle_copy
     
-    def handle_btn_delete(self, widget): 
+    def handle_delete(self, widget): 
         self.fnPrint("\nDeleting...")
         source = UriFile(self.ti_source.value, fnLog=self.fnPrintln)
         ok = source.delete()
         self.fnPrintln(f"done, ok={ok}")
-    # handle_btn_delete
+    # handle_delete
     
     async def handle_btn_folder(self, widget):
         try:
@@ -222,7 +246,7 @@ class MainGui(TaGui):
            self.fnPrintln("\n"+str(ex))
     # handle_btn_folder
 
-    def handle_btn_read(self, widget):
+    def handle_read(self, widget):
         try:
             source = UriFile(self.ti_source.value, fnLog=self.fnPrintln)
             self.fnPrint("\nReading...")
@@ -237,9 +261,9 @@ class MainGui(TaGui):
         except BaseException as ex:
            G.write_debug_message(str(ex))
            self.fnPrintln("\n"+str(ex))
-    # handle_btn_read
+    # handle_read
 
-    def handle_btn_write(self, widget):
+    def handle_write(self, widget):
         try:
             text = self.message_area.value
             target = UriFile(self.ti_target.value, fnLog=self.fnPrintln)
@@ -254,7 +278,18 @@ class MainGui(TaGui):
         except BaseException as ex:
            G.write_debug_message(str(ex))
            self.fnPrintln("\n"+str(ex))
-    # handle_btn_write
+    # handle_write
+    
+    def handle_persist_access(self, widget):
+        try:
+            target = UriFile(self.ti_target.value, fnLog=self.fnPrintln)
+            self.fnPrintln("\nPersisting access...")
+            target.request_persistent_access()
+            self.fnPrintln("Done!")
+        except BaseException as ex:
+            G.write_debug_message(str(ex))
+            self.fnPrintln("\n"+str(ex))
+    # handle_persist_access
 
     def handle_btn_action(self, widget):
         try:

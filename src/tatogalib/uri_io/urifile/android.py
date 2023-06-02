@@ -1,5 +1,5 @@
 from android.net import Uri
-from android.content import ContentValues
+from android.content import ContentValues, Intent
 from android.provider import DocumentsContract
 from androidx.documentfile.provider import DocumentFile
 import java
@@ -78,9 +78,17 @@ class UriFileImpl:
 
     # get_size
 
-
+    def request_persistent_access(self):
+        flags = 0
+        flags = flags | (
+            Intent.FLAG_GRANT_READ_URI_PERMISSION
+            | Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+        )
+        self.resolver.takePersistableUriPermission(self.uri, flags)
+    # request_persistent_access
+    
 # UriFileImpl
 
 
-version = "0.5.0"
-version_date = "2023-05-23 - 2023-05-23"
+version = "0.6.0"
+version_date = "2023-05-23 - 2023-06-02"

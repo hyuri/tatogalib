@@ -71,6 +71,9 @@ class UriFileImpl:
 
     # get_size
 
+    def request_persistent_access(self):
+        pass
+    # request_persistent_access
 
 # UriFileImpl
 
