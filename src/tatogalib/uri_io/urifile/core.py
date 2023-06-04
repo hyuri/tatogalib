@@ -4,12 +4,11 @@ from ..urioutputstream import UriOutputStream, UriTextOutputStream
 
 
 class UriFile:
-    def __init__(self, uristring, is_file=True, fnLog=None):
+    def __init__(self, uristring, fnLog=None):
         """
         Creates a UriFile which represents a file or a folder
 
         :param str uristring: A URI-string representing this UriFile object
-        :param boolean is_file: True when uristring represents a file, False for a folder
         :param callable fnLog: The callable which is called from the log method
             It expects a string parameter
         """
@@ -19,7 +18,7 @@ class UriFile:
             from .android import UriFileImpl
         if toga.platform.current_platform == "windows":
             from .desktop import UriFileImpl
-        self._impl = UriFileImpl(self, is_file)
+        self._impl = UriFileImpl(self)
 
     # __init__
 
@@ -158,6 +157,25 @@ class UriFile:
         return self._impl.isfile()
 
     # isfile
+    
+    def listdir(self):
+        """
+        Returns a list of all UriFiles contained in the folder represented
+        by this UriFile. When there are no children, an empty list is 
+        returned. If this UriFile is not a folder, None will be returned.
+        
+        :returns: The children of this UriFile 
+        :rtype: A list of UriFiles or None
+        """
+        if not self.isdir():
+            return None
+        result = []
+        children = self._impl.listdir()
+        for uristring in children:
+            urifile = UriFile(uristring, self._fnlog)
+            result.append(urifile)
+        return result
+    # listdir
 
     def log(self, message):
         """

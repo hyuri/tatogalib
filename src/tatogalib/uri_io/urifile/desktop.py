@@ -5,7 +5,7 @@ from .. import urifile
 
 
 class UriFileImpl:
-    def __init__(self, interface, is_file=True):
+    def __init__(self, interface):
         self.interface = interface
         ospath = urifile.uristring_to_ospath(interface.uristring)
         self.path = Path(ospath)

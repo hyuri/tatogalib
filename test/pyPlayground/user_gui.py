@@ -150,7 +150,12 @@ class MainGui(TaGui):
             group=uri_group,
             order=50,
         ))
-        
+        self.app.commands.add(toga.Command(
+            self.handle_listdir,
+            text="List folder content",
+            group=uri_group,
+            order=60,
+        ))
         self.message_area = toga.MultilineTextInput(
             value="", readonly=False, style=Pack(flex=1)
         )
@@ -236,7 +241,7 @@ class MainGui(TaGui):
             if uri is None: 
                 return
             self.ti_folder.value = str(uri)
-            urifile = UriFile(uri, is_file=False)
+            urifile = UriFile(uri)
             self.fnPrintln(f"name: {urifile.display_name}")
             self.fnPrintln(f"mime_type: {urifile.mime_type}")
             self.fnPrintln(f"isdir: {urifile.isdir()}")
@@ -291,9 +296,34 @@ class MainGui(TaGui):
             self.fnPrintln("\n"+str(ex))
     # handle_persist_access
 
+    def handle_listdir(self, widget):
+        try:
+            folder = UriFile(self.ti_folder.value, fnLog=self.fnPrintln)
+            children = folder.listdir()
+            if children is None:
+                self.fnPrintln("Uri is not a folder")
+            for urifile in children:
+                self.fnPrintln(f"\nname: {urifile.display_name}")
+                self.fnPrintln(f"mime_type: {urifile.mime_type}")
+                self.fnPrintln(f"uristring: {urifile.uristring}")
+                self.fnPrintln(f"isdir: {urifile.isdir()}")
+                self.fnPrintln(f"exists: {urifile.exists()}")
+        except BaseException as ex:
+           G.write_debug_message(str(ex))
+           self.fnPrintln("\n"+str(ex))
+
+    # handle_listdir
+
     def handle_btn_action(self, widget):
         try:
             self.fnPrintln("Hello")
+            uristring = self.ti_folder.value
+            urifile = UriFile(uristring)
+            self.fnPrintln(f"name: {urifile.display_name}")
+            self.fnPrintln(f"mime_type: {urifile.uristring}")
+            self.fnPrintln(f"isdir: {urifile.isdir()}")
+            self.fnPrintln(f"exists: {urifile.exists()}")
+
         except BaseException as ex:
            G.write_debug_message(str(ex))
            self.fnPrintln("\n"+str(ex))
