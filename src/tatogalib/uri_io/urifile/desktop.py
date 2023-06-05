@@ -60,6 +60,19 @@ class UriFileImpl:
 
     # set_lastmodified
 
+    def listdir(self):
+        result = []
+        self.interface.log(str(self.path))
+        self.interface.log(self.ospath)
+        children = os.listdir(self.path)
+        for child in children:
+            self.interface.log(str(child))
+            uristring = urifile.ospath_to_uristring(str(child))
+            result.append(uristring)
+        return result
+
+    # listdir
+
     def get_mime_type(self):
         (mimetype, encoding) = mimetypes.guess_type(str(self.path), strict=False)
         return mimetype
@@ -73,10 +86,12 @@ class UriFileImpl:
 
     def request_persistent_access(self):
         pass
+
     # request_persistent_access
+
 
 # UriFileImpl
 
 
-version = "0.5.0"
-version_date = "2023-05-23 - 2023-05-23"
+version = "0.6.0"
+version_date = "2023-05-23 - 2023-06-05"

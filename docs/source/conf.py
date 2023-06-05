@@ -8,8 +8,9 @@
 
 project = 'taTogaLib'
 copyright = '2023, Tom Arn'
+license = 'MIT license'
 author = 'Tom Arn'
-release = '2023-05-26'
+release = '2023-06-05'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -29,3 +30,13 @@ autoclass_content = 'both'
 
 html_theme = 'alabaster'
 html_static_path = ['_static']
+
+variables_to_export = [
+    "project",
+    "copyright",
+    "license",
+    "release",
+]
+frozen_locals = dict(locals())
+rst_epilog = '\n'.join(map(lambda x: f".. |{x}| replace:: {frozen_locals[x]}", variables_to_export))
+del frozen_locals

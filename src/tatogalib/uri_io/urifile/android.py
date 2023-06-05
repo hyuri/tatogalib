@@ -90,6 +90,7 @@ class UriFileImpl:
             """
             result.append(uristring)
         return result
+
     # listdir
 
     def get_mime_type(self):
@@ -104,12 +105,14 @@ class UriFileImpl:
             | Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         )
         self.resolver.takePersistableUriPermission(self.uri, flags)
+
     # request_persistent_access
 
     def get_size(self):
         return self.docfile.length()
 
     # get_size
+
 
 # UriFileImpl
 

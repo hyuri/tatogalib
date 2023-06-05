@@ -157,14 +157,14 @@ class UriFile:
         return self._impl.isfile()
 
     # isfile
-    
+
     def listdir(self):
         """
         Returns a list of all UriFiles contained in the folder represented
-        by this UriFile. When there are no children, an empty list is 
+        by this UriFile. When there are no children, an empty list is
         returned. If this UriFile is not a folder, None will be returned.
-        
-        :returns: The children of this UriFile 
+
+        :returns: The children of this UriFile
         :rtype: A list of UriFiles or None
         """
         if not self.isdir():
@@ -175,6 +175,7 @@ class UriFile:
             urifile = UriFile(uristring, self._fnlog)
             result.append(urifile)
         return result
+
     # listdir
 
     def log(self, message):
@@ -219,11 +220,13 @@ class UriFile:
             return UriTextOutputStream(
                 self.uristring, mode, encoding, newline, self._fnlog
             )
-            
+
     # open
 
     def _validate_open_mode(self, mode):
-        errmsg = f'Invalid mode "{mode}"! Valid modes are "rb", "rt", "wb", "wt", "ab", "at"'
+        errmsg = (
+            f'Invalid mode "{mode}"! Valid modes are "rb", "rt", "wb", "wt", "ab", "at"'
+        )
         operation = ""
         data_type = ""
         for c in mode:
@@ -245,10 +248,12 @@ class UriFile:
         This is only relevant for Android and is ignored on other platforms.
         """
         self._impl.request_persistent_access()
+
     # request_persistent_access
+
 
 # UriFile
 
 
 version = "0.6.0"
-version_date = "2023-05-23 - 2023-05-31"
+version_date = "2023-05-23 - 2023-06-05"

@@ -6,6 +6,12 @@
 Welcome to taTogaLib's documentation!
 =====================================
 
+Copyright: |copyright|
+
+License: |license|
+
+Release: |release|
+
 Indices and tables
 ------------------
 
