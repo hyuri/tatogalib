@@ -22,10 +22,10 @@ class UriFileImpl:
 
     # delete
 
-    def get_display_name(self):
+    def get_name(self):
         return self.path.name
 
-    # get_display_name
+    # get_name
 
     def exists(self):
         return self.path.exists()

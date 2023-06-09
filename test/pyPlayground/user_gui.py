@@ -181,7 +181,7 @@ class MainGui(TaGui):
             self.ti_source.value = str(urilist[0])
             urifile = UriFile(urilist[0], fnLog=self.fnPrintln)
             self.fnPrintln("")
-            self.fnPrintln(f"name: {urifile.display_name}")
+            self.fnPrintln(f"name: {urifile.name}")
             self.fnPrintln(f"mime_type: {urifile.mime_type}")
             self.fnPrintln(f"size: {urifile.size}")
         except BaseException as ex:
@@ -199,7 +199,7 @@ class MainGui(TaGui):
                 return
             urifile = UriFile(uristring)
             self.fnPrintln("")
-            self.fnPrintln(f"name: {urifile.display_name}")
+            self.fnPrintln(f"name: {urifile.name}")
             self.fnPrintln(f"exists: {urifile.exists()}")
             self.fnPrintln(f"isfile: {urifile.isfile()}")
             if urifile.isfile():
@@ -242,7 +242,7 @@ class MainGui(TaGui):
                 return
             self.ti_folder.value = str(uri)
             urifile = UriFile(uri)
-            self.fnPrintln(f"name: {urifile.display_name}")
+            self.fnPrintln(f"name: {urifile.name}")
             self.fnPrintln(f"mime_type: {urifile.mime_type}")
             self.fnPrintln(f"isdir: {urifile.isdir()}")
             self.fnPrintln(f"exists: {urifile.exists()}")
@@ -303,7 +303,7 @@ class MainGui(TaGui):
             if children is None:
                 self.fnPrintln("Uri is not a folder")
             for urifile in children:
-                self.fnPrintln(f"\nname: {urifile.display_name}")
+                self.fnPrintln(f"\nname: {urifile.name}")
                 self.fnPrintln(f"mime_type: {urifile.mime_type}")
                 self.fnPrintln(f"uristring: {urifile.uristring}")
                 self.fnPrintln(f"isdir: {urifile.isdir()}")
@@ -319,7 +319,7 @@ class MainGui(TaGui):
             self.fnPrintln("Hello")
             uristring = self.ti_folder.value
             urifile = UriFile(uristring)
-            self.fnPrintln(f"name: {urifile.display_name}")
+            self.fnPrintln(f"name: {urifile.name}")
             self.fnPrintln(f"mime_type: {urifile.uristring}")
             self.fnPrintln(f"isdir: {urifile.isdir()}")
             self.fnPrintln(f"exists: {urifile.exists()}")

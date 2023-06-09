@@ -31,10 +31,10 @@ class UriFileImpl:
 
     # delete
 
-    def get_display_name(self):
+    def get_name(self):
         return self.docfile.getName()
 
-    # get_display_name
+    # get_name
 
     def exists(self):
         return self.docfile.exists()

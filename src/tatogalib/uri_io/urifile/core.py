@@ -23,13 +23,13 @@ class UriFile:
     # __init__
 
     @property
-    def display_name(self):
+    def name(self):
         """
         The name (str) of the file or folder
         """
-        return self._impl.get_display_name()
+        return self._impl.get_name()
 
-    # display_name
+    # name
 
     @property
     def lastmodified(self):
