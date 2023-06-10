@@ -12,6 +12,10 @@ class UriFileImpl:
 
     # __init__
 
+    def create_file(self, child_name):
+        pass
+    # create_file
+    
     def delete(self):
         if self.isfile():
             try:

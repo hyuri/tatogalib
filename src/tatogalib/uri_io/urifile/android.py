@@ -3,6 +3,7 @@ from android.content import ContentValues, Intent
 from android.provider import DocumentsContract
 from androidx.documentfile.provider import DocumentFile
 import java
+import mimetypes
 import toga
 
 
@@ -26,6 +27,14 @@ class UriFileImpl:
 
     # __init__
 
+    def create_file(self, child_name):
+        (mimetype, encoding) = mimetypes.guess_type(str(child_name), strict=False)
+        if mimetype is None:
+            mimetype = "application/octet-stream"
+        child = self.docfile.createFile(mimetype, child_name)
+        return child.getUri().toString()
+    # create_file
+
     def delete(self):
         return self.docfile.delete()
 
@@ -40,6 +49,13 @@ class UriFileImpl:
         return self.docfile.exists()
 
     # exists
+    
+    def find(self, child_name):
+        child = self.docfile.findFile(child_name)
+        if child is None:
+            return None
+        return child.getUri().toString()
+    # find
 
     def isdir(self):
         return self.docfile.isDirectory()

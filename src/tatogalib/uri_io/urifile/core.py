@@ -113,6 +113,35 @@ class UriFile:
             return result
 
     # copy_to
+    
+    def create_file(self, child_name, replace=False):
+        """
+        Creates a new file in the folder represented by this UriFile.
+        If this UriFile is not a folder, a NotADirectoryError will
+        be raised.
+        
+        :param str child_name: The name of the file to be created
+        :param boolean replace: When true, an existing file with the 
+            child_name will be replaced. When False, a FileExistsError 
+            is raised in this case.
+        
+        :returns: The newly created file
+        :rtype: UriFile
+        """
+        if not self.isdir():
+            raise NotADirectoryError("UriFile is not an accessible Direktor.")
+        urifile = self.find(child_name)
+        if urifile is not None:
+            if urifile.isfile():
+                if not replace:
+                    raise FileExistsError(f"File '{child_name}' already exists!")
+                else:
+                    urifile.delete()
+            else:
+                raise IsADirectoryError(f"Directory '{child_name}' already exists!")
+        uristring = self._impl.create_file(child_name)
+        return UriFile(uristring, self._fnlog)
+    # create_file
 
     def delete(self):
         """
@@ -135,6 +164,22 @@ class UriFile:
         return self._impl.exists()
 
     # exists
+    
+    def find(self, child_name):
+        """
+        Returns the child file or folder of the 
+        folder represented by this UriFile. If this UriFile 
+        is not a folder, a NotADirectoryError will
+        be raised.
+        """
+        if not self.isdir():
+            raise NotADirectoryError("UriFile is not an accessible directory")
+        uristring = self._impl.find(child_name)
+        if uristring is None:
+            return None
+        return UriFile(uristring, self._fnlog)
+
+    # find
 
     def isdir(self):
         """

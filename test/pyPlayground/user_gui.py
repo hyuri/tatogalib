@@ -156,6 +156,12 @@ class MainGui(TaGui):
             group=uri_group,
             order=60,
         ))
+        self.app.commands.add(toga.Command(
+            self.handle_createfile,
+            text="Create a file in folder",
+            group=uri_group,
+            order=70,
+        ))
         self.message_area = toga.MultilineTextInput(
             value="", readonly=False, style=Pack(flex=1)
         )
@@ -313,6 +319,22 @@ class MainGui(TaGui):
            self.fnPrintln("\n"+str(ex))
 
     # handle_listdir
+    
+    def handle_createfile(self, widget):
+        try:
+            self.fnPrintln("\nCreating new file...")
+            folder = UriFile(self.ti_folder.value, fnLog=self.fnPrintln)
+            urifile = folder.create_file("new_file.abc", replace=True)
+            if urifile is None:
+                self.fnPrintln("None")
+                return
+            self.fnPrintln(f"name: {urifile.name}")
+            self.fnPrintln(f"mime_type: {urifile.mime_type}")
+            self.fnPrintln(f"uristring: {urifile.uristring}")
+        except BaseException as ex:
+           G.write_debug_message(str(ex))
+           self.fnPrintln(f"\n{type(ex).__name__}: {str(ex)}")
+    # handle_createfile
 
     def handle_btn_action(self, widget):
         try:
