@@ -129,7 +129,7 @@ class UriFile:
         :rtype: UriFile
         """
         if not self.isdir():
-            raise NotADirectoryError("UriFile is not an accessible Direktor.")
+            raise NotADirectoryError("UriFile is not an accessible directory.")
         urifile = self.find(child_name)
         if urifile is not None:
             if urifile.isfile():

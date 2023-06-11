@@ -26,6 +26,10 @@ class UriFileImpl:
 
     # delete
 
+    def find(self, child_name):
+        pass
+    # find
+
     def get_name(self):
         return self.path.name
 
