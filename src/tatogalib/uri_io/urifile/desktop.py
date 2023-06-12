@@ -13,7 +13,9 @@ class UriFileImpl:
     # __init__
 
     def create_file(self, child_name):
-        pass
+        path = self.path / child_name
+        Path.touch(path)
+        return urifile.ospath_to_uristring(str(path))
     # create_file
     
     def delete(self):
@@ -27,7 +29,10 @@ class UriFileImpl:
     # delete
 
     def find(self, child_name):
-        pass
+        path = self.path / child_name
+        if path.exists():
+            return urifile.ospath_to_uristring(str(path))
+        return None
     # find
 
     def get_name(self):
