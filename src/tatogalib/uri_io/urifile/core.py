@@ -113,18 +113,17 @@ class UriFile:
             return result
 
     # copy_to
-    
+
     def create_file(self, child_name, replace=False):
         """
-        Creates a new file in the folder represented by this UriFile.
-        If this UriFile is not a folder, a NotADirectoryError will
-        be raised.
-        
+        Creates a new file with a length of 0 bytes in the folder represented by this
+        UriFile. If this UriFile is not a folder, a NotADirectoryError will be raised.
+
         :param str child_name: The name of the file to be created
-        :param boolean replace: When true, an existing file with the 
-            child_name will be replaced. When False, a FileExistsError 
+        :param boolean replace: When true, an existing file with the
+            child_name will be replaced. When False, a FileExistsError
             is raised in this case.
-        
+
         :returns: The newly created file
         :rtype: UriFile
         """
@@ -141,6 +140,7 @@ class UriFile:
                 raise IsADirectoryError(f"Directory '{child_name}' already exists!")
         uristring = self._impl.create_file(child_name)
         return UriFile(uristring, self._fnlog)
+
     # create_file
 
     def delete(self):
@@ -164,13 +164,16 @@ class UriFile:
         return self._impl.exists()
 
     # exists
-    
+
     def find(self, child_name):
         """
-        Returns the child file or folder of the 
-        folder represented by this UriFile. If this UriFile 
-        is not a folder, a NotADirectoryError will
-        be raised.
+        Returns the child file or folder of the folder represented by this UriFile.
+        If this UriFile is not a folder, a NotADirectoryError will be raised.
+
+        :param str child_name: The name of the file or folder to find
+
+        :returns: The child if it exists, None otherwise
+        :rtype: UriFile or None
         """
         if not self.isdir():
             raise NotADirectoryError("UriFile is not an accessible directory")
@@ -300,5 +303,5 @@ class UriFile:
 # UriFile
 
 
-version = "0.6.0"
-version_date = "2023-05-23 - 2023-06-05"
+version = "0.7.0"
+version_date = "2023-05-23 - 2023-06-12"

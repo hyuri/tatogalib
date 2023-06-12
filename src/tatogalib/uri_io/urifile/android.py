@@ -33,6 +33,7 @@ class UriFileImpl:
             mimetype = "application/octet-stream"
         child = self.docfile.createFile(mimetype, child_name)
         return child.getUri().toString()
+
     # create_file
 
     def delete(self):
@@ -49,12 +50,13 @@ class UriFileImpl:
         return self.docfile.exists()
 
     # exists
-    
+
     def find(self, child_name):
         child = self.docfile.findFile(child_name)
         if child is None:
             return None
         return child.getUri().toString()
+
     # find
 
     def isdir(self):
@@ -133,5 +135,5 @@ class UriFileImpl:
 # UriFileImpl
 
 
-version = "0.6.0"
-version_date = "2023-05-23 - 2023-06-02"
+version = "0.7.0"
+version_date = "2023-05-23 - 2023-06-12"

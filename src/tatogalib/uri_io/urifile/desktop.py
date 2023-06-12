@@ -16,8 +16,9 @@ class UriFileImpl:
         path = self.path / child_name
         Path.touch(path)
         return urifile.ospath_to_uristring(str(path))
+
     # create_file
-    
+
     def delete(self):
         if self.isfile():
             try:
@@ -33,6 +34,7 @@ class UriFileImpl:
         if path.exists():
             return urifile.ospath_to_uristring(str(path))
         return None
+
     # find
 
     def get_name(self):
@@ -106,5 +108,5 @@ class UriFileImpl:
 # UriFileImpl
 
 
-version = "0.6.0"
-version_date = "2023-05-23 - 2023-06-05"
+version = "0.7.0"
+version_date = "2023-05-23 - 2023-06-12"
