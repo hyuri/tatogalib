@@ -1,8 +1,7 @@
 from android import R
 from android.app import NotificationManager, NotificationChannel
 from android.os import Build
-from androidx.core.app import NotificationManagerCompat
-from androidx.core.app import NotificationCompat
+from androidx.core.app import NotificationManagerCompat, NotificationCompat
 from datetime import datetime
 import toga
 
@@ -11,13 +10,17 @@ class NotificationImpl:
     def __init__(self, interface):
         self.interface = interface
         self.context = toga.App.app._impl.native
-        self.CHANNEL_ID = "taTogaLib_channel"
+        # The channel_id should be unique
+        self.CHANNEL_ID = "channel_"+toga.App.app.app_name
         self.notificationManager = None
         channel = self._createNotificationChannel()
         if channel is None:
             self.builder = NotificationCompat.Builder(self.context)
         else:
             self.builder = NotificationCompat.Builder(self.context, self.CHANNEL_ID)
+        # self.notificationManager = NotificationManagerCompat.from(self.context)
+        fnFrom = getattr(NotificationManagerCompat, "from")
+        self.notificationManager = fnFrom(self.context)
     # __init__
 
     def _createNotificationChannel(self):
@@ -26,8 +29,9 @@ class NotificationImpl:
         the NotificationChannel class is not in the Support Library.
         """
         channel = None
-        name = "taTogaLib notification channel"
-        description = "Channel for displaying notifications from taTogaLib"
+        # The channel name and description should be unique
+        name = toga.App.app.app_name + " notification channel"
+        description = "Channel for displaying notifications from " + toga.App.app.app_name
         if Build.VERSION.SDK_INT >= Build.VERSION_CODES.O:
             importance = NotificationManager.IMPORTANCE_DEFAULT
             channel = NotificationChannel(self.CHANNEL_ID, name, importance)
@@ -39,18 +43,15 @@ class NotificationImpl:
         return channel
         # _createNotificationChannel
 
-    def notify(self, title, message):
-        self.builder.setSmallIcon(R.drawable.ic_dialog_info)
+    def notify(self, title, message, icon):
+        if icon is None:
+            icon = R.drawable.ic_dialog_info
+        self.builder.setSmallIcon(icon)
         self.builder.setContentTitle(title)
         self.builder.setContentText(message)
         self.builder.setStyle(NotificationCompat.BigTextStyle().bigText(message))
         self.builder.setPriority(NotificationCompat.PRIORITY_DEFAULT)
         notification = self.builder.build()
-        if self.notificationManager is None:
-            # self.notificationManager = NotificationManagerCompat.from(self.context)
-            fnFrom = getattr(NotificationManagerCompat, 'from')
-            self.notificationManager = fnFrom(self.context)
-        self.interface.log(f"type: {str(type(self.notificationManager))}")
         # notificationId is a unique int for each notification that you must define
         notificationId = NotificationImpl._todays_millis()
         return self.notificationManager.notify(notificationId, notification)
@@ -60,15 +61,18 @@ class NotificationImpl:
     @staticmethod
     def _todays_millis():
         """
-        Milliseconds since midnight
+        Milliseconds since midnight. This creates a unique value for 1 day
+        and is most probably also unique when called over several days.
         """
         now = datetime.now()
         midnight = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
         msec = int(now.timestamp()*1000 - midnight.timestamp()*1000)
         return msec
+
     # _todays_millis
+
 # NotificationImpl
 
 
-version = "0.2.0"
+version = "0.5.0"
 version_date = "2023-06-14 - 2023-06-14"

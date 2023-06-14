@@ -4,7 +4,10 @@ import toga
 class Notification:
     def __init__(self, fnLog=None):
         """
-        Creates a system notification.
+        Creates a system notification. 
+
+        On Android, the app needs the permission android.permission.POST_NOTIFICATIONS
+        and the notifications must be enabled for the app in the Android settings.
 
         :param callable fnLog: The callable which is called from the log method
             It expects a string parameter
@@ -19,17 +22,19 @@ class Notification:
 
     # __init__
     
-    def notify(self, title, message):
+    def notify(self, title, message, icon=None):
         """
         Displays the notification and returns its id.
         
         :param str title: The title of the notification
         :param str message: The message of the notification
+        :param int icon: On Android, this must be a resource ID
+            If None, R.drawable.ic_dialog_info is used
 
-        :returns: the shown notification
+        :returns: the id of the displayed notification
         :rtype: int   
         """
-        self._impl.notify(title, message)
+        self._impl.notify(title, message, icon)
     # notify
 
     def log(self, message):
@@ -46,5 +51,5 @@ class Notification:
 # Notification
 
 
-version = "0.2.0"
+version = "0.5.0"
 version_date = "2023-06-14 - 2023-06-14"
