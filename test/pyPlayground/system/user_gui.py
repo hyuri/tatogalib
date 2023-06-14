@@ -118,9 +118,11 @@ class MainGui(TaGui):
 
     def handle_btn_action(self, widget):
         try:
-            self.fnPrintln("Creating Notification...")
-            noti = Notification(self.fnPrint)
-            noti.notify("My title", self.message_area.value)
+            text = self.message_area.value
+            self.fnPrintln("\nCreating Notification...")
+            noti = Notification(self.fnPrintln)
+            self.fnPrintln(f"Notifications enabled: {noti._impl.notificationManager.areNotificationsEnabled()}")
+            noti.notify("My title", text, 17301543)  # R.drawable.ic_dialog_alert
         except BaseException as ex:
            G.write_debug_message(str(ex))
            self.fnPrintln("\n"+str(ex))
