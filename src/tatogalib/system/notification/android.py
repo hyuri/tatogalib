@@ -18,9 +18,7 @@ class NotificationImpl:
             self.builder = NotificationCompat.Builder(self.context)
         else:
             self.builder = NotificationCompat.Builder(self.context, self.CHANNEL_ID)
-        # self.notificationManager = NotificationManagerCompat.from(self.context)
-        fnFrom = getattr(NotificationManagerCompat, "from")
-        self.notificationManager = fnFrom(self.context)
+        self.notificationManager = NotificationManagerCompat.from_(self.context)
     # __init__
 
     def areNotificationsEnabled(self):
