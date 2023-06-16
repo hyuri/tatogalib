@@ -23,6 +23,10 @@ class NotificationImpl:
         self.notificationManager = fnFrom(self.context)
     # __init__
 
+    def areNotificationsEnabled(self):
+        return self.notificationManager.areNotificationsEnabled()
+    # areNotificationsEnabled
+
     def _createNotificationChannel(self):
         """
         Create the NotificationChannel, but only on API 26+ because

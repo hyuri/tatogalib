@@ -21,7 +21,17 @@ class Notification:
         self._impl = NotificationImpl(self)
 
     # __init__
-    
+
+    def areNotificationsEnabled(self):
+        """
+        Checks if notifications are enabled
+        
+        :returns: True when enabled, False otherwise
+        :rtype: boolean
+        """
+        return self._impl.areNotificationsEnabled()
+    # areNotificationsEnabled
+
     def notify(self, title, message, icon=None):
         """
         Displays the notification and returns its id.
