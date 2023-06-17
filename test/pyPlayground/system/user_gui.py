@@ -121,7 +121,7 @@ class MainGui(TaGui):
             text = self.message_area.value
             self.fnPrintln("\nCreating Notification...")
             noti = Notification(self.fnPrintln)
-            self.fnPrintln(f"Notifications enabled: {noti.areNotificationsEnabled()}")
+            self.fnPrintln(f"Notifications enabled: {noti.are_notifications_enabled()}")
             noti.notify("My title", text, 17301543)  # R.drawable.ic_dialog_alert
         except BaseException as ex:
            G.write_debug_message(str(ex))

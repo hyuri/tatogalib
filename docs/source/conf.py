@@ -7,10 +7,11 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'taTogaLib'
-copyright = '2023, Tom Arn'
+copyright = '2023, Tom Arn, www.tanapro.ch'
 license = 'MIT license'
 author = 'Tom Arn'
-release = '2023-06-12'
+release = '2023-06-17'
+repository = 'https://bitbucket.org/TomArn/tatogalib/src/master/'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -36,6 +37,7 @@ variables_to_export = [
     "copyright",
     "license",
     "release",
+    "repository",
 ]
 frozen_locals = dict(locals())
 rst_epilog = '\n'.join(map(lambda x: f".. |{x}| replace:: {frozen_locals[x]}", variables_to_export))

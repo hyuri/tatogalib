@@ -11,7 +11,7 @@ class NotificationImpl:
         self.interface = interface
         self.context = toga.App.app._impl.native
         # The channel_id should be unique
-        self.CHANNEL_ID = "channel_"+toga.App.app.app_name
+        self.CHANNEL_ID = "channel_" + toga.App.app.app_name
         self.notificationManager = None
         channel = self._createNotificationChannel()
         if channel is None:
@@ -19,11 +19,13 @@ class NotificationImpl:
         else:
             self.builder = NotificationCompat.Builder(self.context, self.CHANNEL_ID)
         self.notificationManager = NotificationManagerCompat.from_(self.context)
+
     # __init__
 
-    def areNotificationsEnabled(self):
+    def are_notifications_enabled(self):
         return self.notificationManager.areNotificationsEnabled()
-    # areNotificationsEnabled
+
+    # are_notifications_enabled
 
     def _createNotificationChannel(self):
         """
@@ -33,7 +35,9 @@ class NotificationImpl:
         channel = None
         # The channel name and description should be unique
         name = toga.App.app.app_name + " notification channel"
-        description = "Channel for displaying notifications from " + toga.App.app.app_name
+        description = (
+            "Channel for displaying notifications from " + toga.App.app.app_name
+        )
         if Build.VERSION.SDK_INT >= Build.VERSION_CODES.O:
             importance = NotificationManager.IMPORTANCE_DEFAULT
             channel = NotificationChannel(self.CHANNEL_ID, name, importance)
@@ -59,7 +63,7 @@ class NotificationImpl:
         return self.notificationManager.notify(notificationId, notification)
 
     # notify
-    
+
     @staticmethod
     def _todays_millis():
         """
@@ -68,10 +72,11 @@ class NotificationImpl:
         """
         now = datetime.now()
         midnight = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
-        msec = int(now.timestamp()*1000 - midnight.timestamp()*1000)
+        msec = int(now.timestamp() * 1000 - midnight.timestamp() * 1000)
         return msec
 
     # _todays_millis
+
 
 # NotificationImpl
 

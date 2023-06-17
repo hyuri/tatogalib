@@ -12,6 +12,8 @@ License: |license|
 
 Release: |release|
 
+Source code: |repository|
+
 Indices and tables
 ------------------
 
@@ -23,6 +25,7 @@ Indices and tables
    :maxdepth: 3
    :caption: Content:
    
+   system/index
    ui/index
    uri_io/index
    util/index
