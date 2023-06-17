@@ -6,7 +6,7 @@ from com.t_arn.pymod.ui.window import TaWindow, TaGui
 import com.t_arn.pymod.ui.window as tawindow
 from platform import python_version
 import sys
-from system.notification import Notification
+from system.notification import Notification, NotificationManager
 
 
 class MainGui(TaGui):
@@ -16,6 +16,7 @@ class MainGui(TaGui):
 
     def __init__(self, app, parentGui, title, **kwargs):
         super().__init__(app, parentGui, title, **kwargs)
+        self.noti_list = []
     # __init__
 
     def build_gui(self):
@@ -120,9 +121,12 @@ class MainGui(TaGui):
         try:
             text = self.message_area.value
             self.fnPrintln("\nCreating Notification...")
-            noti = Notification(self.fnPrintln)
-            self.fnPrintln(f"Notifications enabled: {noti.are_notifications_enabled()}")
-            noti.notify("My title", text, 17301543)  # R.drawable.ic_dialog_alert
+            mgr = NotificationManager(self.fnPrintln)
+            self.fnPrintln(f"Notifications enabled: {mgr.are_notifications_enabled()}")
+            noti = Notification("My title", text, 17301543)  # R.drawable.ic_dialog_alert
+            id = mgr.show_notification(noti)
+            self.fnPrintln(f"id: {id}, {noti.id}")
+            self.noti_list.append(noti.id)
         except BaseException as ex:
            G.write_debug_message(str(ex))
            self.fnPrintln("\n"+str(ex))

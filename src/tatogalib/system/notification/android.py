@@ -6,7 +6,7 @@ from datetime import datetime
 import toga
 
 
-class NotificationImpl:
+class NotificationManagerImpl:
     def __init__(self, interface):
         self.interface = interface
         self.context = toga.App.app._impl.native
@@ -49,19 +49,19 @@ class NotificationImpl:
         return channel
         # _createNotificationChannel
 
-    def notify(self, title, message, icon):
-        if icon is None:
-            icon = R.drawable.ic_dialog_info
-        self.builder.setSmallIcon(icon)
-        self.builder.setContentTitle(title)
-        self.builder.setContentText(message)
-        self.builder.setStyle(NotificationCompat.BigTextStyle().bigText(message))
+    def show_notification(self, notification):
+        if notification.icon is None:
+            notification.icon = R.drawable.ic_dialog_info
+        self.builder.setSmallIcon(notification.icon)
+        self.builder.setContentTitle(notification.title)
+        self.builder.setContentText(notification.message)
+        self.builder.setStyle(NotificationCompat.BigTextStyle().bigText(notification.message))
         self.builder.setPriority(NotificationCompat.PRIORITY_DEFAULT)
-        notification = self.builder.build()
+        native_notification = self.builder.build()
         # notificationId is a unique int for each notification that you must define
-        notificationId = NotificationImpl._todays_millis()
-        return self.notificationManager.notify(notificationId, notification)
-
+        notificationId = NotificationManagerImpl._todays_millis()
+        self.notificationManager.notify(notificationId, native_notification)
+        return notificationId
     # notify
 
     @staticmethod
@@ -78,7 +78,7 @@ class NotificationImpl:
     # _todays_millis
 
 
-# NotificationImpl
+# NotificationManagerImpl
 
 
 version = "0.5.0"
