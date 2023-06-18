@@ -27,6 +27,16 @@ class NotificationManagerImpl:
 
     # are_notifications_enabled
 
+    def cancel_notification(self, id):
+        self.notificationManager.cancel(id)
+
+    # cancel_notification
+
+    def cancel_all_notifications(self):
+        self.notificationManager.cancelAll()
+
+    # cancel_all_notifications
+
     def _createNotificationChannel(self):
         """
         Create the NotificationChannel, but only on API 26+ because
@@ -47,9 +57,10 @@ class NotificationManagerImpl:
             notificationManager = self.context.getSystemService(NotificationManager)
             notificationManager.createNotificationChannel(channel)
         return channel
+
         # _createNotificationChannel
 
-    def show_notification(self, notification):
+    def post_notification(self, notification):
         if notification.icon is None:
             notification.icon = R.drawable.ic_dialog_info
         self.builder.setSmallIcon(notification.icon)
@@ -62,7 +73,8 @@ class NotificationManagerImpl:
         notificationId = NotificationManagerImpl._todays_millis()
         self.notificationManager.notify(notificationId, native_notification)
         return notificationId
-    # notify
+
+    # post_notification
 
     @staticmethod
     def _todays_millis():
@@ -81,5 +93,5 @@ class NotificationManagerImpl:
 # NotificationManagerImpl
 
 
-version = "0.5.0"
-version_date = "2023-06-14 - 2023-06-14"
+version = "0.8.0"
+version_date = "2023-06-14 - 2023-06-18"

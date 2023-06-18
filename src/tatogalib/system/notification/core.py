@@ -89,20 +89,38 @@ class NotificationManager:
 
     # are_notifications_enabled
 
-    def show_notification(self, notification):
+    def cancel_notification(self, id):
         """
-        Displays the notification and returns its id.
+        Cancel a previously shown notification
+        
+        :param int id: The id of the notification
+        """
+        self._impl.cancel_notification(id)
+
+    # cancel_notification
+
+    def cancel_all_notifications(self):
+        """
+        Cancel all previously shown notification
+        """
+        self._impl.cancel_all_notifications()
+
+    # cancel_all_notifications
+
+    def post_notification(self, notification):
+        """
+        Post and displays the notification and returns its id.
         The id is also set in the notification object.
 
-        :param Notification notification: The notification to show
+        :param Notification notification: The notification to be posted
 
-        :returns: the id of the displayed notification
+        :returns: the id of the posted notification
         :rtype: int
         """
-        notification.id = self._impl.show_notification(notification)
+        notification.id = self._impl.post_notification(notification)
         return notification.id
 
-    # show_notification
+    # post_notification
 
     def log(self, message):
         """
@@ -119,5 +137,5 @@ class NotificationManager:
 # NotificationManager
 
 
-version = "0.6.0"
-version_date = "2023-06-14 - 2023-06-17"
+version = "0.8.0"
+version_date = "2023-06-14 - 2023-06-18"

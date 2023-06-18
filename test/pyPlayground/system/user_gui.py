@@ -102,6 +102,19 @@ class MainGui(TaGui):
             )
             cmdDebug.id = "cmdDebug"
             self.app.commands.add(cmdDebug)
+            
+            self.app.commands.add(toga.Command(
+                self.cancel_notification,
+                text="Cancel last notification",
+                group=toga.Group.COMMANDS,
+                order=50,
+            ))
+            self.app.commands.add(toga.Command(
+                self.cancel_all_notifications,
+                text="Cancel all notifications",
+                group=toga.Group.COMMANDS,
+                order=60,
+            ))
 
         # add content to main_box
         self.message_area = toga.MultilineTextInput(
@@ -117,6 +130,25 @@ class MainGui(TaGui):
         self.main_box.add(_button_box)
     # build_gui
 
+    def cancel_notification(self, widget):
+        try:
+            mgr = NotificationManager(self.fnPrintln)
+            id = self.noti_list.pop()
+            mgr.cancel_notification(id)
+        except BaseException as ex:
+            G.write_debug_message(str(ex))
+            self.fnPrintln("\n"+str(ex))
+    # cancel_notification
+
+    def cancel_all_notifications(self, widget):
+        try:
+            mgr = NotificationManager(self.fnPrintln)
+            mgr.cancel_all_notifications()
+        except BaseException as ex:
+            G.write_debug_message(str(ex))
+            self.fnPrintln("\n"+str(ex))
+    # cancel_all_notifications
+        
     def handle_btn_action(self, widget):
         try:
             text = self.message_area.value
@@ -124,12 +156,12 @@ class MainGui(TaGui):
             mgr = NotificationManager(self.fnPrintln)
             self.fnPrintln(f"Notifications enabled: {mgr.are_notifications_enabled()}")
             noti = Notification("My title", text, 17301543)  # R.drawable.ic_dialog_alert
-            id = mgr.show_notification(noti)
+            id = mgr.post_notification(noti)
             self.fnPrintln(f"id: {id}, {noti.id}")
             self.noti_list.append(noti.id)
         except BaseException as ex:
-           G.write_debug_message(str(ex))
-           self.fnPrintln("\n"+str(ex))
+            G.write_debug_message(str(ex))
+            self.fnPrintln("\n"+str(ex))
     # handle_btn_action
 
     def handle_btn_clear(self, widget):
