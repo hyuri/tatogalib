@@ -12,8 +12,12 @@ class UriFileBrowser:
         self._fnlog = fnLog  # for logging to user code
         if toga.platform.current_platform == "android":
             from .android import UriFileBrowserImpl
-        if toga.platform.current_platform == "windows":
+        elif toga.platform.current_platform in ("windows", "linux", "macOS"):
             from .desktop import UriFileBrowserImpl
+        else:
+            raise NotImplementedError(
+                f"UriFileBrowser is not implemented for {toga.platform.current_platform}"
+            )
         self._impl = UriFileBrowserImpl(self)
 
     # __init__

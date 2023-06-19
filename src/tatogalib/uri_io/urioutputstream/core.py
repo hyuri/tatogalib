@@ -22,8 +22,12 @@ class UriOutputStream:
         self._fnlog = fnLog  # for logging to user code
         if toga.platform.current_platform == "android":
             from .android import UriOutputStreamImpl
-        if toga.platform.current_platform == "windows":
+        elif toga.platform.current_platform in ("windows", "linux", "macOS"):
             from .desktop import UriOutputStreamImpl
+        else:
+            raise NotImplementedError(
+                f"UriOutputStream is not implemented for {toga.platform.current_platform}"
+            )
         self._impl = UriOutputStreamImpl(self, mode)
 
     # __init__

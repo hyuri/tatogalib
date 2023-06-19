@@ -16,8 +16,12 @@ class UriFile:
         self._fnlog = fnLog  # for logging to user code
         if toga.platform.current_platform == "android":
             from .android import UriFileImpl
-        if toga.platform.current_platform == "windows":
+        elif toga.platform.current_platform in ("windows", "linux", "macOS"):
             from .desktop import UriFileImpl
+        else:
+            raise NotImplementedError(
+                f"UriFile is not implemented for {toga.platform.current_platform}"
+            )
         self._impl = UriFileImpl(self)
 
     # __init__

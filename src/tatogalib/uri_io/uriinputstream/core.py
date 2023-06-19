@@ -17,8 +17,12 @@ class UriInputStream:
         self._impl = None
         if toga.platform.current_platform == "android":
             from .android import UriInputStreamImpl
-        if toga.platform.current_platform == "windows":
+        elif toga.platform.current_platform in ("windows", "linux", "macOS"):
             from .desktop import UriInputStreamImpl
+        else:
+            raise NotImplementedError(
+                f"UriInputStream is not implemented for {toga.platform.current_platform}"
+            )
         self._impl = UriInputStreamImpl(self)
 
     # __init__

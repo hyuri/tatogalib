@@ -2,7 +2,7 @@ urifile package
 ===============
 
 This package allows to work with files and directories in a cross-platform way.
-It currently supports Android and Windows.
+It has been tested on Android and Windows, but should also work on Linux and macOS.
 
 Example for displaying the content of a folder:
 

@@ -2,7 +2,7 @@ uriinputstream package
 ======================
 
 This package allows to read files in a cross-platform way.
-It currently supports Android and Windows.
+It has been tested on Android and Windows, but should also work on Linux and macOS.
 It is used by ``UriFile.open()`` when ``mode`` is "rb" or "rt"
 
 
