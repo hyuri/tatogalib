@@ -19,12 +19,13 @@ class MainGui(TaGui):
 
     def __init__(self, app, parentGui, title, **kwargs):
         super().__init__(app, parentGui, title, **kwargs)
+
     # __init__
 
     def build_gui(self):
         # create box for content
         self.main_box = toga.Box(style=Pack(direction=COLUMN, padding=5, flex=1))
-        
+
         if G.get_platform() == "windows":
             # adding commands
             self.app.commands = toga.CommandSet(
@@ -61,7 +62,10 @@ class MainGui(TaGui):
             cmdHistory.id = "cmdHistory"
             self.app.commands.add(cmdHistory)
             cmdDebug = toga.Command(
-                self.handle_commands, label="Show debug messages", group=grpHelp, order=4
+                self.handle_commands,
+                label="Show debug messages",
+                group=grpHelp,
+                order=4,
             )
             cmdDebug.id = "cmdDebug"
             self.app.commands.add(cmdDebug)
@@ -119,49 +123,65 @@ class MainGui(TaGui):
         self.ti_folder = toga.TextInput(readonly=False, style=Pack(flex=1))
         self.main_box.add(self.ti_folder)
         # commands for testing uri_io
-        uri_group = toga.command.Group(text="uri_io", parent=toga.Group.COMMANDS, order=50)
-        self.app.commands.add(toga.Command(
-            self.handle_read,
-            text="Read text from source file",
-            group=uri_group,
-            order=10,
-        ))
-        self.app.commands.add(toga.Command(
-            self.handle_copy,
-            text="Copy file",
-            group=uri_group,
-            order=20,
-        ))
-        self.app.commands.add(toga.Command(
-            self.handle_delete,
-            text="Delete source file",
-            group=uri_group,
-            order=30,
-        ))
-        self.app.commands.add(toga.Command(
-            self.handle_write,
-            text="Write text to target file",
-            group=uri_group,
-            order=40,
-        ))
-        self.app.commands.add(toga.Command(
-            self.handle_persist_access,
-            text="Persist access to target file",
-            group=uri_group,
-            order=50,
-        ))
-        self.app.commands.add(toga.Command(
-            self.handle_listdir,
-            text="List folder content",
-            group=uri_group,
-            order=60,
-        ))
-        self.app.commands.add(toga.Command(
-            self.handle_createfile,
-            text="Create a file in folder",
-            group=uri_group,
-            order=70,
-        ))
+        uri_group = toga.command.Group(
+            text="uri_io", parent=toga.Group.COMMANDS, order=50
+        )
+        self.app.commands.add(
+            toga.Command(
+                self.handle_read,
+                text="Read text from source file",
+                group=uri_group,
+                order=10,
+            )
+        )
+        self.app.commands.add(
+            toga.Command(
+                self.handle_copy,
+                text="Copy file",
+                group=uri_group,
+                order=20,
+            )
+        )
+        self.app.commands.add(
+            toga.Command(
+                self.handle_delete,
+                text="Delete source file",
+                group=uri_group,
+                order=30,
+            )
+        )
+        self.app.commands.add(
+            toga.Command(
+                self.handle_write,
+                text="Write text to target file",
+                group=uri_group,
+                order=40,
+            )
+        )
+        self.app.commands.add(
+            toga.Command(
+                self.handle_persist_access,
+                text="Persist access to target file",
+                group=uri_group,
+                order=50,
+            )
+        )
+        self.app.commands.add(
+            toga.Command(
+                self.handle_listdir,
+                text="List folder content",
+                group=uri_group,
+                order=60,
+            )
+        )
+        self.app.commands.add(
+            toga.Command(
+                self.handle_createfile,
+                text="Create a file in folder",
+                group=uri_group,
+                order=70,
+            )
+        )
         self.message_area = toga.MultilineTextInput(
             value="", readonly=False, style=Pack(flex=1)
         )
@@ -173,6 +193,7 @@ class MainGui(TaGui):
         _button_box.add(toga.Button("Clear", on_press=self.handle_btn_clear))
         _button_box.add(toga.Label("", style=Pack(flex=1)))
         self.main_box.add(_button_box)
+
     # build_gui
 
     async def handle_btn_source(self, widget):
@@ -180,8 +201,12 @@ class MainGui(TaGui):
             fb = UriFileBrowser(self.fnPrintln)
             # initial = "content://com.android.externalstorage.documents/document/primary%3A!Daten"
             initial = "file:///C:/Projects/Python/_Docs"
-            urilist = await fb.open_file_dialog("Wähle eine Quellen Datei", 
-                file_types=["xlsx","pdf","rar"], multiselect=True, initial_uri=initial) 
+            urilist = await fb.open_file_dialog(
+                "Wähle eine Quellen Datei",
+                file_types=["xlsx", "pdf", "rar"],
+                multiselect=True,
+                initial_uri=initial,
+            )
             if len(urilist) == 0:
                 return
             self.ti_source.value = str(urilist[0])
@@ -191,15 +216,17 @@ class MainGui(TaGui):
             self.fnPrintln(f"mime_type: {urifile.mime_type}")
             self.fnPrintln(f"size: {urifile.size}")
         except BaseException as ex:
-           G.write_debug_message(str(ex))
-           self.fnPrintln("\n"+str(ex))
+            G.write_debug_message(str(ex))
+            self.fnPrintln("\n" + str(ex))
+
     # handle_btn_source
 
     async def handle_btn_target(self, widget):
         try:
             fb = UriFileBrowser(self.fnPrintln)
-            uristring = await fb.save_file_dialog("Wähle eine Ziel Datei",
-                "test.pdf", file_types=["xls","pdf","txt"])
+            uristring = await fb.save_file_dialog(
+                "Wähle eine Ziel Datei", "test.pdf", file_types=["xls", "pdf", "txt"]
+            )
             self.ti_target.value = str(uristring)
             if uristring is None:
                 return
@@ -211,8 +238,9 @@ class MainGui(TaGui):
             if urifile.isfile():
                 self.fnPrintln(f"size: {urifile.size}")
         except BaseException as ex:
-           G.write_debug_message(str(ex))
-           self.fnPrintln("\n"+str(ex))
+            G.write_debug_message(str(ex))
+            self.fnPrintln("\n" + str(ex))
+
     # handle_btn_target
 
     def handle_copy(self, widget):
@@ -225,26 +253,30 @@ class MainGui(TaGui):
             ok = target.set_lastmodified(source.lastmodified)
             self.fnPrint(f"Setting last modification time: {ok}")
         except BaseException as ex:
-           G.write_debug_message(str(ex))
-           self.fnPrintln("\n"+str(ex))
+            G.write_debug_message(str(ex))
+            self.fnPrintln("\n" + str(ex))
+
     # handle_copy
-    
-    def handle_delete(self, widget): 
+
+    def handle_delete(self, widget):
         self.fnPrint("\nDeleting...")
         source = UriFile(self.ti_source.value, fnLog=self.fnPrintln)
         ok = source.delete()
         self.fnPrintln(f"done, ok={ok}")
+
     # handle_delete
-    
+
     async def handle_btn_folder(self, widget):
         try:
             fb = UriFileBrowser(self.fnPrintln)
             initial = "content://com.android.externalstorage.documents/document/primary%3A!Daten"
             # initial = "file:///C:/Program%20Files"
-            uri = await fb.select_folder_dialog("Wähle ein Verzeichnis", initial_uri=initial) 
+            uri = await fb.select_folder_dialog(
+                "Wähle ein Verzeichnis", initial_uri=initial
+            )
             self.fnPrintln("")
             self.fnPrintln(str(uri))
-            if uri is None: 
+            if uri is None:
                 return
             self.ti_folder.value = str(uri)
             urifile = UriFile(uri)
@@ -253,8 +285,9 @@ class MainGui(TaGui):
             self.fnPrintln(f"isdir: {urifile.isdir()}")
             self.fnPrintln(f"exists: {urifile.exists()}")
         except BaseException as ex:
-           G.write_debug_message(str(ex))
-           self.fnPrintln("\n"+str(ex))
+            G.write_debug_message(str(ex))
+            self.fnPrintln("\n" + str(ex))
+
     # handle_btn_folder
 
     def handle_read(self, widget):
@@ -270,8 +303,9 @@ class MainGui(TaGui):
             for b in bytesobj:
                 self.fnPrint(f"{ord(b)} ")
         except BaseException as ex:
-           G.write_debug_message(str(ex))
-           self.fnPrintln("\n"+str(ex))
+            G.write_debug_message(str(ex))
+            self.fnPrintln("\n" + str(ex))
+
     # handle_read
 
     def handle_write(self, widget):
@@ -287,10 +321,11 @@ class MainGui(TaGui):
             f.close()
             self.fnPrintln("Done!")
         except BaseException as ex:
-           G.write_debug_message(str(ex))
-           self.fnPrintln("\n"+str(ex))
+            G.write_debug_message(str(ex))
+            self.fnPrintln("\n" + str(ex))
+
     # handle_write
-    
+
     def handle_persist_access(self, widget):
         try:
             target = UriFile(self.ti_target.value, fnLog=self.fnPrintln)
@@ -299,7 +334,8 @@ class MainGui(TaGui):
             self.fnPrintln("Done!")
         except BaseException as ex:
             G.write_debug_message(str(ex))
-            self.fnPrintln("\n"+str(ex))
+            self.fnPrintln("\n" + str(ex))
+
     # handle_persist_access
 
     def handle_listdir(self, widget):
@@ -315,11 +351,11 @@ class MainGui(TaGui):
                 self.fnPrintln(f"isdir: {urifile.isdir()}")
                 self.fnPrintln(f"exists: {urifile.exists()}")
         except BaseException as ex:
-           G.write_debug_message(str(ex))
-           self.fnPrintln("\n"+str(ex))
+            G.write_debug_message(str(ex))
+            self.fnPrintln("\n" + str(ex))
 
     # handle_listdir
-    
+
     def handle_createfile(self, widget):
         try:
             self.fnPrintln("\nCreating new file...")
@@ -332,8 +368,9 @@ class MainGui(TaGui):
             self.fnPrintln(f"mime_type: {urifile.mime_type}")
             self.fnPrintln(f"uristring: {urifile.uristring}")
         except BaseException as ex:
-           G.write_debug_message(str(ex))
-           self.fnPrintln(f"\n{type(ex).__name__}: {str(ex)}")
+            G.write_debug_message(str(ex))
+            self.fnPrintln(f"\n{type(ex).__name__}: {str(ex)}")
+
     # handle_createfile
 
     def handle_btn_action(self, widget):
@@ -347,12 +384,14 @@ class MainGui(TaGui):
             self.fnPrintln(f"exists: {urifile.exists()}")
 
         except BaseException as ex:
-           G.write_debug_message(str(ex))
-           self.fnPrintln("\n"+str(ex))
+            G.write_debug_message(str(ex))
+            self.fnPrintln("\n" + str(ex))
+
     # handle_btn_action
 
     def handle_btn_clear(self, widget):
         self.message_area.clear()
+
     # handle_btn_clear
 
     def handle_commands(self, widget):
@@ -360,48 +399,65 @@ class MainGui(TaGui):
             mygui = AboutGui(self.app, self, "< About", size=(400, 300))
             return mygui.show()
         if widget.id == "cmdHelp":
-            mygui = HtmlGui(self.app, self, "< Help", f"{G.programDir}/resources/help-en.html",
-                size=(int(self.window.size[0]*0.9), int(self.window.size[1]*0.9)),
+            mygui = HtmlGui(
+                self.app,
+                self,
+                "< Help",
+                f"{G.programDir}/resources/help-en.html",
+                size=(int(self.window.size[0] * 0.9), int(self.window.size[1] * 0.9)),
             )
             return mygui.show()
         if widget.id == "cmdHistory":
-            mygui = HtmlGui(self.app, self, "< History", f"{G.programDir}/resources/history-en.html",
-                size=(int(self.window.size[0]*0.9), int(self.window.size[1]*0.9)),
+            mygui = HtmlGui(
+                self.app,
+                self,
+                "< History",
+                f"{G.programDir}/resources/history-en.html",
+                size=(int(self.window.size[0] * 0.9), int(self.window.size[1] * 0.9)),
             )
             return mygui.show()
         if widget.id == "cmdDebug":
             return G.show_debug_messages()
+
     # handle_commands
 
     def fnPrint(self, message):
         self.message_area.value += message
+
     # fnPrint
 
     def fnPrintln(self, message):
         self.fnPrint(message + "\n")
+
     # fnPrintln
 
     # @override
     def restore_state(self):
-        """ 
+        """
         This method is called after app restarted due to device rotation
         """
         if len(self._state_data) > 0:
             G.write_debug_message("Restoring app state")
             self.message_area.value = self._state_data["message_area"]
-            G.write_debug_message(G.get_debug_messages() + "\n" + self._state_data["debug_messages"])
+            G.write_debug_message(
+                G.get_debug_messages() + "\n" + self._state_data["debug_messages"]
+            )
+
     # restore_state
 
     # @override
     def save_state(self):
-        """ 
+        """
         This method is called before app restarts when device rotation occurs
         All data saved to self._state_data is passed to the app on restart.
         """
         G.write_debug_message("Saving app state")
         self._state_data["message_area"] = self.message_area.value
         self._state_data["debug_messages"] = G.get_debug_messages()
+
     # save_state
+
+
 # MainGui
 
 
@@ -412,15 +468,16 @@ class AboutGui(TaGui):
 
     def __init__(self, app, parentGui, title, **kwargs):
         super().__init__(app, parentGui, title, **kwargs)
+
     # __init__
 
     def build_gui(self):
         # create box for content
         self.main_box = toga.Box(style=Pack(direction=COLUMN, flex=1))
-        msg =  f"Python Playground {G.objApp.version}\n\n"
-        
-        msg +=  "Freeware, (C) 2022 tanapro.ch\n\n"
-        msg +=  "This software is based on\n"
+        msg = f"Python Playground {G.objApp.version}\n\n"
+
+        msg += "Freeware, (C) 2022 tanapro.ch\n\n"
+        msg += "This software is based on\n"
         msg += f"Python {python_version()}\n"
         msg += f"Toga {toga.__version__}\n"
         msg += f"t_arn window {tawindow.version}\n\n"
@@ -430,16 +487,18 @@ class AboutGui(TaGui):
         msg += "on the desktop with the complete toolchain.\n\n"
 
         msg += "To get started, read the help page of this app\n\n"
-        
+
         msg += "The privacy policy can be found at\n"
         msg += "https://www.tanapro.ch/products/PrivacyPolicy/pyPlayground.html\n\n\n"
-        
+
         if G.get_platform() == "android":
             msg += "\nPlatform: " + G.get_platform()
             vp = G.objMainGui.main_box._impl.container.viewport
             scale = float(vp.dpi) / vp.baseline_dpi
             msg += "\nViewport size in px: ({}, {})".format(vp.width, vp.height)
-            msg += "\nViewport size in dp: ({}, {})".format(int(float(vp.width) / scale), int(float(vp.height) / scale))
+            msg += "\nViewport size in dp: ({}, {})".format(
+                int(float(vp.width) / scale), int(float(vp.height) / scale)
+            )
             msg += "\nDensityDPI: " + str(vp.dpi)
             msg += "\nScaling factor: " + str(scale)
 
@@ -447,18 +506,24 @@ class AboutGui(TaGui):
             value=msg, readonly=True, style=Pack(flex=1)
         )
         self.main_box.add(self.message_area)
-        
+
         # button bar
-        _button_box = toga.Box(style=Pack(direction=ROW, padding=(5, 0, 0, 0)))  # top, right, bottom and left padding
+        _button_box = toga.Box(
+            style=Pack(direction=ROW, padding=(5, 0, 0, 0))
+        )  # top, right, bottom and left padding
         _button_box.add(toga.Label("", style=Pack(flex=1)))
         _button_box.add(toga.Button("OK", on_press=self.handle_btn_ok))
         _button_box.add(toga.Label("", style=Pack(flex=1)))
         self.main_box.add(_button_box)
+
     # build_gui
-    
+
     def handle_btn_ok(self, widget):
         self.close()
+
     # handle_OK_button
+
+
 # AboutGui
 
 
@@ -472,6 +537,7 @@ class HtmlGui(TaGui):
     def __init__(self, app, parentGui, title, html_file, **kwargs):
         super().__init__(app, parentGui, title, **kwargs)
         self._html_file = html_file
+
     # __init__
 
     def build_gui(self):
@@ -495,9 +561,13 @@ class HtmlGui(TaGui):
         _button_box.add(toga.Button("OK", on_press=self.handle_btn_ok))
         _button_box.add(toga.Label("", style=Pack(flex=1)))
         self.main_box.add(_button_box)
+
     # build_gui
 
     def handle_btn_ok(self, widget):
         self.close()
+
     # handle_btn_ok
+
+
 # HtmlGui

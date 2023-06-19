@@ -1,5 +1,10 @@
-uriinputstream module
-=====================
+uriinputstream package
+======================
+
+This package allows to read files in a cross-platform way.
+It is used by ``UriFile.open()`` when ``mode`` is "rb" or "rt"
+
+
 .. toctree::
    :maxdepth: 2
    

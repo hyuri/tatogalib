@@ -1,5 +1,10 @@
-urioutputstream module
-======================
+urioutputstream package
+=======================
+
+This package allows to read files in a cross-platform way.
+It is used by ``UriFile.open()`` when ``mode`` is "wb" or "wt"
+
+
 .. toctree::
    :maxdepth: 2
    
