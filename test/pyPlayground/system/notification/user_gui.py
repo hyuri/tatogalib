@@ -109,10 +109,18 @@ class MainGui(TaGui):
 
         self.app.commands.add(
             toga.Command(
+                self.post_notification,
+                text="Post new notification",
+                group=toga.Group.COMMANDS,
+                order=50,
+            )
+        )
+        self.app.commands.add(
+            toga.Command(
                 self.cancel_notification,
                 text="Cancel last notification",
                 group=toga.Group.COMMANDS,
-                order=50,
+                order=55,
             )
         )
         self.app.commands.add(
@@ -139,6 +147,24 @@ class MainGui(TaGui):
 
     # build_gui
 
+    def post_notification(self, widget):
+        try:
+            text = self.message_area.value
+            self.fnPrintln("\nCreating Notification...")
+            mgr = NotificationManager(self.fnPrintln)
+            self.fnPrintln(f"Notifications enabled: {mgr.are_notifications_enabled()}")
+            noti = Notification(
+                "My title", text, None
+            )
+            id = mgr.post_notification(noti)
+            self.fnPrintln(f"id: {id}, {noti.id}")
+            self.noti_list.append(noti.id)
+        except BaseException as ex:
+            G.write_debug_message(str(ex))
+            self.fnPrintln("\n" + str(ex))
+
+    # post_notification
+
     def cancel_notification(self, widget):
         try:
             mgr = NotificationManager(self.fnPrintln)
@@ -162,16 +188,7 @@ class MainGui(TaGui):
 
     def handle_btn_action(self, widget):
         try:
-            text = self.message_area.value
-            self.fnPrintln("\nCreating Notification...")
-            mgr = NotificationManager(self.fnPrintln)
-            self.fnPrintln(f"Notifications enabled: {mgr.are_notifications_enabled()}")
-            noti = Notification(
-                "My title", text, None
-            )
-            id = mgr.post_notification(noti)
-            self.fnPrintln(f"id: {id}, {noti.id}")
-            self.noti_list.append(noti.id)
+            self.fnPrintln("Hello")
         except BaseException as ex:
             G.write_debug_message(str(ex))
             self.fnPrintln("\n" + str(ex))
