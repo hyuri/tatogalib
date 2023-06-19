@@ -8,7 +8,7 @@ class Notification:
 
         :param str title: The title of the notification
         :param str message: The message of the notification
-        :param int icon: The icon of the notification
+        :param int or Icon icon: The icon of the notification
         """
         self.title = title
         self.message = message
@@ -42,8 +42,8 @@ class Notification:
     @property
     def icon(self):
         """
-        The icon to be shown. On Android, this must be a resource ID.
-        If None, R.drawable.ic_dialog_info will be used when the notification is posted.
+        The icon to be shown. On Android, this must be a resource ID, on Windows an Icon.
+        If None, the info icon will be used when the notification is posted.
         """
         return self._icon
 
@@ -81,6 +81,8 @@ class NotificationManager:
         self._impl = None
         if toga.platform.current_platform == "android":
             from .android import NotificationManagerImpl
+        elif toga.platform.current_platform == "windows":
+            from .windows import NotificationManagerImpl
         else:
             raise NotImplementedError(
                 f"Notification is not implemented for {toga.platform.current_platform}"

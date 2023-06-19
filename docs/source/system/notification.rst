@@ -1,17 +1,18 @@
 notification package
 ====================
 
-This package allows to post system notifications.
+This package allows to post system notifications on Android and Windows.
 
 Example:
 
 .. code-block:: Python
 
    from system.notification import Notification, NotificationManager
+   from Android import R
 
    mgr = NotificationManager()
    print(f"Notifications enabled: {mgr.are_notifications_enabled()}")
-   notification = Notification("My title", text, 17301543)  # R.drawable.ic_dialog_alert
+   notification = Notification("My title", text, R.drawable.ic_dialog_alert)
    id = mgr.post_notification(notification)
 
 

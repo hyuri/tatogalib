@@ -2,6 +2,7 @@ urifilebrowser package
 =======================
 
 This package allows to select files and directories in a cross-platform way.
+It currently supports Android and Windows.
 
 Example:
 
