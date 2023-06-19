@@ -66,7 +66,9 @@ class NotificationManagerImpl:
         self.builder.setSmallIcon(notification.icon)
         self.builder.setContentTitle(notification.title)
         self.builder.setContentText(notification.message)
-        self.builder.setStyle(NotificationCompat.BigTextStyle().bigText(notification.message))
+        self.builder.setStyle(
+            NotificationCompat.BigTextStyle().bigText(notification.message)
+        )
         self.builder.setPriority(NotificationCompat.PRIORITY_DEFAULT)
         native_notification = self.builder.build()
         # notificationId is a unique int for each notification that you must define

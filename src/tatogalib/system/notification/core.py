@@ -8,35 +8,45 @@ class Notification:
 
         :param str title: The title of the notification
         :param str message: The message of the notification
-        :param int icon: On Android, this must be a resource ID.
-            If None, R.drawable.ic_dialog_info is used.
+        :param int icon: The icon of the notification
         """
         self.title = title
         self.message = message
         self.icon = icon
         self.id = None
+
     # __init__
-    
+
     @property
     def title(self):
+        """
+        The title of the notification
+        """
         return self._title
-        
+
     @title.setter
     def title(self, title):
         self._title = title
 
     @property
     def message(self):
+        """
+        The message to be shown
+        """
         return self._message
-        
+
     @message.setter
     def message(self, message):
         self._message = message
 
     @property
     def icon(self):
+        """
+        The icon to be shown. On Android, this must be a resource ID.
+        If None, R.drawable.ic_dialog_info will be used when the notification is posted.
+        """
         return self._icon
-        
+
     @icon.setter
     def icon(self, icon):
         self._icon = icon
@@ -44,21 +54,22 @@ class Notification:
     @property
     def id(self):
         """
-        The id of the notification. It is set, when the
-        notification is shown.
+        The id of the notification. It is set, when the notification is posted.
         """
         return self._id
-        
+
     @id.setter
     def id(self, id):
         self._id = id
- 
+
+
 # Notification
+
 
 class NotificationManager:
     def __init__(self, fnLog=None):
         """
-        Creates a manager for handling system notification.
+        Creates a manager for handling system notifications.
 
         On Android, the app needs the permission android.permission.POST_NOTIFICATIONS
         and the notifications must be enabled for the app in the Android settings.
@@ -92,7 +103,7 @@ class NotificationManager:
     def cancel_notification(self, id):
         """
         Cancel a previously shown notification
-        
+
         :param int id: The id of the notification
         """
         self._impl.cancel_notification(id)

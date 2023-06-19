@@ -11,3 +11,7 @@ Notification class
 .. autoclass:: tatogalib.system.notification.core.Notification
    :members:
 
+NotificationManager class
+-------------------------
+.. autoclass:: tatogalib.system.notification.core.NotificationManager
+   :members:
