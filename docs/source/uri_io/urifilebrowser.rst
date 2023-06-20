@@ -8,8 +8,8 @@ Example:
 
 .. code-block:: Python
 
-   from uri_io.urifilebrowser import UriFileBrowser
-   from uri_io.urifile import UriFile
+   from tatogalib.uri_io.urifilebrowser import UriFileBrowser
+   from tatogalib.uri_io.urifile import UriFile
    
    fb = UriFileBrowser()
    initial = "content://com.android.externalstorage.documents/document/primary%3ADaten"

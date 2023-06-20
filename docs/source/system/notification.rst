@@ -7,7 +7,7 @@ Example:
 
 .. code-block:: Python
 
-   from system.notification import Notification, NotificationManager
+   from tatogalib.system.notification import Notification, NotificationManager
    from Android import R
 
    mgr = NotificationManager()

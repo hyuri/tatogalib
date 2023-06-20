@@ -1,7 +1,7 @@
 from toga_winforms.libs.winforms import WinForms
 
 
-class Clipboard(): 
+class ClipboardImpl(): 
   
     def __init__(self, interface): 
         self.interface = interface 

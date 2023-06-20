@@ -8,7 +8,7 @@ Example for displaying the content of a folder:
 
 .. code-block:: Python
 
-   from uri_io.urifile import UriFile
+   from tatogalib.uri_io.urifile import UriFile
    
    uristring = "content://com.android.externalstorage.documents/document/primary%3ADaten"
    folder = UriFile(uristring)
@@ -25,7 +25,7 @@ Example for reading a file:
 
 .. code-block:: Python
 
-   from uri_io.urifile import UriFile
+   from tatogalib.uri_io.urifile import UriFile
    
    uristring = "content://com.android.externalstorage.documents/document/primary%3ADaten/test.txt"
    myfile = UriFile(uristring)
