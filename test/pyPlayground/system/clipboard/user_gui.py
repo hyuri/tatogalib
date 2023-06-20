@@ -101,23 +101,9 @@ class MainGui(TaGui):
             )
             cmdDebug.id = "cmdDebug"
             self.app.commands.add(cmdDebug)
-        self.app.commands.add(
-            toga.Command(
-                self.clip_copy,
-                text="Copy to clipboard",
-                group=toga.Group.COMMANDS,
-                order=50,
-            )
-        )
-        self.app.commands.add(
-            toga.Command(
-                self.clip_paste,
-                text="Paste from clipboard",
-                group=toga.Group.COMMANDS,
-                order=60,
-            )
-        )
 
+        # Clipboard tests
+        self.app.commands.add(            toga.Command(                self.clip_copy,                text="Copy to clipboard",                group=toga.Group.COMMANDS,                order=50,            )        )        self.app.commands.add(            toga.Command(                self.clip_paste,                text="Paste from clipboard",                group=toga.Group.COMMANDS,                order=60,            )        )
         # add content to main_box
         self.message_area = toga.MultilineTextInput(
             value="", readonly=False, style=Pack(flex=1)
