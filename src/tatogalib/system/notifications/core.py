@@ -1,14 +1,38 @@
 import toga
 
 
+class AppIcon:
+    """
+    """
+    APP = 0
+    """
+    """
+    INFO = 1
+    """
+    """
+    QUESTION = 2
+    """
+    """
+    WARNING = 3
+    """
+    """
+    ERROR = 4
+    
+# AppIcon
+
+    
 class Notification:
     def __init__(self, title, message, icon=None):
         """
-        Creates a notification.
+        Creates a notification. The optional icon can be one of following 3 cases:
+          | None will default to the app's icon.
+          | AppIcon is a system provided icon.
+          | String with the path to an app-specific icon file, 
+          |   e.g. self.app.paths.app / "resources" / "notification_icon.png"
 
         :param str title: The title of the notification
         :param str message: The message of the notification
-        :param int or Icon icon: The icon of the notification
+        :param None or AppIcon or str icon: The icon of the notification
         """
         self.title = title
         self.message = message
@@ -42,8 +66,8 @@ class Notification:
     @property
     def icon(self):
         """
-        The icon to be shown. On Android, this must be a resource ID, on Windows an Icon.
-        If None, the info icon will be used when the notification is posted.
+        The icon to be shown. 
+        If None, the app's icon will be used when the notification is posted.
         """
         return self._icon
 
@@ -150,5 +174,5 @@ class NotificationManager:
 # NotificationManager
 
 
-version = "0.8.0"
-version_date = "2023-06-14 - 2023-06-18"
+version = "0.9.0"
+version_date = "2023-06-14 - 2023-06-21"

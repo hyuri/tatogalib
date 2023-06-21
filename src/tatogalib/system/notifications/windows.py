@@ -2,6 +2,7 @@ from datetime import datetime
 import toga
 from toga_winforms.libs.winforms import WinForms
 from System.Drawing import SystemIcons
+from .core import AppIcon
 
 
 class NotificationManagerImpl:
@@ -35,8 +36,28 @@ class NotificationManagerImpl:
     # cancel_all_notifications
 
     def post_notification(self, notification):
-        if notification.icon is None:
-            notification.icon = SystemIcons.Information
+        if type(notification.icon) is int:
+            if notification.icon == AppIcon.APP:
+                notification.icon = None
+            elif notification.icon == AppIcon.INFO:
+                notification.icon = SystemIcons.Information
+            elif notification.icon == AppIcon.QUESTION:
+                notification.icon = SystemIcons.Question
+            elif notification.icon == AppIcon.WARNING:
+                notification.icon = SystemIcons.Warning
+            elif notification.icon == AppIcon.ERROR:
+                notification.icon = SystemIcons.Error
+            else:
+                raise AttributeError("NotficationManager.post_notification(): unsupported system icon")
+        elif type(notification.icon) is str:
+            icon = toga.Icon(notification.icon)
+            notification.icon = icon._impl.native
+        elif notification.icon is None:
+            notification.icon = toga.App.app.icon._impl.native
+        else:
+            raise AttributeError("NotficationManager.post_notification(): unsupported icon type")
+        if notification.icon is None:  # handle AppIcon.APP
+            notification.icon = toga.App.app.icon._impl.native
         notifyIcon = WinForms.NotifyIcon()
         notifyIcon.Icon = notification.icon
         notifyIcon.BalloonTipTitle = notification.title
@@ -66,5 +87,5 @@ class NotificationManagerImpl:
 # NotificationManagerImpl
 
 
-version = "0.8.0"
-version_date = "2023-06-14 - 2023-06-18"
+version = "0.9.0"
+version_date = "2023-06-14 - 2023-06-21"

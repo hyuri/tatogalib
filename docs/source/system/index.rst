@@ -5,5 +5,5 @@ tatogalib.system
    :maxdepth: 2
 
    clipboard
-   notification
+   notifications
    
