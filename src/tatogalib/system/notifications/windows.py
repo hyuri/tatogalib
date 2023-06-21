@@ -38,7 +38,7 @@ class NotificationManagerImpl:
     def post_notification(self, notification):
         if type(notification.icon) is int:
             if notification.icon == AppIcon.APP:
-                notification.icon = None
+                notification.icon = toga.App.app.icon._impl.native
             elif notification.icon == AppIcon.INFO:
                 notification.icon = SystemIcons.Information
             elif notification.icon == AppIcon.QUESTION:
@@ -52,12 +52,8 @@ class NotificationManagerImpl:
         elif type(notification.icon) is str:
             icon = toga.Icon(notification.icon)
             notification.icon = icon._impl.native
-        elif notification.icon is None:
-            notification.icon = toga.App.app.icon._impl.native
         else:
             raise AttributeError("NotficationManager.post_notification(): unsupported icon type")
-        if notification.icon is None:  # handle AppIcon.APP
-            notification.icon = toga.App.app.icon._impl.native
         notifyIcon = WinForms.NotifyIcon()
         notifyIcon.Icon = notification.icon
         notifyIcon.BalloonTipTitle = notification.title

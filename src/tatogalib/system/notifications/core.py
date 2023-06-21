@@ -154,6 +154,8 @@ class NotificationManager:
         :returns: the id of the posted notification
         :rtype: int
         """
+        if notification.icon is None:
+            notification.icon = AppIcon.APP
         notification.id = self._impl.post_notification(notification)
         return notification.id
 
