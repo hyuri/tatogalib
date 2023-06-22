@@ -35,29 +35,29 @@ class NotificationManagerImpl:
 
     # cancel_all_notifications
 
-    def post_notification(self, notification):
-        if type(notification.icon) is int:
-            if notification.icon == AppIcon.APP:
-                notification.icon = toga.App.app.icon._impl.native
-            elif notification.icon == AppIcon.INFO:
-                notification.icon = SystemIcons.Information
-            elif notification.icon == AppIcon.QUESTION:
-                notification.icon = SystemIcons.Question
-            elif notification.icon == AppIcon.WARNING:
-                notification.icon = SystemIcons.Warning
-            elif notification.icon == AppIcon.ERROR:
-                notification.icon = SystemIcons.Error
+    def post_notification(self, title, message, icon):
+        if type(icon) is int:
+            if icon == AppIcon.APP:
+                native_icon = toga.App.app.icon._impl.native
+            elif icon == AppIcon.INFO:
+                native_icon = SystemIcons.Information
+            elif icon == AppIcon.QUESTION:
+                native_icon = SystemIcons.Question
+            elif icon == AppIcon.WARNING:
+                native_icon = SystemIcons.Warning
+            elif icon == AppIcon.ERROR:
+                native_icon = SystemIcons.Error
             else:
                 raise AttributeError("NotficationManager.post_notification(): unsupported system icon")
-        elif type(notification.icon) is str:
-            icon = toga.Icon(notification.icon)
-            notification.icon = icon._impl.native
+        elif type(icon) is str:
+            toga_icon = toga.Icon(icon)
+            native_icon = toga_icon._impl.native
         else:
             raise AttributeError("NotficationManager.post_notification(): unsupported icon type")
         notifyIcon = WinForms.NotifyIcon()
-        notifyIcon.Icon = notification.icon
-        notifyIcon.BalloonTipTitle = notification.title
-        notifyIcon.BalloonTipText = notification.message
+        notifyIcon.Icon = native_icon
+        notifyIcon.BalloonTipTitle = title
+        notifyIcon.BalloonTipText = message
         notifyIcon.Visible = True
         notifyIcon.ShowBalloonTip(30000)
         notificationId = NotificationManagerImpl._todays_millis()
@@ -83,5 +83,5 @@ class NotificationManagerImpl:
 # NotificationManagerImpl
 
 
-version = "0.9.0"
-version_date = "2023-06-14 - 2023-06-21"
+version = "0.9.1"
+version_date = "2023-06-14 - 2023-06-23"

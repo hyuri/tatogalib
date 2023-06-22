@@ -6,7 +6,7 @@ from com.t_arn.pymod.ui.window import TaWindow, TaGui
 import com.t_arn.pymod.ui.window as tawindow
 from platform import python_version
 import sys
-from system.notifications import Notification, NotificationManager, AppIcon
+from system.notifications import AppIcon
 
 
 class MainGui(TaGui):
@@ -160,21 +160,23 @@ class MainGui(TaGui):
         _button_box.add(toga.Button("Clear", on_press=self.handle_btn_clear))
         _button_box.add(toga.Label("", style=Pack(flex=1)))
         self.main_box.add(_button_box)
-
+        
+        # importing system.notification has created the member
+        # self.app.notifications which is the NotificationManager
+        
+        # enable log for debugging
+        self.app.notifications.set_log(self.fnPrintln)
+        
     # build_gui
 
     def post_notification_appicon(self, widget):
         try:
             text = self.message_area.value
             self.fnPrintln("\nCreating Notification with app icon...")
-            mgr = NotificationManager(self.fnPrintln)
-            self.fnPrintln(f"Notifications enabled: {mgr.are_notifications_enabled()}")
-            noti = Notification(
-                "My title", text, None
-            )
-            id = mgr.post_notification(noti)
-            self.fnPrintln(f"id: {id}, {noti.id}")
-            self.noti_list.append(noti.id)
+            id = self.app.notifications.post_notification("My title", text, None)
+            self.fnPrintln(f"Notifications enabled: {self.app.notifications.are_notifications_enabled()}")
+            self.fnPrintln(f"id: {id}")
+            self.noti_list.append(id)
         except BaseException as ex:
             G.write_debug_message(str(ex))
             self.fnPrintln("\n" + str(ex))
@@ -185,14 +187,9 @@ class MainGui(TaGui):
         try:
             text = self.message_area.value
             self.fnPrintln("\nCreating Notification with system icon...")
-            mgr = NotificationManager(self.fnPrintln)
-            self.fnPrintln(f"Notifications enabled: {mgr.are_notifications_enabled()}")
-            noti = Notification(
-                "My title", text, AppIcon.INFO
-            )
-            id = mgr.post_notification(noti)
-            self.fnPrintln(f"id: {id}, {noti.id}")
-            self.noti_list.append(noti.id)
+            id = self.app.notifications.post_notification("My title", text, AppIcon.INFO)
+            self.fnPrintln(f"id: {id}")
+            self.noti_list.append(id)
         except BaseException as ex:
             G.write_debug_message(str(ex))
             self.fnPrintln("\n" + str(ex))
@@ -203,14 +200,10 @@ class MainGui(TaGui):
         try:
             text = self.message_area.value
             self.fnPrintln("\nCreating Notification with custom icon...")
-            mgr = NotificationManager(self.fnPrintln)
-            self.fnPrintln(f"Notifications enabled: {mgr.are_notifications_enabled()}")
-            noti = Notification(
-                "My title", text, str(self.app.paths.app / "resources" / "pyPlayground.png")
-            )
-            id = mgr.post_notification(noti)
-            self.fnPrintln(f"id: {id}, {noti.id}")
-            self.noti_list.append(noti.id)
+            icon = str(self.app.paths.app / "resources" / "pyPlayground.png")
+            id = self.app.notifications.post_notification("My title", text, icon)
+            self.fnPrintln(f"id: {id}")
+            self.noti_list.append(id)
         except BaseException as ex:
             G.write_debug_message(str(ex))
             self.fnPrintln("\n" + str(ex))
@@ -219,9 +212,8 @@ class MainGui(TaGui):
 
     def cancel_notification(self, widget):
         try:
-            mgr = NotificationManager(self.fnPrintln)
             id = self.noti_list.pop()
-            mgr.cancel_notification(id)
+            self.app.notifications.cancel_notification(id)
         except BaseException as ex:
             G.write_debug_message(str(ex))
             self.fnPrintln("\n" + str(ex))
@@ -230,8 +222,7 @@ class MainGui(TaGui):
 
     def cancel_all_notifications(self, widget):
         try:
-            mgr = NotificationManager(self.fnPrintln)
-            mgr.cancel_all_notifications()
+            self.app.notifications.cancel_all_notifications()
         except BaseException as ex:
             G.write_debug_message(str(ex))
             self.fnPrintln("\n" + str(ex))

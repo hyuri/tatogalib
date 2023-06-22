@@ -59,29 +59,29 @@ class NotificationManagerImpl:
 
         # _createNotificationChannel
 
-    def post_notification(self, notification):
-        if type(notification.icon) is int:
-            if notification.icon == AppIcon.APP:
-                notification.icon = self._get_app_icon()
-            elif notification.icon == AppIcon.INFO:
-                notification.icon = R.drawable.ic_dialog_info
-            elif notification.icon == AppIcon.QUESTION:
-                notification.icon = R.drawable.ic_menu_help
-            elif notification.icon == AppIcon.WARNING:
-                notification.icon = R.drawable.ic_dialog_alert
-            elif notification.icon == AppIcon.ERROR:
-                notification.icon = R.drawable.ic_delete
+    def post_notification(self, title, message, icon):
+        if type(icon) is int:
+            if icon == AppIcon.APP:
+                native_icon = self._get_app_icon()
+            elif icon == AppIcon.INFO:
+                native_icon = R.drawable.ic_dialog_info
+            elif icon == AppIcon.QUESTION:
+                native_icon = R.drawable.ic_menu_help
+            elif icon == AppIcon.WARNING:
+                native_icon = R.drawable.ic_dialog_alert
+            elif icon == AppIcon.ERROR:
+                native_icon = R.drawable.ic_delete
             else:
                 raise AttributeError("NotficationManager.post_notification(): unsupported system icon")
-        elif type(notification.icon) is str:
-            notification.icon = self._get_custom_icon(notification.icon)
+        elif type(icon) is str:
+            native_icon = self._get_custom_icon(icon)
         else:
             raise AttributeError("NotficationManager.post_notification(): unsupported icon type")
-        self.builder.setSmallIcon(notification.icon)
-        self.builder.setContentTitle(notification.title)
-        self.builder.setContentText(notification.message)
+        self.builder.setSmallIcon(native_icon)
+        self.builder.setContentTitle(title)
+        self.builder.setContentText(message)
         self.builder.setStyle(
-            Notification.BigTextStyle().bigText(notification.message)
+            Notification.BigTextStyle().bigText(message)
         )
         self.builder.setPriority(Notification.PRIORITY_DEFAULT)
         native_notification = self.builder.build()
@@ -103,8 +103,8 @@ class NotificationManagerImpl:
         stream = open(path, "rb", buffering=0)
         bytes = stream.read()
         stream.close()
-        icon = A_Icon.createWithData(bytes, 0, len(bytes))
-        return icon
+        native_icon = A_Icon.createWithData(bytes, 0, len(bytes))
+        return native_icon
 
     # _get_custom_icon
 
@@ -125,5 +125,5 @@ class NotificationManagerImpl:
 # NotificationManagerImpl
 
 
-version = "0.8.0"
-version_date = "2023-06-14 - 2023-06-18"
+version = "0.9.0"
+version_date = "2023-06-14 - 2023-06-23"

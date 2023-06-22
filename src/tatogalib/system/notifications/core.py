@@ -20,75 +20,6 @@ class AppIcon:
     
 # AppIcon
 
-    
-class Notification:
-    def __init__(self, title, message, icon=None):
-        """
-        Creates a notification. The optional icon can be one of following 3 cases:
-          | None will default to the app's icon.
-          | AppIcon is a system provided icon.
-          | String with the path to an app-specific icon file, 
-          |   e.g. self.app.paths.app / "resources" / "notification_icon.png"
-
-        :param str title: The title of the notification
-        :param str message: The message of the notification
-        :param None or AppIcon or str icon: The icon of the notification
-        """
-        self.title = title
-        self.message = message
-        self.icon = icon
-        self.id = None
-
-    # __init__
-
-    @property
-    def title(self):
-        """
-        The title of the notification
-        """
-        return self._title
-
-    @title.setter
-    def title(self, title):
-        self._title = title
-
-    @property
-    def message(self):
-        """
-        The message to be shown
-        """
-        return self._message
-
-    @message.setter
-    def message(self, message):
-        self._message = message
-
-    @property
-    def icon(self):
-        """
-        The icon to be shown. 
-        If None, the app's icon will be used when the notification is posted.
-        """
-        return self._icon
-
-    @icon.setter
-    def icon(self, icon):
-        self._icon = icon
-
-    @property
-    def id(self):
-        """
-        The id of the notification. It is set, when the notification is posted.
-        """
-        return self._id
-
-    @id.setter
-    def id(self, id):
-        self._id = id
-
-
-# Notification
-
 
 class NotificationManager:
     def __init__(self, fnLog=None):
@@ -144,20 +75,26 @@ class NotificationManager:
 
     # cancel_all_notifications
 
-    def post_notification(self, notification):
+    def post_notification(self, title, message, icon=None):
         """
         Post and displays the notification and returns its id.
-        The id is also set in the notification object.
-
-        :param Notification notification: The notification to be posted
+        The optional icon can be one of following 3 cases:
+          | 1. None will default to the app's icon.
+          | 2. AppIcon is a system provided icon.
+          | 3. String with the path to an app-specific icon file, 
+          |    e.g. self.app.paths.app / "resources" / "notification_icon.png"
+        
+        :param str title: The title of the notification
+        :param str message: The message of the notification
+        :param None or AppIcon or str icon: The icon of the notification
 
         :returns: the id of the posted notification
         :rtype: int
         """
-        if notification.icon is None:
-            notification.icon = AppIcon.APP
-        notification.id = self._impl.post_notification(notification)
-        return notification.id
+        if icon is None:
+            icon = AppIcon.APP
+        id = self._impl.post_notification(title, message, icon)
+        return id
 
     # post_notification
 
@@ -172,9 +109,13 @@ class NotificationManager:
 
     # log
 
+    def set_log(self, fnLog=None):
+        self._fnlog = fnLog
+        
+    # set_log
 
 # NotificationManager
 
 
-version = "0.9.0"
-version_date = "2023-06-14 - 2023-06-21"
+version = "0.9.1"
+version_date = "2023-06-14 - 2023-06-23"
