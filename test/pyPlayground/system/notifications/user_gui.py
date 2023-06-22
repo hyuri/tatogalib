@@ -6,7 +6,7 @@ from com.t_arn.pymod.ui.window import TaWindow, TaGui
 import com.t_arn.pymod.ui.window as tawindow
 from platform import python_version
 import sys
-from system.notification import Notification, NotificationManager, AppIcon
+from system.notifications import Notification, NotificationManager, AppIcon
 
 
 class MainGui(TaGui):
@@ -188,7 +188,7 @@ class MainGui(TaGui):
             mgr = NotificationManager(self.fnPrintln)
             self.fnPrintln(f"Notifications enabled: {mgr.are_notifications_enabled()}")
             noti = Notification(
-                "My title", text, AppIcon.APP
+                "My title", text, AppIcon.INFO
             )
             id = mgr.post_notification(noti)
             self.fnPrintln(f"id: {id}, {noti.id}")
@@ -206,7 +206,7 @@ class MainGui(TaGui):
             mgr = NotificationManager(self.fnPrintln)
             self.fnPrintln(f"Notifications enabled: {mgr.are_notifications_enabled()}")
             noti = Notification(
-                "My title", text, str(self.app.paths.app / "resources" / "brutus.png")
+                "My title", text, str(self.app.paths.app / "resources" / "pyPlayground.png")
             )
             id = mgr.post_notification(noti)
             self.fnPrintln(f"id: {id}, {noti.id}")

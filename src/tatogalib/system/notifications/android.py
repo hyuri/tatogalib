@@ -1,24 +1,24 @@
 from android import R
-from android.app import NotificationManager, NotificationChannel
+from android.app import Notification, NotificationManager, NotificationChannel
+from android.graphics.drawable import Icon as A_Icon
 from android.os import Build
-from androidx.core.app import NotificationManagerCompat, NotificationCompat
 from datetime import datetime
 import toga
+from .core import AppIcon
 
 
 class NotificationManagerImpl:
     def __init__(self, interface):
         self.interface = interface
         self.context = toga.App.app._impl.native
+        self.notificationManager = self.context.getSystemService(NotificationManager)
         # The channel_id should be unique
         self.CHANNEL_ID = "channel_" + toga.App.app.app_name
-        self.notificationManager = None
         channel = self._createNotificationChannel()
         if channel is None:
-            self.builder = NotificationCompat.Builder(self.context)
+            self.builder = Notification.Builder(self.context)
         else:
-            self.builder = NotificationCompat.Builder(self.context, self.CHANNEL_ID)
-        self.notificationManager = NotificationManagerCompat.from_(self.context)
+            self.builder = Notification.Builder(self.context, self.CHANNEL_ID)
 
     # __init__
 
@@ -54,22 +54,36 @@ class NotificationManagerImpl:
             channel.setDescription(description)
             # Register the channel with the system. You can't change the importance
             # or other notification behaviors after this.
-            notificationManager = self.context.getSystemService(NotificationManager)
-            notificationManager.createNotificationChannel(channel)
+            self.notificationManager.createNotificationChannel(channel)
         return channel
 
         # _createNotificationChannel
 
     def post_notification(self, notification):
-        if notification.icon is None:
-            notification.icon = R.drawable.ic_dialog_info
+        if type(notification.icon) is int:
+            if notification.icon == AppIcon.APP:
+                notification.icon = self._get_app_icon()
+            elif notification.icon == AppIcon.INFO:
+                notification.icon = R.drawable.ic_dialog_info
+            elif notification.icon == AppIcon.QUESTION:
+                notification.icon = R.drawable.ic_menu_help
+            elif notification.icon == AppIcon.WARNING:
+                notification.icon = R.drawable.ic_dialog_alert
+            elif notification.icon == AppIcon.ERROR:
+                notification.icon = R.drawable.ic_delete
+            else:
+                raise AttributeError("NotficationManager.post_notification(): unsupported system icon")
+        elif type(notification.icon) is str:
+            notification.icon = self._get_custom_icon(notification.icon)
+        else:
+            raise AttributeError("NotficationManager.post_notification(): unsupported icon type")
         self.builder.setSmallIcon(notification.icon)
         self.builder.setContentTitle(notification.title)
         self.builder.setContentText(notification.message)
         self.builder.setStyle(
-            NotificationCompat.BigTextStyle().bigText(notification.message)
+            Notification.BigTextStyle().bigText(notification.message)
         )
-        self.builder.setPriority(NotificationCompat.PRIORITY_DEFAULT)
+        self.builder.setPriority(Notification.PRIORITY_DEFAULT)
         native_notification = self.builder.build()
         # notificationId is a unique int for each notification that you must define
         notificationId = NotificationManagerImpl._todays_millis()
@@ -77,6 +91,22 @@ class NotificationManagerImpl:
         return notificationId
 
     # post_notification
+
+    def _get_app_icon(self):
+        res = self.context.getResources()
+        pkg = self.context.getApplicationInfo().packageName
+        return res.getIdentifier("ic_launcher", "mipmap", pkg)
+
+    # _get_app_icon
+
+    def _get_custom_icon(self, path):
+        stream = open(path, "rb", buffering=0)
+        bytes = stream.read()
+        stream.close()
+        icon = A_Icon.createWithData(bytes, 0, len(bytes))
+        return icon
+
+    # _get_custom_icon
 
     @staticmethod
     def _todays_millis():
