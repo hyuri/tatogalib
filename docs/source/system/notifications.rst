@@ -1,5 +1,5 @@
-notification package
-====================
+notifications package
+=====================
 
 This package allows to post system notifications on Android and Windows.
 
@@ -7,13 +7,13 @@ Example:
 
 .. code-block:: Python
 
-   from tatogalib.system.notifications import Notification, NotificationManager, AppIcon
-   from Android import R
+   from tatogalib.system.notifications import AppIcon
 
-   mgr = NotificationManager()
-   print(f"Notifications enabled: {mgr.are_notifications_enabled()}")
-   notification = Notification("My title", text, AppIcon.INFO)
-   id = mgr.post_notification(notification)
+   # importing tatogalib.system.notifications has created the member
+   # self.app.notifications which is the NotificationManager
+
+   print(f"Notifications enabled: {self.app.notifications.are_notifications_enabled()}")
+   id = self.app.notifications.post_notification("My title", text, AppIcon.INFO)
 
 
 .. toctree::
@@ -24,15 +24,10 @@ Example:
 
 AppIcon class
 -------------
-.. autoclass:: tatogalib.system.notifications.core.AppIcon
-   :members:
-
-Notification class
-------------------
-.. autoclass:: tatogalib.system.notifications.core.Notification
+.. autoclass:: tatogalib.system.notifications.AppIcon
    :members:
 
 NotificationManager class
 -------------------------
-.. autoclass:: tatogalib.system.notifications.core.NotificationManager
+.. autoclass:: tatogalib.system.notifications.NotificationManager
    :members:

@@ -30,5 +30,5 @@ Example:
 
 UriFileBrowser class
 --------------------
-.. autoclass:: tatogalib.uri_io.urifilebrowser.core.UriFileBrowser
+.. autoclass:: tatogalib.uri_io.urifilebrowser.UriFileBrowser
    :members:

@@ -14,10 +14,10 @@ It is used by ``UriFile.open()`` when ``mode`` is "rb" or "rt"
 
 UriInputStream class
 --------------------
-.. autoclass:: tatogalib.uri_io.uriinputstream.core.UriInputStream
+.. autoclass:: tatogalib.uri_io.uriinputstream.UriInputStream
    :members:
 
 UriTextInputStream class
 ------------------------
-.. autoclass:: tatogalib.uri_io.uriinputstream.core.UriTextInputStream
+.. autoclass:: tatogalib.uri_io.uriinputstream.UriTextInputStream
    :members:

@@ -110,6 +110,12 @@ class NotificationManager:
     # log
 
     def set_log(self, fnLog=None):
+        """
+        Sets a log method for debugging.
+        
+        :param callable fnLog: The callable which is called from the log method.
+            It expects a string parameter
+        """
         self._fnlog = fnLog
         
     # set_log

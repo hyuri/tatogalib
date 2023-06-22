@@ -43,5 +43,5 @@ Example for reading a file:
 
 UriFile class
 -------------
-.. autoclass:: tatogalib.uri_io.urifile.core.UriFile
+.. autoclass:: tatogalib.uri_io.urifile.UriFile
    :members:

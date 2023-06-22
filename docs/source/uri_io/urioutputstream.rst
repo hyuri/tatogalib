@@ -14,10 +14,10 @@ It is used by ``UriFile.open()`` when ``mode`` is "wb" or "wt"
 
 UriOutputStream class
 ---------------------
-.. autoclass:: tatogalib.uri_io.urioutputstream.core.UriOutputStream
+.. autoclass:: tatogalib.uri_io.urioutputstream.UriOutputStream
    :members:
 
 UriTextOutputStream class
 -------------------------
-.. autoclass:: tatogalib.uri_io.urioutputstream.core.UriTextOutputStream
+.. autoclass:: tatogalib.uri_io.urioutputstream.UriTextOutputStream
    :members:
