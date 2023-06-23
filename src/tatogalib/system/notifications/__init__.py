@@ -1,4 +1,3 @@
-from .core import NotificationManager
 from .core import AppIcon
+from .core import NotificationManager
 import toga
-toga.App.app.notifications = NotificationManager()

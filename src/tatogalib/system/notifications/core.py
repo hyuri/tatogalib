@@ -17,7 +17,9 @@ class AppIcon:
     """
     """
     ERROR = 4
-    
+    """
+    """
+
 # AppIcon
 
 
@@ -43,7 +45,7 @@ class NotificationManager:
                 f"Notification is not implemented for {toga.platform.current_platform}"
             )
         self._impl = NotificationManagerImpl(self)
-
+        toga.App.app.notifications = NotificationManager()
     # __init__
 
     def are_notifications_enabled(self):
@@ -79,10 +81,11 @@ class NotificationManager:
         """
         Post and displays the notification and returns its id.
         The optional icon can be one of following 3 cases:
-          | 1. None will default to the app's icon.
-          | 2. AppIcon is a system provided icon.
-          | 3. String with the path to an app-specific icon file, 
-          |    e.g. self.app.paths.app / "resources" / "notification_icon.png"
+        
+        | 1. None will default to the app's icon.
+        | 2. AppIcon is a system provided icon.
+        | 3. String with the path to an app-specific icon file, 
+        | e.g. self.app.paths.app / "resources" / "notification_icon.png"
         
         :param str title: The title of the notification
         :param str message: The message of the notification
