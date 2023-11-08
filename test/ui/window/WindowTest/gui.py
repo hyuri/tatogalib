@@ -18,15 +18,15 @@ class MainGui(TaGui):
         super().__init__(app, parentGUI, title, **kwargs)
     # __init__
 
-    def winforms_create_app_commands(self):
+    def create_app_commands(self):
         # do nothing because we do not want the default commands
         pass
 
     def build_gui(self) -> toga.Widget:
         top_box = toga.Box(style=Pack(flex=1, direction=COLUMN, padding=5))
+        self.app._impl._create_app_commands = self.create_app_commands  # disable default commands
         if get_platform() == "windows":
             # adding commands
-            self.app._impl._create_app_commands = self.winforms_create_app_commands  # disable default commands
             # add actions
             grpFile = toga.Group(text="File", order=1)
             # add actions

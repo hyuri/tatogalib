@@ -1,2 +1,3 @@
 @echo off
-cmd /k venv_tatogalib\Scripts\activate.bat
+cd %~dp0
+cmd /k test\.venv\Scripts\activate.bat

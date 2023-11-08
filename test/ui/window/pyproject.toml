@@ -6,27 +6,27 @@ build = 1
 version_code = 1
 url = "https://www.tanapro.ch"
 license = "Other"
-author = 'Tom Arn'
+author = "Tom Arn"
 author_email = "sw@tanapro.ch"
 
 requires = [
-    'c:/Projects/Python/Toga/core'
+    "c:/Projects/Python/Toga/core",
 ]
 sources = [
-	'WindowTest',
-	'c:/Projects/Python/taTogaLib/src/tatogalib',
+	"WindowTest",
+	"c:/Projects/Python/taTogaLib/src/tatogalib",
 ]
 
 [tool.briefcase.app.WindowTest]
 formal_name = "Window Test Application"
 description = "Test for the tatogalib.ui.window module"
 requires = [
-    'c:/Projects/Python/Toga/winforms',
+    "c:/Projects/Python/Toga/winforms",
 ]
 
 [tool.briefcase.app.WindowTest.android]
 formal_name = "Window Test Application"
 description = "Test for the tatogalib.ui.window module"
 requires = [
-    'c:/Projects/Python/Toga/android',
+    "c:/Projects/Python/Toga/android",
 ]

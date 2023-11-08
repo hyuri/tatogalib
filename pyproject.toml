@@ -1,0 +1,19 @@
+[project]
+name = "tatogalib"
+version = "0.9.6"
+
+[tool.setuptools.package-dir]
+tatogalib = "src/tatogalib"
+"tatogalib.system" = "src/tatogalib/system"
+"tatogalib.system.clipboard" = "src/tatogalib/system/clipboard"
+"tatogalib.system.notifications" = "src/tatogalib/system/notifications"
+
+"tatogalib.ui" = "src/tatogalib/ui"
+
+"tatogalib.uri_io" = "src/tatogalib/uri_io"
+"tatogalib.uri_io.urifile" = "src/tatogalib/uri_io/urifile"
+"tatogalib.uri_io.urifilebrowser" = "src/tatogalib/uri_io/urifilebrowser"
+"tatogalib.uri_io.uriinputstream" = "src/tatogalib/uri_io/uriinputstream"
+"tatogalib.uri_io.urioutputstream" = "src/tatogalib/uri_io/urioutputstream"
+
+"tatogalib.util" = "src/tatogalib/util"
