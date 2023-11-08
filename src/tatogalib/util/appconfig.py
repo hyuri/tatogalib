@@ -4,15 +4,16 @@ appconfig
 
 Module for handling app configuration
 
-Copyright (c) 2020 Tom Arn, www.t-arn.com
+Copyright (c) 2020 Tom Arn, www.tanapro.ch
 
 For suggestions and questions:
-<sw@t-arn.com>
+<sw@tanapro.ch>
 
 This file is distributed under the terms of the MIT license
 """
 
 import json
+import os
 
 
 def read_config(config_dir, config_default):
@@ -33,7 +34,8 @@ def read_config(config_dir, config_default):
     new_config = config_default.copy()
     # read from file
     try:
-        with open(config_dir + "/config.json") as json_file:
+        print("reading config from file")
+        with open(config_dir / "config.json") as json_file:
             old_config = json.load(json_file)
     except:
         old_config = {}
@@ -48,8 +50,6 @@ def read_config(config_dir, config_default):
     if _added or len(_keys) < len(old_config.keys()):
         write_config(config_dir, new_config)
     return new_config
-
-
 # read_config
 
 
@@ -61,12 +61,13 @@ def write_config(config_dir, config):
     :param dict config: the config dict
     """
     print("writing config to file")
-    with open(config_dir + "/config.json", "w") as json_file:
+    if not os.path.exists(config_dir):
+        print(f"Creating config folder {config_dir}")
+        os.makedirs(config_dir)
+    with open(config_dir / "config.json", "w") as json_file:
         json.dump(config, json_file, indent=2)
-
-
 # write_config
 
 
-version = "1.0.0"
-version_date = "2021-03-24 - 2022-07-28"
+version = "1.0.1"
+version_date = "2021-03-24 - 2023-11-08"

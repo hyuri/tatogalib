@@ -1,0 +1,23 @@
+About: About
+AboutContent: >
+  <h1>About</h1>
+
+  <p>This is a test application for following modules of tatogalib</p>
+
+  <ul>
+    <li>ui.window</li>
+    <li>util.appconfig</li>
+    <li>util.i18nUtils</li>
+  </ul>
+Back: Back
+Cancel: Cancel
+Enter_some_text_here: Enter some text here...
+Exit: Exit
+File: File
+Font_size: Font size
+Help: Help
+Language: Language
+Save: Save
+Settings: Settings
+This_window_will_auto_close_in_x_seconds: This window will auto-close in %{duration} seconds
+You_need_to_restart_to_apply_settings: You need to restart the app to apply the new settings

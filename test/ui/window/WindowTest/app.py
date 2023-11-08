@@ -1,5 +1,8 @@
 """
-Test application for window module
+Test application for the modules
+- window
+- appconfig
+- i18nUtils
 """
 import toga
 from WindowTest import gui

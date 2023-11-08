@@ -1,0 +1,23 @@
+About: Über
+AboutContent: >
+  <h1>Über</h1>
+
+  <p>Dies ist eine Test Applikation für folgende Module von tatogalib</p>
+
+  <ul>
+    <li>ui.window</li>
+    <li>util.appconfig</li>
+    <li>util.i18nUtils</li>
+  </ul>
+Back: Zurück
+Cancel: Abbrechen
+Enter_some_text_here: Geben Sie hier etwas Text ein...
+Exit: Beenden
+File: Datei
+Font_size: Schriftgrösse
+Help: Hilfe
+Language: Sprache
+Save: Speichern
+Settings: Einstellungen
+This_window_will_auto_close_in_x_seconds: Dieses Fenster schliesst sich automatisch in %{duration} Sekunden
+You_need_to_restart_to_apply_settings: Sie müssen die App neu starten, um die neuen Einstellungen zu aktivieren

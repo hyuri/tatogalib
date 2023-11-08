@@ -11,6 +11,8 @@ author_email = "sw@tanapro.ch"
 
 requires = [
     "c:/Projects/Python/Toga/core",
+	"python-i18n>=0.3.9",
+    "PyYAML>=5.3.1",
 ]
 sources = [
 	"WindowTest",
