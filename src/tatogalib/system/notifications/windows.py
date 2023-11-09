@@ -7,7 +7,7 @@ from .core import AppIcon
 
 class NotificationManagerImpl:
     notification_list = []
-    
+
     def __init__(self, interface):
         self.interface = interface
 
@@ -48,12 +48,16 @@ class NotificationManagerImpl:
             elif icon == AppIcon.ERROR:
                 native_icon = SystemIcons.Error
             else:
-                raise AttributeError("NotficationManager.post_notification(): unsupported system icon")
+                raise AttributeError(
+                    "NotficationManager.post_notification(): unsupported system icon"
+                )
         elif type(icon) is str:
             toga_icon = toga.Icon(icon)
             native_icon = toga_icon._impl.native
         else:
-            raise AttributeError("NotficationManager.post_notification(): unsupported icon type")
+            raise AttributeError(
+                "NotficationManager.post_notification(): unsupported icon type"
+            )
         notifyIcon = WinForms.NotifyIcon()
         notifyIcon.Icon = native_icon
         notifyIcon.BalloonTipTitle = title

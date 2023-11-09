@@ -88,11 +88,14 @@ class TaGui:
             elif toga.platform.current_platform in ("android"):
                 self.window = self.parentGui.window
             else:
-                raise NotImplementedError(f"TaGui: unsupported platform {toga.platform.current_platform}")
+                raise NotImplementedError(
+                    f"TaGui: unsupported platform {toga.platform.current_platform}"
+                )
         if toga.platform.current_platform == "android":
             # save parent commands and toolbar
             self.parent_commands = copy.copy(self.app.commands)
             self.parent_toolbar = copy.copy(self.app.main_window.toolbar)
+
     # __init__
 
     def build_gui(self) -> toga.Widget:
@@ -102,7 +105,10 @@ class TaGui:
         :returns: The root Widget which contains all of the user GUI elements
         :rtype: Typically a Box or some container
         """
-        raise NotImplementedError("TaGui: You must implement build_gui() -> Widget in your derived class!")
+        raise NotImplementedError(
+            "TaGui: You must implement build_gui() -> Widget in your derived class!"
+        )
+
     # build_gui
 
     def close(self):
@@ -118,6 +124,7 @@ class TaGui:
             self.app.main_window._toolbar = self.parent_toolbar
             self.app._impl.native.invalidateOptionsMenu()
             self.parentGui.show()
+
     # close
 
     def get_scale(self):
@@ -129,6 +136,7 @@ class TaGui:
         :rtype: float
         """
         return self.window.content._impl.dpi_scale
+
     # get_scale
 
     def get_window_size(self):
@@ -139,6 +147,7 @@ class TaGui:
         :rtype: (int, int)
         """
         return self.window.size
+
     # get_window_size
 
     def show(self):
@@ -150,13 +159,17 @@ class TaGui:
             print("Calling build_gui()")
             self.root_box = self.build_gui()
         if self.root_box is None:
-            raise NotImplementedError("TaGui: You must implement build_gui() -> Widget in your derived class!")
+            raise NotImplementedError(
+                "TaGui: You must implement build_gui() -> Widget in your derived class!"
+            )
         self.window.content = self.root_box
         # setting app title
         if toga.platform.current_platform == "android":
             self.app._impl.native.setTitle(self.title)
         self.window.show()
+
     # show
+
 
 # TaGui
 
@@ -166,7 +179,7 @@ class TaWindow(toga.Window):
     Extension of toga.Window with following features:
     - auto closeable
     - auto centered on parent window
-    
+
     This class is only supported on windows.
     """
 
@@ -200,6 +213,7 @@ class TaWindow(toga.Window):
             position = (100, 100)
             self._centerOnParent = True
         super().__init__(title=title, size=size, position=position)
+
     # __init__
 
     def close(self):
@@ -210,6 +224,7 @@ class TaWindow(toga.Window):
             self._timer.cancel()
             self._timer = None
         super().close()
+
     # close
 
     def window_close_handler(self, window):
@@ -228,6 +243,7 @@ class TaWindow(toga.Window):
                 self._timer.cancel()
                 self._timer = None
         return _should_close
+
     # window_close_handler
 
     def show(self):
@@ -242,7 +258,9 @@ class TaWindow(toga.Window):
         if self._auto_close_duration is not None or self._user_on_close is not None:
             self.on_close = self.window_close_handler
         super().show()
+
     # show
+
 
 # TaWindow
 
@@ -254,6 +272,8 @@ def centerOnParent(parent_window, child_window):
         _x = int(_location[0] + (_parentSize[0] - child_window.size[0]) / 2)
         _y = int(_location[1] + (_parentSize[1] - child_window.size[1]) / 2)
         child_window.position = (_x, _y)
+
+
 # centerOnParent
 
 

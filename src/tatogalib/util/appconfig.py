@@ -50,6 +50,8 @@ def read_config(config_dir, config_default):
     if _added or len(_keys) < len(old_config.keys()):
         write_config(config_dir, new_config)
     return new_config
+
+
 # read_config
 
 
@@ -66,6 +68,8 @@ def write_config(config_dir, config):
         os.makedirs(config_dir)
     with open(config_dir / "config.json", "w") as json_file:
         json.dump(config, json_file, indent=2)
+
+
 # write_config
 
 

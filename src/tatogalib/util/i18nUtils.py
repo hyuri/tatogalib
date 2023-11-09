@@ -38,6 +38,7 @@ class I18nUtils:
         else:
             self.lang = lang
         self.load_i18n(translation_dir)
+
     # __init__
 
     def get_app_languages(self):
@@ -54,6 +55,7 @@ class I18nUtils:
                 _languages.append(_child.stem)
         # for
         return _languages
+
     # get_app_languages
 
     @staticmethod
@@ -70,6 +72,7 @@ class I18nUtils:
         if default_locale is not None:
             lang = default_locale[0][0:2]
         return lang
+
     # get_default_system_language
 
     def get_default_app_language(self):
@@ -84,6 +87,7 @@ class I18nUtils:
         if def_lang not in self.get_app_languages():
             def_lang = self.fallback_lang
         return def_lang
+
     # get_default_app_language
 
     def get_error_translation(self, text):
@@ -104,6 +108,7 @@ class I18nUtils:
             return _trans
         else:
             return text
+
     # get_error_translation
 
     def load_i18n(self, dir_name=""):
@@ -122,6 +127,7 @@ class I18nUtils:
         i18n.set("locale", self.lang)
         i18n.set("fallback", self.fallback_lang)
         i18n.load_path.append(dir_name)
+
     # load_i18n
 
     @staticmethod
@@ -153,7 +159,9 @@ class I18nUtils:
             else:
                 _text = _dict["many"]
         return _text
+
     # t
+
 
 # I18nUtils
 

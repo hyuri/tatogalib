@@ -72,17 +72,19 @@ class NotificationManagerImpl:
             elif icon == AppIcon.ERROR:
                 native_icon = R.drawable.ic_delete
             else:
-                raise AttributeError("NotficationManager.post_notification(): unsupported system icon")
+                raise AttributeError(
+                    "NotficationManager.post_notification(): unsupported system icon"
+                )
         elif type(icon) is str:
             native_icon = self._get_custom_icon(icon)
         else:
-            raise AttributeError("NotficationManager.post_notification(): unsupported icon type")
+            raise AttributeError(
+                "NotficationManager.post_notification(): unsupported icon type"
+            )
         self.builder.setSmallIcon(native_icon)
         self.builder.setContentTitle(title)
         self.builder.setContentText(message)
-        self.builder.setStyle(
-            Notification.BigTextStyle().bigText(message)
-        )
+        self.builder.setStyle(Notification.BigTextStyle().bigText(message))
         self.builder.setPriority(Notification.PRIORITY_DEFAULT)
         native_notification = self.builder.build()
         # notificationId is a unique int for each notification that you must define

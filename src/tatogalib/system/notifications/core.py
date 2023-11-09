@@ -2,8 +2,8 @@ import toga
 
 
 class AppIcon:
-    """
-    """
+    """ """
+
     APP = 0
     """
     """
@@ -19,6 +19,7 @@ class AppIcon:
     ERROR = 4
     """
     """
+
 
 # AppIcon
 
@@ -46,6 +47,7 @@ class NotificationManager:
             )
         self._impl = NotificationManagerImpl(self)
         toga.App.app.notifications = NotificationManager()
+
     # __init__
 
     def are_notifications_enabled(self):
@@ -81,12 +83,12 @@ class NotificationManager:
         """
         Post and displays the notification and returns its id.
         The optional icon can be one of following 3 cases:
-        
+
         | 1. None will default to the app's icon.
         | 2. AppIcon is a system provided icon.
-        | 3. String with the path to an app-specific icon file, 
+        | 3. String with the path to an app-specific icon file,
         | e.g. self.app.paths.app / "resources" / "notification_icon.png"
-        
+
         :param str title: The title of the notification
         :param str message: The message of the notification
         :param None or AppIcon or str icon: The icon of the notification
@@ -115,13 +117,14 @@ class NotificationManager:
     def set_log(self, fnLog=None):
         """
         Sets a log method for debugging.
-        
+
         :param callable fnLog: The callable which is called from the log method.
             It expects a string parameter
         """
         self._fnlog = fnLog
-        
+
     # set_log
+
 
 # NotificationManager
 

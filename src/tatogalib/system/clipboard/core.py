@@ -23,30 +23,30 @@ class Clipboard:
 
     # __init__
 
-    def clear(self): 
-        """ 
-        Clears the clipboard content 
-        """ 
+    def clear(self):
+        """
+        Clears the clipboard content
+        """
         self._impl.clear()
 
     # clear
-  
-    def get_text(self): 
-        """ 
-        Get the text data currently stored in the clipboard 
 
-        :returns: The clipboard text data or None 
+    def get_text(self):
+        """
+        Get the text data currently stored in the clipboard
+
+        :returns: The clipboard text data or None
         :rtype: str or None
-        """ 
+        """
         return self._impl.get_text()
 
     # get_text
-  
-    def set_text(self, text): 
-        """ 
-        Put text data into the clipboard 
-        :param text: The text to put into the clipboard. Use None to clear the clipboard 
-        """ 
+
+    def set_text(self, text):
+        """
+        Put text data into the clipboard
+        :param text: The text to put into the clipboard. Use None to clear the clipboard
+        """
         self._impl.set_text(text)
 
     # set_text
@@ -61,5 +61,6 @@ class Clipboard:
             self._fnlog(message)
 
     # log
+
 
 # Clipboard
