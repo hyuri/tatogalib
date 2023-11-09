@@ -1,5 +1,5 @@
 """
-Application to test the clipboard package
+Application to demo the clipboard package
 """
 import toga
 from toga.style import Pack
@@ -7,7 +7,7 @@ from toga.style.pack import COLUMN, ROW
 from tatogalib.system.clipboard import Clipboard
 
 
-class ClipboardTest(toga.App):
+class ClipboardExample(toga.App):
 
     def startup(self):
         """
@@ -37,4 +37,4 @@ class ClipboardTest(toga.App):
         self.mti_message.value = self.cb.get_text()
 
 def main():
-    return ClipboardTest()
+    return ClipboardExample()

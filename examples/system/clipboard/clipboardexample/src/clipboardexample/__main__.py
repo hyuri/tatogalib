@@ -1,4 +1,4 @@
-from clipboardtest.app import main
+from clipboardexample.app import main
 
 if __name__ == '__main__':
     main().main_loop()

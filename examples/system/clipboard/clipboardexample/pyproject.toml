@@ -1,0 +1,35 @@
+# This project was generated with 0.3.16 using template: https://github.com/beeware/briefcase-template@v0.3.16
+[tool.briefcase]
+project_name = "ClipboardExample"
+bundle = "com.example"
+version = "0.0.1"
+url = "https://example.com/clipboardexample"
+license = "MIT license"
+author = "Tom Arn"
+author_email = "sw@tanapro.ch"
+
+[tool.briefcase.app.clipboardexample]
+formal_name = "ClipboardExample"
+description = "Application to demo the clipboard package"
+long_description = """More details about the app should go here.
+"""
+icon = "src/clipboardexample/resources/clipboardexample"
+sources = [
+    "src/clipboardexample",
+    "c:/Projects/Python/taTogaLib/src/tatogalib",
+
+]
+
+requires = [
+]
+
+[tool.briefcase.app.clipboardexample.windows]
+requires = [
+    "toga-winforms~=0.4.0",
+]
+
+# Mobile deployments
+[tool.briefcase.app.clipboardexample.android]
+requires = [
+    "toga-android~=0.4.0"
+]
