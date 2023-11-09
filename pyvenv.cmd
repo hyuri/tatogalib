@@ -1,3 +1,3 @@
 @echo off
 cd %~dp0
-cmd /k test\.venv\Scripts\activate.bat
+cmd /k .venv\Scripts\activate.bat
