@@ -4,7 +4,7 @@ import toga
 from toga.constants import COLUMN, ROW
 from toga.style import Pack
 from tatogalib.util import appconfig
-from tatogalib.ui.window import TaGui
+from tatogalib.ui.window import TaGui, HtmlWindow
 from tatogalib.util.i18nUtils import I18nUtils
 
 
@@ -239,7 +239,12 @@ class SettingsGui(TaGui):
         config["lang"] = self._dd_lang.value
         config["font_size"] = int(self._ti_font_size.value)
         appconfig.write_config(self.app.paths.config, config)
-        self.app.main_window.info_dialog("Info", _("You_need_to_restart_to_apply_settings"))
+        if get_platform() == "windows":
+            w = HtmlWindow(self.parentGui.window, "Info", _("You_need_to_restart_to_apply_settings"), size=(300,200))
+            w.add_ok_button()
+            w.show()
+        else:
+            self.app.main_window.info_dialog("Info", _("You_need_to_restart_to_apply_settings"))
         self.close()
     # handle_ok_button
 # SettingsGui

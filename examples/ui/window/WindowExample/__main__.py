@@ -1,4 +1,4 @@
-from WindowTest.app import main
+from WindowExample.app import main
 
 if __name__ == '__main__':
     main().main_loop()

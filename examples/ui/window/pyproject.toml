@@ -1,5 +1,5 @@
 [tool.briefcase]
-project_name = "Window_Test"
+project_name = "WindowExample"
 bundle = "ch.tanapro"
 version = "0.9.6"
 build = 1
@@ -15,20 +15,20 @@ requires = [
     "PyYAML>=5.3.1",
 ]
 sources = [
-	"WindowTest",
+	"WindowExample",
 	"c:/Projects/Python/taTogaLib/src/tatogalib",
 ]
 
-[tool.briefcase.app.WindowTest]
-formal_name = "Window Test Application"
-description = "Test for the tatogalib.ui.window module"
+[tool.briefcase.app.WindowExample]
+formal_name = "Window Example Application"
+description = "Example for the tatogalib.ui.window module"
 requires = [
     "c:/Projects/Python/Toga/winforms",
 ]
 
-[tool.briefcase.app.WindowTest.android]
-formal_name = "Window Test Application"
-description = "Test for the tatogalib.ui.window module"
+[tool.briefcase.app.WindowExample.android]
+formal_name = "Window Example Application"
+description = "Example for the tatogalib.ui.window module"
 requires = [
     "c:/Projects/Python/Toga/android",
 ]

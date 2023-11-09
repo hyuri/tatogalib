@@ -265,6 +265,91 @@ class TaWindow(toga.Window):
 # TaWindow
 
 
+class HtmlWindow(TaWindow):
+    """
+    Class which shows a TaWindow with html content.
+    If no position is passed, the window will center on its parent
+
+    This class is only supported on windows.
+    """
+
+    def __init__(
+        self,
+        parentWindow,
+        title,
+        html_text,
+        size=(200, 200),
+        font_size=None,
+        position=None,
+        auto_close_duration=None,
+        on_close=None,
+    ):
+        """
+        Creates a window with a WebView.
+
+        :param toga.Window parentWindow: The toga.Window which is the parent of this HtmlWindow
+        :param str title: The title for this window
+        :param size: The initial size (width, height) in dip of this HtmlWindow
+        :type size: tuple[(int, int)]
+        :param str html_text: The html text to display
+        :param position: The initial position (x, y) of this HtmlWindow. None centers it on parentWindow
+        :type position: tuple[(int, int)] or None
+        :param auto_close_duration: The time in seconds after which this HtmlWindow closes automatically
+        :type auto_close_duration: float or None
+        :param on_close: The callable that will be called when the user closes the window
+        """
+        self.font_size = font_size
+        super().__init__(
+            parentWindow,
+            title,
+            size=size,
+            position=position,
+            auto_close_duration=auto_close_duration,
+            on_close=on_close,
+        )
+        self._mainBox = toga.Box(style=Pack(direction=COLUMN, padding=5, flex=1))
+        self.webView = toga.WebView(style=Pack(flex=1))
+        self.webView.set_content("data:text/html,", html_text)
+        self._mainBox.add(self.webView)
+
+    # __init__
+
+    def add_ok_button(self):
+        """Adds an OK button at the bottom."""
+        button_box = toga.Box(
+            style=Pack(direction=ROW, padding=(5, 0, 0, 0))
+        )  # top, right, bottom and left padding
+        button_box.add(toga.Label("", style=Pack(flex=1)))
+        if self.font_size is None:
+            button_box.add(toga.Button("OK", on_press=self.handle_ok_button))
+        else:
+            button_box.add(
+                toga.Button(
+                    "OK",
+                    on_press=self.handle_ok_button,
+                    style=Pack(font_size=self.font_size),
+                )
+            )
+        button_box.add(toga.Label("", style=Pack(flex=1)))
+        self._mainBox.add(button_box)
+
+    # add_ok_button
+
+    def handle_ok_button(self, widget):
+        self.close()
+
+    # handle_ok_button
+
+    def show(self):
+        self.content = self._mainBox
+        super().show()
+
+    # show
+
+
+# HtmlWindow
+
+
 def centerOnParent(parent_window, child_window):
     if parent_window is not None:
         _location = parent_window.position

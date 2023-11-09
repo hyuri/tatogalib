@@ -1,11 +1,11 @@
 Metadata-Version: 2.1
 Briefcase-Version: 0.3.16
-Name: WindowTest
-Formal-Name: Window Test Application
-App-ID: ch.tanapro.WindowTest
+Name: WindowExample
+Formal-Name: Window Example Application
+App-ID: ch.tanapro.WindowExample
 Version: 0.9.6
 Home-page: https://www.tanapro.ch
 Download-URL: https://www.tanapro.ch
 Author: Tom Arn
 Author-email: sw@tanapro.ch
-Summary: Test for the tatogalib.ui.window module
+Summary: Example for the tatogalib.ui.window module

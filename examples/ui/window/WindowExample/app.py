@@ -5,10 +5,10 @@ Test application for the modules
 - i18nUtils
 """
 import toga
-from WindowTest import gui
+from WindowExample import gui
 
 
-class Window_Test(toga.App):
+class WindowExample(toga.App):
 
     def startup(self):
         """
@@ -19,12 +19,12 @@ class Window_Test(toga.App):
         show the main window.
         """
         objMainGui = gui.MainGui(
-            self, None, "Window Test", size=(600,480)
+            self, None, "Window Example", size=(600,480)
         )
         objMainGui.show()
 
 
 def main():
-    objApp = Window_Test()
+    objApp = WindowExample()
     return objApp
 
