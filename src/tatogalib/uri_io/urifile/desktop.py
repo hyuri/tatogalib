@@ -78,11 +78,10 @@ class UriFileImpl:
     def listdir(self):
         result = []
         self.interface.log(str(self.path))
-        self.interface.log(self.ospath)
         children = os.listdir(self.path)
         for child in children:
             self.interface.log(str(child))
-            uristring = urifile.ospath_to_uristring(str(child))
+            uristring = urifile.ospath_to_uristring(str(self.path / child))
             result.append(uristring)
         return result
 
@@ -108,5 +107,5 @@ class UriFileImpl:
 # UriFileImpl
 
 
-version = "0.7.0"
-version_date = "2023-05-23 - 2023-06-12"
+version = "0.7.1"
+version_date = "2023-05-23 - 2023-11-10"
