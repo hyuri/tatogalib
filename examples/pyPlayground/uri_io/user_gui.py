@@ -2,8 +2,8 @@ import toga
 from toga.style import Pack
 from toga.style.pack import COLUMN, ROW
 from pyplayground import G
-from com.t_arn.pymod.ui.window import TaWindow, TaGui
-import com.t_arn.pymod.ui.window as tawindow
+from tatogalib.ui.window import TaWindow, TaGui
+import tatogalib.ui.window as tawindow
 from platform import python_version
 import sys
 from uri_io.urifilebrowser import UriFileBrowser
@@ -28,42 +28,36 @@ class MainGui(TaGui):
 
         if G.get_platform() == "windows":
             # adding commands
-            self.app.commands = toga.CommandSet(
-                self.app.factory
-            )  # replaces the default CommandSet
-            # is there a better way to get rid of the default menu ?
-            # File > Preferences, Exit
-            # Help > About, Homepage
-            # add actions
-            grpFile = toga.Group(label="File", order=1)
+            self.app._impl._create_app_commands = G.create_app_commands  
+            grpFile = toga.Group(text="File", order=1)
             # add actions
             cmdExit = toga.Command(
                 lambda s: self.app.exit(),
-                label="Exit",
+                text="Exit",
                 group=grpFile,
                 section=sys.maxsize,
             )
             self.app.commands.add(cmdExit)
 
-            grpHelp = toga.Group(label="Help", order=3)
+            grpHelp = toga.Group(text="Help", order=3)
             cmdAbout = toga.Command(
-                self.handle_commands, label="About", group=grpHelp, order=1
+                self.handle_commands, text="About", group=grpHelp, order=1
             )
             cmdAbout.id = "cmdAbout"
             self.app.commands.add(cmdAbout)
             cmdHelp = toga.Command(
-                self.handle_commands, label="Help", group=grpHelp, order=2
+                self.handle_commands, text="Help", group=grpHelp, order=2
             )
             cmdHelp.id = "cmdHelp"
             self.app.commands.add(cmdHelp)
             cmdHistory = toga.Command(
-                self.handle_commands, label="History", group=grpHelp, order=3
+                self.handle_commands, text="History", group=grpHelp, order=3
             )
             cmdHistory.id = "cmdHistory"
             self.app.commands.add(cmdHistory)
             cmdDebug = toga.Command(
                 self.handle_commands,
-                label="Show debug messages",
+                text="Show debug messages",
                 group=grpHelp,
                 order=4,
             )
@@ -73,12 +67,10 @@ class MainGui(TaGui):
 
         if G.get_platform() == "android":
             # Menu
-            self.app.commands = toga.CommandSet(
-                self.app.factory
-            )  # replaces the default CommandSet
+            self.app._impl._create_app_commands = G.create_app_commands  
             cmdAbout = toga.Command(
                 self.handle_commands,
-                label="About",
+                text="About",
                 group=toga.Group.COMMANDS,
                 order=10,
             )
@@ -86,7 +78,7 @@ class MainGui(TaGui):
             self.app.commands.add(cmdAbout)
             cmdHelp = toga.Command(
                 self.handle_commands,
-                label="Help",
+                text="Help",
                 group=toga.Group.COMMANDS,
                 order=20,
             )
@@ -94,7 +86,7 @@ class MainGui(TaGui):
             self.app.commands.add(cmdHelp)
             cmdHistory = toga.Command(
                 self.handle_commands,
-                label="History",
+                text="History",
                 group=toga.Group.COMMANDS,
                 order=30,
             )
@@ -102,7 +94,7 @@ class MainGui(TaGui):
             self.app.commands.add(cmdHistory)
             cmdDebug = toga.Command(
                 self.handle_commands,
-                label="Show debug messages",
+                text="Show debug messages",
                 group=toga.Group.COMMANDS,
                 order=40,
             )
@@ -193,7 +185,7 @@ class MainGui(TaGui):
         _button_box.add(toga.Button("Clear", on_press=self.handle_btn_clear))
         _button_box.add(toga.Label("", style=Pack(flex=1)))
         self.main_box.add(_button_box)
-
+        return self.main_box
     # build_gui
 
     async def handle_btn_source(self, widget):
