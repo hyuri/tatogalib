@@ -15,6 +15,33 @@ def get_platform():
 # get_platform
 
 
+def get_file_roots(app):
+    """
+    Returns the file root directories.
+    Currently only supported on Android
+    
+    :param toga.App app: The running toga App
+    :returns: The file roots
+    :rtype: list[str]
+    """
+    roots = []
+    try:
+        if get_platform() == "android":
+            dirs = app._impl.native.getExternalFilesDirs(None)
+            for dir in dirs:
+                path = dir.getAbsolutePath()
+                idx = path.find("/Android/data/")
+                if idx != -1:
+                    roots.append(path[0:idx])
+        else:
+            # todo: implement for other platforms
+            pass
+    except BaseException as ex:
+           print(str(ex))
+    return roots
+# get_file_roots
+
+
 def get_startup_arguments(app):
     """
     Returns the arguments passed to the app on startup.
