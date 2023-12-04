@@ -4,8 +4,11 @@ from android.provider import DocumentsContract
 from androidx.documentfile.provider import DocumentFile
 import java
 import mimetypes
+from pathlib import Path
+from ... import system
 import toga
-
+from urllib.parse import urlparse, quote, unquote
+from . import UriFile
 
 class UriFileImpl:
     def __init__(self, interface):
@@ -24,7 +27,6 @@ class UriFileImpl:
                 self.docfile = DocumentFile.fromSingleUri(self.context, self.uri)
         else:
             self.docfile = DocumentFile.fromTreeUri(self.context, self.uri)
-
     # __init__
 
     def create_file(self, child_name):
@@ -33,22 +35,14 @@ class UriFileImpl:
             mimetype = "application/octet-stream"
         child = self.docfile.createFile(mimetype, child_name)
         return child.getUri().toString()
-
     # create_file
 
     def delete(self):
         return self.docfile.delete()
-
     # delete
-
-    def get_name(self):
-        return self.docfile.getName()
-
-    # get_name
 
     def exists(self):
         return self.docfile.exists()
-
     # exists
 
     def find(self, child_name):
@@ -56,41 +50,84 @@ class UriFileImpl:
         if child is None:
             return None
         return child.getUri().toString()
-
     # find
+
+    def from_path(path):
+        urifile = None
+        if not path.exists():
+            return None
+        p = str(path)
+        roots = system.get_file_roots()
+        if p.startswith(roots[0]):
+            uristring = "content://com.android.externalstorage.documents/document/primary%3A"
+            uristring += quote(p[len(roots[0])+1:], safe="!")
+            urifile = UriFile(uristring)
+        else:
+            uristring = "content://com.android.externalstorage.documents/document/"
+            for root in roots:
+                if p.startswith(root):
+                    idx = root.rfind("/")
+                    if idx != -1:
+                        uristring += quote(root[idx+1:]) + "%3A"
+                        uristring += quote(p[len(root)+1:], safe="!")
+                        urifile = UriFile(uristring)
+        return urifile
+    # from_path
+
+    def get_lastmodified(self):
+        return self.docfile.lastModified()
+    # get_lastmodified
+
+    def get_mime_type(self):
+        return self.docfile.getType()
+    # get_mime_type
+
+    def get_name(self):
+        return self.docfile.getName()
+    # get_name
+
+    def get_path(self):
+        path = None
+        roots = system.get_file_roots()
+        if self.is_externalstorage_document():
+            pr = urlparse(self.interface.uristring)
+            praefix = "/document/primary%3A"
+            if pr.path.startswith(praefix):
+                path = Path(roots[0]) / unquote(pr.path[len(praefix):])
+                print(str(path))
+            else:
+                for root in roots:
+                    idx = root.rfind("/")
+                    fsid = root[idx+1:]
+                    praefix = f"/document/{fsid}%3A"
+                    print(f"präfix={praefix}")
+                    print(f"pr.path={pr.path}")
+                    if pr.path.startswith(praefix):
+                        path = Path(root) / unquote(pr.path[len(praefix):])
+        return path
+    # get_path
+
+    def get_size(self):
+        return self.docfile.length()
+    # get_size
 
     def isdir(self):
         return self.docfile.isDirectory()
-
     # isdir
 
     def isfile(self):
         return self.docfile.isFile()
-
     # isfile
 
-    def get_lastmodified(self):
-        return self.docfile.lastModified()
+    def is_downloads_document(self):
+        pr = urlparse(self.interface.uristring)
+        return pr.scheme == "content" and pr.netloc ==  "com.android.providers.downloads.documents"
+    # is_downloads_document
 
-    # get_lastmodified
-
-    def set_lastmodified(self, unixtime):
-        # not working, always results in "Update not supported" exception
-        # https://stackoverflow.com/questions/35744654/storage-access-framework-set-last-modified-date-of-local-documentfil
-        try:
-            updateValues = ContentValues()
-            updateValues.put(
-                DocumentsContract.Document.COLUMN_LAST_MODIFIED, java.jlong(unixtime)
-            )
-            self.interface.log("calling update")
-            updated = self.resolver.update(self.uri, updateValues, None, None)
-        except Exception as ex:
-            updated = 0
-            self.interface.log(str(ex))
-        finally:
-            return updated == 1
-
-    # set_lastmodified
+    def is_externalstorage_document(self):
+        pr = urlparse(self.interface.uristring)
+        return pr.scheme == "content" and pr.netloc ==  "com.android.externalstorage.documents"
+    # is_externalstorage_document
 
     def listdir(self):
         result = []
@@ -108,13 +145,7 @@ class UriFileImpl:
             """
             result.append(uristring)
         return result
-
     # listdir
-
-    def get_mime_type(self):
-        return self.docfile.getType()
-
-    # get_mime_type
 
     def request_persistent_access(self):
         flags = 0
@@ -123,17 +154,23 @@ class UriFileImpl:
             | Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         )
         self.resolver.takePersistableUriPermission(self.uri, flags)
-
     # request_persistent_access
 
-    def get_size(self):
-        return self.docfile.length()
-
-    # get_size
-
+    def set_lastmodified(self, unixtime):
+        # not working, always results in "Update not supported" exception
+        # https://stackoverflow.com/questions/35744654/storage-access-framework-set-last-modified-date-of-local-documentfil
+        try:
+            updateValues = ContentValues()
+            updateValues.put(
+                DocumentsContract.Document.COLUMN_LAST_MODIFIED, java.jlong(unixtime)
+            )
+            self.interface.log("calling update")
+            updated = self.resolver.update(self.uri, updateValues, None, None)
+        except Exception as ex:
+            updated = 0
+            self.interface.log(str(ex))
+        finally:
+            return updated == 1
+    # set_lastmodified
 
 # UriFileImpl
-
-
-version = "0.7.0"
-version_date = "2023-05-23 - 2023-06-12"

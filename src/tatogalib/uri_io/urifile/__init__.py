@@ -22,7 +22,7 @@ def ospath_to_uristring(ospath):
     return result
 
 
-# path_to_uristring
+# ospath_to_uristring
 
 
 def uristring_to_ospath(uristring):
@@ -44,4 +44,4 @@ def uristring_to_ospath(uristring):
     return os.path.normpath(os.path.join(host, url2pathname(unquote(parsed.path))))
 
 
-# uristring_to_path
+# uristring_to_ospath

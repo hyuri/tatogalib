@@ -1,3 +1,4 @@
+from pathlib import Path
 import toga
 from ..uriinputstream import UriInputStream, UriTextInputStream
 from ..urioutputstream import UriOutputStream, UriTextOutputStream
@@ -188,6 +189,44 @@ class UriFile:
 
     # find
 
+    def from_path(path):
+        """
+        Creates a new instance of Urifile from a pathlib Path.
+        Return None if the Path does not exist.
+        Raises a TypeError when path is not a Path object
+        
+        :param Path path: The path representing a file or folder
+        :returns: A new Urifile or None
+        :rtype: Urifile or None
+        """
+        if not isinstance(path, Path):
+            raise TypeError("Urifile.from_path() requires an argument of type pathlib.Path")
+        if toga.platform.current_platform == "android":
+            from .android import UriFileImpl
+        elif toga.platform.current_platform in ("windows", "linux", "macOS"):
+            from .desktop import UriFileImpl
+        else:
+            raise NotImplementedError(
+                f"UriFile is not implemented for {toga.platform.current_platform}"
+            )
+        return UriFileImpl.from_path(path)
+    # from_ospath
+
+    def get_path(self):
+        """
+        Gets the pathlib Path of this Urifile.
+        Returns None if the Path cannot be determined.
+    
+        :returns: The Path or None
+        :rtype: Path or None
+        """
+        return self._impl.get_path()
+    # get_path
+
+    def get_uristring(self):
+        return self.uristring
+    # get_uristring
+
     def isdir(self):
         """
         Checks if the UriFile represents an existing folder
@@ -307,5 +346,5 @@ class UriFile:
 # UriFile
 
 
-version = "0.7.0"
-version_date = "2023-05-23 - 2023-06-12"
+version = "0.8.0"
+version_date = "2023-05-23 - 2026-12-04"
