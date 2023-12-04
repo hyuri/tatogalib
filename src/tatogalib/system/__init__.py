@@ -1,6 +1,7 @@
 import json
 import sys
 import toga
+from urllib.parse import urlparse
 
 
 def get_platform():
@@ -15,16 +16,16 @@ def get_platform():
 # get_platform
 
 
-def get_file_roots(app):
+def get_file_roots():
     """
     Returns the file root directories.
     Currently only supported on Android
     
-    :param toga.App app: The running toga App
     :returns: The file roots
     :rtype: list[str]
     """
     roots = []
+    app = toga.App.app
     try:
         if get_platform() == "android":
             dirs = app._impl.native.getExternalFilesDirs(None)
@@ -42,19 +43,19 @@ def get_file_roots(app):
 # get_file_roots
 
 
-def get_startup_arguments(app):
+def get_startup_arguments():
     """
     Returns the arguments passed to the app on startup.
     On Windows, this returns sys.argv, on Android, it returns
     the parsed URL of the main activity. Pass the data as a data URI,
     for example: data:application/json,["arg 1","arg 2"]
     
-    :param toga.App app: The running toga App
     :returns: The startup arguments
     :rtype: list[str]
     """
     try:
         argv = []
+        app = toga.App.app
         if get_platform() == "android":
             argv.append(app.formal_name)
             mainActivity = app._impl.native
