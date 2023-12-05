@@ -8,7 +8,7 @@ from pathlib import Path
 from ... import system
 import toga
 from urllib.parse import urlparse, quote, unquote
-from . import UriFile
+
 
 class UriFileImpl:
     def __init__(self, interface):
@@ -27,6 +27,9 @@ class UriFileImpl:
                 self.docfile = DocumentFile.fromSingleUri(self.context, self.uri)
         else:
             self.docfile = DocumentFile.fromTreeUri(self.context, self.uri)
+            # docUri = DocumentsContract.buildDocumentUriUsingTree(self.uri,
+            #     DocumentsContract.getTreeDocumentId(self.uri))
+            # self.docfile = DocumentFile.fromTreeUri(self.context, docUri)
     # __init__
 
     def create_file(self, child_name):
@@ -53,9 +56,8 @@ class UriFileImpl:
     # find
 
     def from_path(path):
+        from . import UriFile
         urifile = None
-        if not path.exists():
-            return None
         p = str(path)
         roots = system.get_file_roots()
         if p.startswith(roots[0]):
@@ -107,6 +109,20 @@ class UriFileImpl:
         return path
     # get_path
 
+    def get_persisted_permissions():
+        context = toga.App.app._impl.native
+        resolver = context.getContentResolver()
+        tree_permissions = []
+        permissions = resolver.getPersistedUriPermissions()
+        for i in range (0, permissions.size()):
+            p = {}
+            p["uri"] = permissions.get(i).getUri().toString()
+            p["is_read_permission"] = permissions.get(i).isReadPermission()
+            p["is_write_permission"] = permissions.get(i).isWritePermission()
+            tree_permissions.append(p)
+        return tree_permissions
+    # get_persisted_permissions
+ 
     def get_size(self):
         return self.docfile.length()
     # get_size

@@ -1,0 +1,35 @@
+['/storage/emulated/0', '/storage/7F39-0FFF']
+
+['pyPlayground', '/storage/7F39-0FFF/!Daten/DEV/Base32.java']
+content://com.android.externalstorage.documents/document/7F39-0FFF%3A!Daten%2FDEV%2FBase32.java
+
+['pyPlayground', '/storage/emulated/0/!Daten/DEV/Python/pyFileDiff/pyfilediff/tests/pyfilediff.py']
+content://com.android.externalstorage.documents/document/primary%3A!Daten%2FDEV%2FPython%2FpyFileDiff%2Fpyfilediff%2Ftests%2Fpyfilediff.py
+
+/storage/emulated/0/!Daten/DEV/uri_to_path.java = 
+content://com.android.externalstorage.documents/document/primary%3A%21Daten/DEV/uri_to_path.java
+
+
+/storage/7F39-0FFF/!Daten/DEV/Base32.java = 
+content://com.android.externalstorage.documents/document/7F39-0FFF%3A%21Daten/DEV/Base32.java
+
+
+/storage/emulated/0/!Daten/DEV/uri_to_path.java
+/storage/emulated/0/!Daten/DEV/uri_to_path.java
+
+/storage/7F39-0FFF/!Daten/DEV/Base32.java
+/storage/7F39-0FFF/!Daten/DEV/Base32.java
+
+
+Uri docUri = DocumentsContract.buildDocumentUriUsingTree(treeUri,
+                DocumentsContract.getTreeDocumentId(treeUri));
+DocumentFile pickedDir = DocumentFile.fromTreeUri(context, docUri);
+
+self.docfile = DocumentFile.fromTreeUri(self.context, self.uri)
+
+dir uri:
+content://com.android.externalstorage.documents/tree/primary%3A!Daten
+child file uri:
+content://com.android.externalstorage.documents/tree/primary%3A!Daten/document/primary%3A!Daten%2FMediaFileFunctions.java
+single file uri:
+content://com.android.externalstorage.documents/                      document/primary%3A!Daten%2FMediaFileFunctions.java

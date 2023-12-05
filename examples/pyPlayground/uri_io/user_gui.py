@@ -119,6 +119,14 @@ class MainGui(TaGui):
         )
         self.app.commands.add(
             toga.Command(
+                self.handle_show_access,
+                text="Show folder access",
+                group=uri_group,
+                order=55,
+            )
+        )
+        self.app.commands.add(
+            toga.Command(
                 self.handle_listdir,
                 text="List folder content",
                 group=uri_group,
@@ -256,8 +264,12 @@ class MainGui(TaGui):
         except BaseException as ex:
             G.write_debug_message(str(ex))
             self.fnPrintln("\n" + str(ex))
-
     # handle_read
+
+    def handle_show_access(self, widget):
+        permissions = UriFile.get_persisted_permissions()
+        self.fnPrintln(str(permissions))
+    # handle_show_access
 
     def handle_write(self, widget):
         try:
@@ -333,6 +345,7 @@ class MainGui(TaGui):
             self.fnPrintln(f"mime_type: {urifile.uristring}")
             self.fnPrintln(f"isdir: {urifile.isdir()}")
             self.fnPrintln(f"exists: {urifile.exists()}")
+            self.fnPrintln(f"path: {str(urifile.get_path())}")
             self.fnPrintln(f"startup arguments: {str(system.get_startup_arguments())}\n")
             argv = system.get_startup_arguments()
             if len(argv) > 1:

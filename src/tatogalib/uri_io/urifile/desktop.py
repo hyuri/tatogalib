@@ -78,11 +78,7 @@ class UriFileImpl:
         return result
     # listdir
 
-    def request_persistent_access(self):
-        pass
-    # request_persistent_access
-
-    def set_lastmodified(self, unixtime):
+   def set_lastmodified(self, unixtime):
         try:
             atime = os.path.getatime(str(self.path))
             os.utime(str(self.path), times=(atime, unixtime))

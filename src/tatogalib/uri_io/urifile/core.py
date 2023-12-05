@@ -1,7 +1,17 @@
 from pathlib import Path
-import toga
+from ... import system
 from ..uriinputstream import UriInputStream, UriTextInputStream
 from ..urioutputstream import UriOutputStream, UriTextOutputStream
+
+
+if system.get_platform() == "android":
+    from .android import UriFileImpl
+elif system.get_platform() in ("windows", "linux", "macOS"):
+    from .desktop import UriFileImpl
+else:
+    raise NotImplementedError(
+        f"UriFile is not implemented for {system.get_platform()}"
+    )
 
 
 class UriFile:
@@ -15,16 +25,7 @@ class UriFile:
         """
         self.uristring = uristring
         self._fnlog = fnLog  # for logging to user code
-        if toga.platform.current_platform == "android":
-            from .android import UriFileImpl
-        elif toga.platform.current_platform in ("windows", "linux", "macOS"):
-            from .desktop import UriFileImpl
-        else:
-            raise NotImplementedError(
-                f"UriFile is not implemented for {toga.platform.current_platform}"
-            )
         self._impl = UriFileImpl(self)
-
     # __init__
 
     @property
@@ -33,7 +34,6 @@ class UriFile:
         The name (str) of the file or folder
         """
         return self._impl.get_name()
-
     # name
 
     @property
@@ -55,7 +55,6 @@ class UriFile:
         :rtype: boolean
         """
         return self._impl.set_lastmodified(unixtime)
-
     # lastmodified
 
     @property
@@ -65,7 +64,6 @@ class UriFile:
         It is None if the MIME type cannot be evaluated.
         """
         return self._impl.get_mime_type()
-
     # mime_type
 
     @property
@@ -74,7 +72,6 @@ class UriFile:
         The size (int) of the file in bytes.
         """
         return self._impl.get_size()
-
     # size
 
     def copy_to(self, urifile):
@@ -116,7 +113,6 @@ class UriFile:
             self.log(str(ex))
         finally:
             return result
-
     # copy_to
 
     def create_file(self, child_name, replace=False):
@@ -145,7 +141,6 @@ class UriFile:
                 raise IsADirectoryError(f"Directory '{child_name}' already exists!")
         uristring = self._impl.create_file(child_name)
         return UriFile(uristring, self._fnlog)
-
     # create_file
 
     def delete(self):
@@ -156,7 +151,6 @@ class UriFile:
         :rtype: boolean
         """
         return self._impl.delete()
-
     # delete
 
     def exists(self):
@@ -167,7 +161,6 @@ class UriFile:
         :rtype: boolean
         """
         return self._impl.exists()
-
     # exists
 
     def find(self, child_name):
@@ -186,7 +179,6 @@ class UriFile:
         if uristring is None:
             return None
         return UriFile(uristring, self._fnlog)
-
     # find
 
     def from_path(path):
@@ -201,14 +193,6 @@ class UriFile:
         """
         if not isinstance(path, Path):
             raise TypeError("Urifile.from_path() requires an argument of type pathlib.Path")
-        if toga.platform.current_platform == "android":
-            from .android import UriFileImpl
-        elif toga.platform.current_platform in ("windows", "linux", "macOS"):
-            from .desktop import UriFileImpl
-        else:
-            raise NotImplementedError(
-                f"UriFile is not implemented for {toga.platform.current_platform}"
-            )
         return UriFileImpl.from_path(path)
     # from_ospath
 
@@ -223,6 +207,15 @@ class UriFile:
         return self._impl.get_path()
     # get_path
 
+    def get_persisted_permissions():
+        """
+        Get the persisted permissions to files or folders.
+        This is only relevant for Android and is ignored on other platforms.
+        """
+        if system.get_platform() == "android":
+            return UriFileImpl.get_persisted_permissions()
+    # get_persisted_permissions
+
     def get_uristring(self):
         return self.uristring
     # get_uristring
@@ -235,7 +228,6 @@ class UriFile:
         :rtype: boolean
         """
         return self._impl.isdir()
-
     # isdir
 
     def isfile(self):
@@ -246,7 +238,6 @@ class UriFile:
         :rtype: boolean
         """
         return self._impl.isfile()
-
     # isfile
 
     def listdir(self):
@@ -266,7 +257,6 @@ class UriFile:
             urifile = UriFile(uristring, self._fnlog)
             result.append(urifile)
         return result
-
     # listdir
 
     def log(self, message):
@@ -277,7 +267,6 @@ class UriFile:
         """
         if self._fnlog is not None:
             self._fnlog(message)
-
     # log
 
     def open(self, mode, encoding="utf-8", newline=None):
@@ -311,7 +300,6 @@ class UriFile:
             return UriTextOutputStream(
                 self.uristring, mode, encoding, newline, self._fnlog
             )
-
     # open
 
     def _validate_open_mode(self, mode):
@@ -330,7 +318,6 @@ class UriFile:
         if len(operation) != 1 or len(data_type) != 1:
             raise ValueError(errmsg)
         return (operation, data_type)
-
     # _validate_open_mode
 
     def request_persistent_access(self):
@@ -338,10 +325,9 @@ class UriFile:
         Get permanent access to the file or folder.
         This is only relevant for Android and is ignored on other platforms.
         """
-        self._impl.request_persistent_access()
-
+        if system.get_platform() == "android":
+            self._impl.request_persistent_access()
     # request_persistent_access
-
 
 # UriFile
 
