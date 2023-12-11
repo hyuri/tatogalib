@@ -18,19 +18,79 @@ class UriFileImpl:
         self.uri = Uri.parse(interface.uristring)
         if "/document/" in interface.uristring:
             if "/tree/" in interface.uristring:
-                # to do: create tree uri and call fromTreeUri
-                # We could use DocumentsContract.buildTreeDocumentUri
-                # but we do not have rights there even when we have
-                # rights to the parent folder
-                self.docfile = DocumentFile.fromSingleUri(self.context, self.uri)
+               self.docfile = DocumentFile.fromSingleUri(self.context, self.uri)
             else:
                 self.docfile = DocumentFile.fromSingleUri(self.context, self.uri)
         else:
             self.docfile = DocumentFile.fromTreeUri(self.context, self.uri)
-            # docUri = DocumentsContract.buildDocumentUriUsingTree(self.uri,
-            #     DocumentsContract.getTreeDocumentId(self.uri))
-            # self.docfile = DocumentFile.fromTreeUri(self.context, docUri)
-    # __init__
+   # __init__
+
+    @staticmethod
+    def from_path(path):
+        from . import UriFile
+        urifile = None
+        p = str(path)
+        roots = system.get_file_roots()
+        if p.startswith(roots[0]):
+            uristring = "content://com.android.externalstorage.documents/document/primary%3A"
+            uristring += quote(p[len(roots[0])+1:], safe="!")
+            urifile = UriFile(uristring)
+        else:
+            uristring = "content://com.android.externalstorage.documents/document/"
+            for root in roots:
+                if p.startswith(root):
+                    idx = root.rfind("/")
+                    if idx != -1:
+                        uristring += quote(root[idx+1:]) + "%3A"
+                        uristring += quote(p[len(root)+1:], safe="!")
+                        urifile = UriFile(uristring)
+        return urifile
+    # from_path
+
+    @staticmethod
+    def get_persisted_permissions():
+        context = toga.App.app._impl.native
+        resolver = context.getContentResolver()
+        tree_permissions = []
+        permissions = resolver.getPersistedUriPermissions()
+        for i in range (0, permissions.size()):
+            p = {}
+            p["uri"] = str(permissions.get(i).getUri())
+            p["is_read_permission"] = permissions.get(i).isReadPermission()
+            p["is_write_permission"] = permissions.get(i).isWritePermission()
+            tree_permissions.append(p)
+        return tree_permissions
+    # get_persisted_permissions
+ 
+    @staticmethod
+    def get_uripath(uristring):
+        uripath = None
+        idx = uristring.rfind("/document/")
+        if idx != -1:
+            uripath = uristring[idx+len("/document/"):]
+        else:
+            idx = uristring.rfind("/tree/")
+            if idx != -1:
+                uripath = uristring[idx+len("/tree/"):]
+        return uripath
+    # get_uripath
+ 
+    @staticmethod
+    def is_child(parent_uristring, uristring):
+        """
+        Checks if doc_uristring is a descendant of parent_uristring.
+        Both uristrings can be a tree URI or a document URI
+        
+        :param str parent_uristring: The parent folder
+        :param str uristring: The file or folder to be checked
+        :returns: True or False
+        """
+        uripath = UriFileImpl.get_uripath(uristring)
+        uripath_parent = UriFileImpl.get_uripath(parent_uristring)
+        if uripath.startswith(uripath_parent):
+            return True
+        return False
+    # is_child
 
     def create_file(self, child_name):
         (mimetype, encoding) = mimetypes.guess_type(str(child_name), strict=False)
@@ -55,27 +115,6 @@ class UriFileImpl:
         return child.getUri().toString()
     # find
 
-    def from_path(path):
-        from . import UriFile
-        urifile = None
-        p = str(path)
-        roots = system.get_file_roots()
-        if p.startswith(roots[0]):
-            uristring = "content://com.android.externalstorage.documents/document/primary%3A"
-            uristring += quote(p[len(roots[0])+1:], safe="!")
-            urifile = UriFile(uristring)
-        else:
-            uristring = "content://com.android.externalstorage.documents/document/"
-            for root in roots:
-                if p.startswith(root):
-                    idx = root.rfind("/")
-                    if idx != -1:
-                        uristring += quote(root[idx+1:]) + "%3A"
-                        uristring += quote(p[len(root)+1:], safe="!")
-                        urifile = UriFile(uristring)
-        return urifile
-    # from_path
-
     def get_lastmodified(self):
         return self.docfile.lastModified()
     # get_lastmodified
@@ -87,6 +126,26 @@ class UriFileImpl:
     def get_name(self):
         return self.docfile.getName()
     # get_name
+
+    def get_authorized_uristring(self):
+        docId = DocumentsContract.getDocumentId(self.docfile.getUri())
+        permissions = self.get_persisted_permissions()
+        docTreeUri = None
+        for p in permissions:
+            if self.is_child(
+                p["uri"],
+                self.interface.get_uristring()
+            ):
+                docTreeUri = DocumentsContract.buildDocumentUriUsingTree(
+                    Uri.parse(p["uri"]),
+                    docId
+                )
+                break
+        if docTreeUri is not None:
+            return docTreeUri.toString()
+        else:
+            return None
+    # get_authorized_uristring
 
     def get_path(self):
         path = None
@@ -109,20 +168,6 @@ class UriFileImpl:
         return path
     # get_path
 
-    def get_persisted_permissions():
-        context = toga.App.app._impl.native
-        resolver = context.getContentResolver()
-        tree_permissions = []
-        permissions = resolver.getPersistedUriPermissions()
-        for i in range (0, permissions.size()):
-            p = {}
-            p["uri"] = permissions.get(i).getUri().toString()
-            p["is_read_permission"] = permissions.get(i).isReadPermission()
-            p["is_write_permission"] = permissions.get(i).isWritePermission()
-            tree_permissions.append(p)
-        return tree_permissions
-    # get_persisted_permissions
- 
     def get_size(self):
         return self.docfile.length()
     # get_size
@@ -164,12 +209,16 @@ class UriFileImpl:
     # listdir
 
     def request_persistent_access(self):
-        flags = 0
-        flags = flags | (
-            Intent.FLAG_GRANT_READ_URI_PERMISSION
-            | Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-        )
-        self.resolver.takePersistableUriPermission(self.uri, flags)
+        try:
+            flags = 0
+            flags = flags | (
+                Intent.FLAG_GRANT_READ_URI_PERMISSION
+                | Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+            )
+            self.resolver.takePersistableUriPermission(self.uri, flags)
+        except Exception as ex:
+            print(str(ex))
+            self.interface.log(str(ex))
     # request_persistent_access
 
     def set_lastmodified(self, unixtime):

@@ -181,6 +181,7 @@ class UriFile:
         return UriFile(uristring, self._fnlog)
     # find
 
+    @staticmethod
     def from_path(path):
         """
         Creates a new instance of Urifile from a pathlib Path.
@@ -194,7 +195,7 @@ class UriFile:
         if not isinstance(path, Path):
             raise TypeError("Urifile.from_path() requires an argument of type pathlib.Path")
         return UriFileImpl.from_path(path)
-    # from_ospath
+    # from_path
 
     def get_path(self):
         """
@@ -207,13 +208,25 @@ class UriFile:
         return self._impl.get_path()
     # get_path
 
+    def get_authorized_uristring(self):
+        """
+        Get the uristring to access this UriFile based on existing persisted folder permissions.
+        This is only relevant for Android and will return this UriFile's uristring on other platforms.
+        
+        :returns: uristring for this UriFile
+         """
+        return self._impl.get_authorized_uristring()
+    # get_authorized_uristring
+
+    @staticmethod
     def get_persisted_permissions():
         """
         Get the persisted permissions to files or folders.
-        This is only relevant for Android and is ignored on other platforms.
+        This is only relevant for Android and will return an empty list on other platforms.
+        
+        :returns: list with permissions
         """
-        if system.get_platform() == "android":
-            return UriFileImpl.get_persisted_permissions()
+        return UriFileImpl.get_persisted_permissions()
     # get_persisted_permissions
 
     def get_uristring(self):

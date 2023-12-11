@@ -37,6 +37,15 @@ class UriFileImpl:
         return None
     # find
 
+    def get_authorized_uristring(self):
+        return self.interface.uristring
+    # get_authorized_uristring
+
+    @staticmethod
+    def get_persisted_permissions():
+       return []
+    # get_persisted_permissions
+
     def get_lastmodified(self):
         return int(os.path.getmtime(str(self.path)))
     # get_lastmodified
@@ -50,10 +59,10 @@ class UriFileImpl:
         return self.path.name
     # get_name
 
-    def get_ospath(self):
+    def get_path(self):
         # todo: implement
         pass
-    # get_ospath
+    # get_path
 
     def get_size(self):
         return self.path.stat().st_size
