@@ -10,25 +10,25 @@ author = "Tom Arn"
 author_email = "sw@tanapro.ch"
 
 requires = [
-    "c:/Projects/Python/Toga/core",
+    "../../../../Toga/core",
 	"python-i18n>=0.3.9",
     "PyYAML>=5.3.1",
 ]
 sources = [
 	"WindowExample",
-	"c:/Projects/Python/taTogaLib/src/tatogalib",
+	"../../../src/tatogalib",
 ]
 
 [tool.briefcase.app.WindowExample]
 formal_name = "Window Example Application"
 description = "Example for the tatogalib.ui.window module"
 requires = [
-    "c:/Projects/Python/Toga/winforms",
+    "../../../../Toga/winforms",
 ]
 
 [tool.briefcase.app.WindowExample.android]
 formal_name = "Window Example Application"
 description = "Example for the tatogalib.ui.window module"
 requires = [
-    "c:/Projects/Python/Toga/android",
+    "../../../../Toga/android",
 ]

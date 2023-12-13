@@ -9,9 +9,7 @@ if system.get_platform() == "android":
 elif system.get_platform() in ("windows", "linux", "macOS"):
     from .desktop import UriFileImpl
 else:
-    raise NotImplementedError(
-        f"UriFile is not implemented for {system.get_platform()}"
-    )
+    raise NotImplementedError(f"UriFile is not implemented for {system.get_platform()}")
 
 
 class UriFile:
@@ -26,6 +24,7 @@ class UriFile:
         self.uristring = uristring
         self._fnlog = fnLog  # for logging to user code
         self._impl = UriFileImpl(self)
+
     # __init__
 
     @property
@@ -34,6 +33,7 @@ class UriFile:
         The name (str) of the file or folder
         """
         return self._impl.get_name()
+
     # name
 
     @property
@@ -55,6 +55,7 @@ class UriFile:
         :rtype: boolean
         """
         return self._impl.set_lastmodified(unixtime)
+
     # lastmodified
 
     @property
@@ -64,6 +65,7 @@ class UriFile:
         It is None if the MIME type cannot be evaluated.
         """
         return self._impl.get_mime_type()
+
     # mime_type
 
     @property
@@ -72,6 +74,7 @@ class UriFile:
         The size (int) of the file in bytes.
         """
         return self._impl.get_size()
+
     # size
 
     def copy_to(self, urifile):
@@ -113,6 +116,7 @@ class UriFile:
             self.log(str(ex))
         finally:
             return result
+
     # copy_to
 
     def create_file(self, child_name, replace=False):
@@ -141,6 +145,7 @@ class UriFile:
                 raise IsADirectoryError(f"Directory '{child_name}' already exists!")
         uristring = self._impl.create_file(child_name)
         return UriFile(uristring, self._fnlog)
+
     # create_file
 
     def delete(self):
@@ -151,6 +156,7 @@ class UriFile:
         :rtype: boolean
         """
         return self._impl.delete()
+
     # delete
 
     def exists(self):
@@ -161,6 +167,7 @@ class UriFile:
         :rtype: boolean
         """
         return self._impl.exists()
+
     # exists
 
     def find(self, child_name):
@@ -179,6 +186,7 @@ class UriFile:
         if uristring is None:
             return None
         return UriFile(uristring, self._fnlog)
+
     # find
 
     @staticmethod
@@ -187,35 +195,40 @@ class UriFile:
         Creates a new instance of Urifile from a pathlib Path.
         Return None if the Path does not exist.
         Raises a TypeError when path is not a Path object
-        
+
         :param Path path: The path representing a file or folder
         :returns: A new Urifile or None
         :rtype: Urifile or None
         """
         if not isinstance(path, Path):
-            raise TypeError("Urifile.from_path() requires an argument of type pathlib.Path")
+            raise TypeError(
+                "Urifile.from_path() requires an argument of type pathlib.Path"
+            )
         return UriFileImpl.from_path(path)
+
     # from_path
 
     def get_path(self):
         """
         Gets the pathlib Path of this Urifile.
         Returns None if the Path cannot be determined.
-    
+
         :returns: The Path or None
         :rtype: Path or None
         """
         return self._impl.get_path()
+
     # get_path
 
     def get_authorized_uristring(self):
         """
         Get the uristring to access this UriFile based on existing persisted folder permissions.
         This is only relevant for Android and will return this UriFile's uristring on other platforms.
-        
+
         :returns: uristring for this UriFile
-         """
+        """
         return self._impl.get_authorized_uristring()
+
     # get_authorized_uristring
 
     @staticmethod
@@ -223,14 +236,16 @@ class UriFile:
         """
         Get the persisted permissions to files or folders.
         This is only relevant for Android and will return an empty list on other platforms.
-        
+
         :returns: list with permissions
         """
         return UriFileImpl.get_persisted_permissions()
+
     # get_persisted_permissions
 
     def get_uristring(self):
         return self.uristring
+
     # get_uristring
 
     def isdir(self):
@@ -241,6 +256,7 @@ class UriFile:
         :rtype: boolean
         """
         return self._impl.isdir()
+
     # isdir
 
     def isfile(self):
@@ -251,6 +267,7 @@ class UriFile:
         :rtype: boolean
         """
         return self._impl.isfile()
+
     # isfile
 
     def listdir(self):
@@ -270,6 +287,7 @@ class UriFile:
             urifile = UriFile(uristring, self._fnlog)
             result.append(urifile)
         return result
+
     # listdir
 
     def log(self, message):
@@ -280,6 +298,7 @@ class UriFile:
         """
         if self._fnlog is not None:
             self._fnlog(message)
+
     # log
 
     def open(self, mode, encoding="utf-8", newline=None):
@@ -313,6 +332,7 @@ class UriFile:
             return UriTextOutputStream(
                 self.uristring, mode, encoding, newline, self._fnlog
             )
+
     # open
 
     def _validate_open_mode(self, mode):
@@ -331,6 +351,7 @@ class UriFile:
         if len(operation) != 1 or len(data_type) != 1:
             raise ValueError(errmsg)
         return (operation, data_type)
+
     # _validate_open_mode
 
     def request_persistent_access(self):
@@ -340,7 +361,9 @@ class UriFile:
         """
         if system.get_platform() == "android":
             self._impl.request_persistent_access()
+
     # request_persistent_access
+
 
 # UriFile
 

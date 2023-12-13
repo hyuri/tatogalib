@@ -47,10 +47,11 @@ Thumbs.db
 *.flv
 *.mov
 *.wmv
+# python wheel folders
+*.egg-info
+*.dist-info
 
 venv_tatogalib/
 docs/build/
-src/tatogalib/tatogalib.egg-info/
 test/ui/window/build/
-test/ui/window/WindowTest.dist-info/
 build/

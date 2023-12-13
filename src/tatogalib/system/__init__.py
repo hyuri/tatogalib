@@ -13,6 +13,8 @@ def get_platform():
     :rtype: str
     """
     return toga.platform.current_platform
+
+
 # get_platform
 
 
@@ -20,7 +22,7 @@ def get_file_roots():
     """
     Returns the file root directories.
     Currently only supported on Android
-    
+
     :returns: The file roots
     :rtype: list[str]
     """
@@ -38,8 +40,10 @@ def get_file_roots():
             # todo: implement for other platforms
             pass
     except BaseException as ex:
-           print(str(ex))
+        print(str(ex))
     return roots
+
+
 # get_file_roots
 
 
@@ -49,7 +53,7 @@ def get_startup_arguments():
     On Windows, this returns sys.argv, on Android, it returns
     the parsed URL of the main activity. Pass the data as a data URI,
     for example: data:application/json,["arg 1","arg 2"]
-    
+
     :returns: The startup arguments
     :rtype: list[str]
     """
@@ -69,6 +73,8 @@ def get_startup_arguments():
         else:
             argv = sys.argv
     except BaseException as ex:
-           print(str(ex))
+        print(str(ex))
     return argv
+
+
 # get_startup_arguments

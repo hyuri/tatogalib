@@ -33,11 +33,3 @@ child file uri:
 content://com.android.externalstorage.documents/tree/primary%3A!Daten/document/primary%3A!Daten%2FMediaFileFunctions.java
 single file uri:
 content://com.android.externalstorage.documents/                      document/primary%3A!Daten%2FMediaFileFunctions.java
-
-DocumentsProvider
-public boolean isChildDocument (String parentDocumentId, 
-                String documentId)
-                
-DocumentsContract
-public static Uri buildDocumentUriUsingTree (Uri treeUri, 
-                String documentId)
