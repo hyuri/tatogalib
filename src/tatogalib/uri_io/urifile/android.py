@@ -18,22 +18,26 @@ class UriFileImpl:
         self.uri = Uri.parse(interface.uristring)
         if "/document/" in interface.uristring:
             if "/tree/" in interface.uristring:
-               self.docfile = DocumentFile.fromSingleUri(self.context, self.uri)
+                self.docfile = DocumentFile.fromSingleUri(self.context, self.uri)
             else:
                 self.docfile = DocumentFile.fromSingleUri(self.context, self.uri)
         else:
             self.docfile = DocumentFile.fromTreeUri(self.context, self.uri)
-   # __init__
+
+    # __init__
 
     @staticmethod
     def from_path(path):
         from . import UriFile
+
         urifile = None
         p = str(path)
         roots = system.get_file_roots()
         if p.startswith(roots[0]):
-            uristring = "content://com.android.externalstorage.documents/document/primary%3A"
-            uristring += quote(p[len(roots[0])+1:], safe="!")
+            uristring = (
+                "content://com.android.externalstorage.documents/document/primary%3A"
+            )
+            uristring += quote(p[len(roots[0]) + 1 :], safe="!")
             urifile = UriFile(uristring)
         else:
             uristring = "content://com.android.externalstorage.documents/document/"
@@ -41,10 +45,11 @@ class UriFileImpl:
                 if p.startswith(root):
                     idx = root.rfind("/")
                     if idx != -1:
-                        uristring += quote(root[idx+1:]) + "%3A"
-                        uristring += quote(p[len(root)+1:], safe="!")
+                        uristring += quote(root[idx + 1 :]) + "%3A"
+                        uristring += quote(p[len(root) + 1 :], safe="!")
                         urifile = UriFile(uristring)
         return urifile
+
     # from_path
 
     @staticmethod
@@ -53,36 +58,38 @@ class UriFileImpl:
         resolver = context.getContentResolver()
         tree_permissions = []
         permissions = resolver.getPersistedUriPermissions()
-        for i in range (0, permissions.size()):
+        for i in range(0, permissions.size()):
             p = {}
             p["uri"] = str(permissions.get(i).getUri())
             p["is_read_permission"] = permissions.get(i).isReadPermission()
             p["is_write_permission"] = permissions.get(i).isWritePermission()
             p["persisted_time"] = permissions.get(i).getPersistedTime()
             tree_permissions.append(p)
-        sorted_list = sorted(tree_permissions, key=lambda d: d["persisted_time"]) 
+        sorted_list = sorted(tree_permissions, key=lambda d: d["persisted_time"])
         return sorted_list
+
     # get_persisted_permissions
- 
+
     @staticmethod
     def get_uripath(uristring):
         uripath = None
         idx = uristring.rfind("/document/")
         if idx != -1:
-            uripath = uristring[idx+len("/document/"):]
+            uripath = uristring[idx + len("/document/") :]
         else:
             idx = uristring.rfind("/tree/")
             if idx != -1:
-                uripath = uristring[idx+len("/tree/"):]
+                uripath = uristring[idx + len("/tree/") :]
         return uripath
+
     # get_uripath
- 
+
     @staticmethod
     def is_child(parent_uristring, uristring):
         """
         Checks if doc_uristring is a descendant of parent_uristring.
         Both uristrings can be a tree URI or a document URI
-        
+
         :param str parent_uristring: The parent folder
         :param str uristring: The file or folder to be checked
         :returns: True or False
@@ -92,6 +99,7 @@ class UriFileImpl:
         if uripath.startswith(uripath_parent):
             return True
         return False
+
     # is_child
 
     def create_file(self, child_name):
@@ -100,14 +108,17 @@ class UriFileImpl:
             mimetype = "application/octet-stream"
         child = self.docfile.createFile(mimetype, child_name)
         return child.getUri().toString()
+
     # create_file
 
     def delete(self):
         return self.docfile.delete()
+
     # delete
 
     def exists(self):
         return self.docfile.exists()
+
     # exists
 
     def find(self, child_name):
@@ -115,18 +126,22 @@ class UriFileImpl:
         if child is None:
             return None
         return child.getUri().toString()
+
     # find
 
     def get_lastmodified(self):
         return self.docfile.lastModified()
+
     # get_lastmodified
 
     def get_mime_type(self):
         return self.docfile.getType()
+
     # get_mime_type
 
     def get_name(self):
         return self.docfile.getName()
+
     # get_name
 
     def get_authorized_uristring(self):
@@ -134,19 +149,16 @@ class UriFileImpl:
         permissions = self.get_persisted_permissions()
         docTreeUri = None
         for p in permissions:
-            if self.is_child(
-                p["uri"],
-                self.interface.get_uristring()
-            ):
+            if self.is_child(p["uri"], self.interface.get_uristring()):
                 docTreeUri = DocumentsContract.buildDocumentUriUsingTree(
-                    Uri.parse(p["uri"]),
-                    docId
+                    Uri.parse(p["uri"]), docId
                 )
                 break
         if docTreeUri is not None:
             return docTreeUri.toString()
         else:
             return None
+
     # get_authorized_uristring
 
     def get_path(self):
@@ -156,40 +168,52 @@ class UriFileImpl:
             pr = urlparse(self.interface.uristring)
             praefix = "/document/primary%3A"
             if pr.path.startswith(praefix):
-                path = Path(roots[0]) / unquote(pr.path[len(praefix):])
+                path = Path(roots[0]) / unquote(pr.path[len(praefix) :])
                 print(str(path))
             else:
                 for root in roots:
                     idx = root.rfind("/")
-                    fsid = root[idx+1:]
+                    fsid = root[idx + 1 :]
                     praefix = f"/document/{fsid}%3A"
                     print(f"präfix={praefix}")
                     print(f"pr.path={pr.path}")
                     if pr.path.startswith(praefix):
-                        path = Path(root) / unquote(pr.path[len(praefix):])
+                        path = Path(root) / unquote(pr.path[len(praefix) :])
         return path
+
     # get_path
 
     def get_size(self):
         return self.docfile.length()
+
     # get_size
 
     def isdir(self):
         return self.docfile.isDirectory()
+
     # isdir
 
     def isfile(self):
         return self.docfile.isFile()
+
     # isfile
 
     def is_downloads_document(self):
         pr = urlparse(self.interface.uristring)
-        return pr.scheme == "content" and pr.netloc ==  "com.android.providers.downloads.documents"
+        return (
+            pr.scheme == "content"
+            and pr.netloc == "com.android.providers.downloads.documents"
+        )
+
     # is_downloads_document
 
     def is_externalstorage_document(self):
         pr = urlparse(self.interface.uristring)
-        return pr.scheme == "content" and pr.netloc ==  "com.android.externalstorage.documents"
+        return (
+            pr.scheme == "content"
+            and pr.netloc == "com.android.externalstorage.documents"
+        )
+
     # is_externalstorage_document
 
     def listdir(self):
@@ -208,6 +232,7 @@ class UriFileImpl:
             """
             result.append(uristring)
         return result
+
     # listdir
 
     def release_persistent_access(self, read=True, write=True):
@@ -221,6 +246,7 @@ class UriFileImpl:
         except Exception as ex:
             print(str(ex))
             self.interface.log(str(ex))
+
     # release_persistent_access
 
     def request_persistent_access(self, read=True, write=True):
@@ -234,6 +260,7 @@ class UriFileImpl:
         except Exception as ex:
             print(str(ex))
             self.interface.log(str(ex))
+
     # request_persistent_access
 
     def set_lastmodified(self, unixtime):
@@ -251,6 +278,8 @@ class UriFileImpl:
             self.interface.log(str(ex))
         finally:
             return updated == 1
+
     # set_lastmodified
+
 
 # UriFileImpl

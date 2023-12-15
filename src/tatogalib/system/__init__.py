@@ -22,7 +22,7 @@ def get_file_roots():
     """
     Returns the file root directories.
     Currently only supported on Android
-    
+
     :returns: The file roots
     :rtype: list[str]
     """
@@ -53,7 +53,7 @@ def get_startup_arguments():
     On Windows, this returns sys.argv, on Android, it returns
     the parsed URL of the main activity. Pass the data as a data URI,
     for example: data:application/json,["arg 1","arg 2"]
-    
+
     :returns: The startup arguments
     :rtype: list[str]
     """
