@@ -11,7 +11,7 @@ copyright = '2023, Tom Arn, www.tanapro.ch'
 license = 'MIT license'
 author = 'Tom Arn'
 release = '2023-12-20'
-repository = 'https://bitbucket.org/TomArn/tatogalib/src/master/'
+repository = 'https://bitbucket.org/TomArn/tatogalib/'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
