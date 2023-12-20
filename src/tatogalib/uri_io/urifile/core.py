@@ -198,7 +198,7 @@ class UriFile:
 
         :param Path path: The path representing a file or folder
         :returns: A new Urifile or None
-        :rtype: Urifile or None
+        :rtype: UriFile or None
         """
         if not isinstance(path, Path):
             raise TypeError(
@@ -210,7 +210,7 @@ class UriFile:
 
     def get_path(self):
         """
-        Gets the pathlib Path of this Urifile.
+        Gets the pathlib Path of this UriFile.
         Returns None if the Path cannot be determined.
 
         :returns: The Path or None
@@ -245,6 +245,12 @@ class UriFile:
     # get_persisted_permissions
 
     def get_uristring(self):
+        """
+        Get the uristring of this UriFile.
+
+        :returns: uristring for this UriFile
+        :rtype: str
+        """
         return self.uristring
 
     # get_uristring
@@ -386,4 +392,4 @@ class UriFile:
 
 
 version = "0.8.0"
-version_date = "2023-05-23 - 2026-12-04"
+version_date = "2023-05-23 - 2026-12-20"

@@ -51,7 +51,8 @@ def get_startup_arguments():
     """
     Returns the arguments passed to the app on startup.
     On Windows, this returns sys.argv, on Android, it returns
-    the parsed URL of the main activity. Pass the data as a data URI,
+    the parsed URL of the main activity. Pass the arguments as 
+    a data URI of the SEND Intent,
     for example: data:application/json,["arg 1","arg 2"]
 
     :returns: The startup arguments

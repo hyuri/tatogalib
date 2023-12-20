@@ -55,3 +55,4 @@ venv_tatogalib/
 docs/build/
 test/ui/window/build/
 build/
+.venv/

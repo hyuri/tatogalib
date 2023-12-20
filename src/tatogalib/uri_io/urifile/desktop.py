@@ -71,7 +71,7 @@ class UriFileImpl:
 
     def get_path(self):
         # todo: implement
-        pass
+        return None
 
     # get_path
 
