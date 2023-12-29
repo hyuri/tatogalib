@@ -46,36 +46,3 @@ def get_file_roots():
 
 # get_file_roots
 
-
-def get_startup_arguments():
-    """
-    Returns the arguments passed to the app on startup.
-    On Windows, this returns sys.argv, on Android, it returns
-    the parsed URL of the main activity. Pass the arguments as 
-    a data URI of the SEND Intent,
-    for example: data:application/json,["arg 1","arg 2"]
-
-    :returns: The startup arguments
-    :rtype: list[str]
-    """
-    try:
-        argv = []
-        app = toga.App.app
-        if get_platform() == "android":
-            argv.append(app.formal_name)
-            mainActivity = app._impl.native
-            data = mainActivity.getIntent().getDataString()
-            if data and data.startswith("data:"):
-                lst = data.split(",", 1)
-                if len(lst) == 2:
-                    j = json.loads(lst[1])
-                    if isinstance(j, list):
-                        argv = argv + j
-        else:
-            argv = sys.argv
-    except BaseException as ex:
-        print(str(ex))
-    return argv
-
-
-# get_startup_arguments

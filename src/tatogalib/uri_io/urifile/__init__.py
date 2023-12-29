@@ -18,7 +18,7 @@ def ospath_to_uristring(ospath):
     result = None
     if type(ospath) is not str:
         return result
-    result = Path(ospath).as_uri()
+    result = Path(os.path.abspath(ospath)).as_uri()
     return result
 
 

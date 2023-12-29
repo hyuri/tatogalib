@@ -12,6 +12,17 @@ class UriFileImpl:
 
     # __init__
 
+    @staticmethod
+    def from_path(path):
+        from . import UriFile
+
+        uristring = urifile.ospath_to_uristring(str(path))
+        if uristring is None:
+            return None
+        return UriFile(uristring)
+
+    # from_path
+
     def create_file(self, child_name):
         path = self.path / child_name
         Path.touch(path)
@@ -70,8 +81,7 @@ class UriFileImpl:
     # get_name
 
     def get_path(self):
-        # todo: implement
-        return None
+        return self.path
 
     # get_path
 
