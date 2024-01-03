@@ -1,4 +1,5 @@
 from android.net import Uri
+from java.lang import Integer
 import toga
 
 
@@ -31,7 +32,7 @@ class UriInputStreamImpl:
     # readinto
 
     def readall(self):
-        return bytes(self.stream.readAllBytes())
+        return bytes(self.stream.readNBytes(Integer.MAX_VALUE))
 
     # readall
 
