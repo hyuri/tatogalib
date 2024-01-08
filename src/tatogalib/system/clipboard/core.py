@@ -32,7 +32,7 @@ class Clipboard:
 
     @classmethod
     def get_clipboard(cls, fnLog=None):
-       """
+        """
         Use this class method to get access to the system clipboard.
         Do not use the class constructor because Clipboard
         is a singleton.
