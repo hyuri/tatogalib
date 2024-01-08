@@ -1,6 +1,8 @@
 from datetime import datetime
 import toga
-from toga_winforms.libs.winforms import WinForms
+import clr
+clr.AddReference("System.Windows.Forms")
+import System.Windows.Forms as WinForms
 from System.Drawing import SystemIcons
 from .core import AppIcon
 
@@ -87,5 +89,5 @@ class NotificationManagerImpl:
 # NotificationManagerImpl
 
 
-version = "0.9.1"
-version_date = "2023-06-14 - 2023-06-23"
+version = "0.9.2"
+version_date = "2023-06-14 - 2024-01-08"

@@ -1,4 +1,6 @@
-from toga_winforms.libs.winforms import WinForms
+import clr
+clr.AddReference("System.Windows.Forms")
+import System.Windows.Forms as WinForms
 
 
 class ClipboardImpl:
@@ -32,5 +34,5 @@ class ClipboardImpl:
 # ClipboardImpl
 
 
-version = "0.5.0"
-version_date = "2023-06-19 - 2023-06-19"
+version = "0.6.0"
+version_date = "2023-06-19 - 2024-01-08"
