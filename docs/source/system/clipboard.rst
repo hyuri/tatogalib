@@ -24,5 +24,5 @@ Example:
 
 Clipboard class
 ---------------
-.. autoclass:: tatogalib.system.clipboard.core.Clipboard
+.. autoclass:: tatogalib.system.clipboard.Clipboard
    :members:
