@@ -11,7 +11,7 @@ Example:
 
    from tatogalib.system.clipboard import Clipboard
 
-   cb = Clipboard()
+   cb = Clipboard.get_clipboard()
    cb.set_text("Text to be copied into the clipboard")
    clip_text = cb.get_text()
 

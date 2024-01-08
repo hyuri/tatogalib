@@ -17,7 +17,7 @@ class ClipboardExample(toga.App):
         We then create a main window (with a name matching the app), and
         show the main window.
         """
-        self.cb = Clipboard()
+        self.cb = Clipboard.get_clipboard()
         self.mti_message = toga.MultilineTextInput(style=Pack(flex=1))
         main_box = toga.Box(style=Pack(flex=1, direction=COLUMN, padding=5))
 

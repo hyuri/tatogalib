@@ -1,14 +1,11 @@
 import toga
+from inspect import stack
 
 
 class Clipboard:
-    def __init__(self, fnLog=None):
-        """
-        Provides access to the system clipboard.
+    singleton = None
 
-        :param callable fnLog: The callable which is called from the log method.
-            It expects a string parameter
-        """
+    def __init__(self, fnLog=None):
         self._fnlog = fnLog  # for logging to user code
         self._impl = None
         if toga.platform.current_platform == "android":
@@ -19,6 +16,8 @@ class Clipboard:
             raise NotImplementedError(
                 f"Clipboard is not implemented for {toga.platform.current_platform}"
             )
+        if stack()[1].function != "get_clipboard":
+            raise RuntimeError("Clipboard: do not use the constructor, use get_clipboard() instead!")
         self._impl = ClipboardImpl(self)
 
     # __init__
@@ -31,6 +30,22 @@ class Clipboard:
 
     # clear
 
+    @classmethod
+    def get_clipboard(cls, fnLog=None):
+       """
+        Use this class method to get access to the system clipboard.
+        Do not use the class constructor because Clipboard
+        is a singleton.
+
+        :param callable fnLog: The callable which is called from the log method.
+            It expects a string parameter
+        """
+        if cls.singleton is None:
+            cls.singleton = Clipboard(fnLog)
+        return cls.singleton
+    
+    # get_clipboard
+
     def get_text(self):
         """
         Get the text data currently stored in the clipboard
@@ -38,7 +53,7 @@ class Clipboard:
         :returns: The clipboard text data or None
         :rtype: str or None
         """
-        return self._impl.get_text()
+        return str(self._impl.get_text())
 
     # get_text
 
