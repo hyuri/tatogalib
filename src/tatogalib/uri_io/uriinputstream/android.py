@@ -9,17 +9,33 @@ class UriInputStreamImpl:
         context = toga.App.app._impl.native
         uri = Uri.parse(interface.uristring)
         self.stream = context.getContentResolver().openInputStream(uri)
+        self.buffer = bytearray(4096)
 
     # __init__
 
     # RawIOBase methods
     def read(self, maxsize):
+        # readNBytes() is only available on API 33 or later
+        # So, we use our own implementation here
         if maxsize == -1:
-            return self.readall()
-        bytesobj = self.stream.readNBytes(maxsize)
-        if len(bytesobj) == 0:
+            maxsize = Integer.MAX_VALUE
+        bytesobj = b""
+        remaining = maxsize
+        try:
+            while remaining > 0:
+                i = self.stream.read(self.buffer)
+                if i == -1:
+                    break
+                else:
+                    if i > remaining:
+                        i = remaining
+                    bytesobj += self.buffer[0: i]
+                    remaining -= i
+        except BaseException as ex:
             bytesobj = None
-        return bytesobj
+            self.interface.log(str(ex))
+        finally:
+            return bytesobj
 
     # read
 
@@ -32,7 +48,7 @@ class UriInputStreamImpl:
     # readinto
 
     def readall(self):
-        return bytes(self.stream.readNBytes(Integer.MAX_VALUE))
+        return self.read(-1)
 
     # readall
 
