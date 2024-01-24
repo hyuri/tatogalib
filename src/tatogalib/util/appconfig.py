@@ -26,7 +26,7 @@ def read_config(config_dir, config_default):
     contains attributes that do not exist in config_default, write_config() is called to update the
     json file.
 
-    :param str config_dir: the directory containing the config.json file
+    :param Path config_dir: the directory containing the config.json file
     :param dict config_default: the default config
     :returns: the config dict
     :rtype: dict
@@ -59,7 +59,7 @@ def write_config(config_dir, config):
     """
     Write the app config to the json file config.json.
 
-    :param str config_dir: the directory containing the config.json file
+    :param Path config_dir: the directory containing the config.json file
     :param dict config: the config dict
     """
     print("writing config to file")

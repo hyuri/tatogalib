@@ -17,27 +17,31 @@ class UriFileBrowserImpl:
             mimetypes.init()
             mimetypes.add_type(
                 "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                ".docx",
-                strict=False,
+                ".docx", strict=False,
             )
             mimetypes.add_type(
                 "application/vnd.ms-word.document.macroEnabled.12",
-                ".docm",
-                strict=False,
+                ".docm", strict=False,
             )
             mimetypes.add_type(
-                "application/vnd.ms-excel.sheet.macroEnabled.12", ".xlsm", strict=False
+                "application/vnd.ms-excel.sheet.macroEnabled.12", 
+                ".xlsm", strict=False
             )
             mimetypes.add_type(
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                ".xlsx",
-                strict=False,
+                ".xlsx", strict=False,
             )
             mimetypes.add_type(
-                "application/vnd.oasis.opendocument.text", ".odt", strict=False
+                "application/vnd.oasis.opendocument.text", 
+                ".odt", strict=False
             )
             mimetypes.add_type(
-                "application/vnd.oasis.opendocument.spreadsheet", ".ods", strict=False
+                "application/vnd.oasis.opendocument.spreadsheet", 
+                ".ods", strict=False
+            )
+            mimetypes.add_type(
+                "application/vnd.android.package-archive", 
+                ".apk", strict=False
             )
 
     # __init__
