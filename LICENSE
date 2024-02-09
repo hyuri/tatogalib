@@ -1,3 +1,11 @@
+Some parts of this software are based on the Toga source code (https://beeware.org/)
+Where this is the case, there is a LICENSE_TOGA file in the source code folder.
+The code in those folders and sub-folders are distributed under the terms
+stated in LICENSE_TOGA
+
+
+All other code of this software is distributed under the conditions stated below:
+
 Copyright (c) 2020 Tom Arn, www.tanapro.ch
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
