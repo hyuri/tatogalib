@@ -3,8 +3,7 @@ from decimal import ROUND_UP
 
 import System.Windows.Forms as WinForms
 
-from ..libs.wrapper import WeakrefCallable
-# from .base import Widget
+from toga_winforms.libs.wrapper import WeakrefCallable
 from toga_winforms.widgets.base import Widget
 
 
@@ -21,7 +20,6 @@ class TogaComboBox(WinForms.ComboBox):
         self.impl.on_change()
 
 
-# class Selection(Widget):
 class TaSelectionImpl(Widget):
     _background_supports_alpha = False
 
