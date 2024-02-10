@@ -13,8 +13,6 @@ from ... import system
 
 if system.get_platform() == "android":
     from .android import TaSelectionImpl
-elif system.get_platform() == "windows":
-    from .windows import TaSelectionImpl
 else:
     raise NotImplementedError(f"TaSelection is not implemented for {system.get_platform()}")
 
