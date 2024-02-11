@@ -5,4 +5,5 @@ tatogalib.ui
    :maxdepth: 2
 
    window
+   taselection
    
