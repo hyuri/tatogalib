@@ -5,5 +5,6 @@ tatogalib.ui
    :maxdepth: 2
 
    window
+   tabutton
    taselection
    

@@ -1,18 +1,22 @@
-from __future__ import annotations
-
 from typing import TYPE_CHECKING, Any, Protocol
-
 import toga
 from toga.handlers import wrapped_handler
-
-from .base import Widget
-
+# from .base import Widget
+from toga import Widget
 if TYPE_CHECKING:
     from toga.icons import IconContent
 
+from ... import system
+if system.get_platform() == "android":
+    from .android import TaButtonImpl
+elif system.get_platform() == "windows":
+    from .winforms import TaButtonImpl
+else:
+    raise NotImplementedError(f"TaButton is not implemented for {system.get_platform()}")
+
 
 class OnPressHandler(Protocol):
-    def __call__(self, widget: Button, **kwargs: Any) -> None:
+    def __call__(self, widget, **kwargs: Any) -> None:
         """A handler that will be invoked when a button is pressed.
 
         .. note::
@@ -24,11 +28,12 @@ class OnPressHandler(Protocol):
         ...
 
 
-class Button(Widget):
+# class Button(Widget):
+class TaButton(Widget):
     def __init__(
         self,
         text: str | None = None,
-        icon: IconContent | None = None,
+        icon = None,
         id: str | None = None,
         style=None,
         on_press: OnPressHandler | None = None,
@@ -47,9 +52,11 @@ class Button(Widget):
             default, buttons are created in an enabled state.
         """
         super().__init__(id=id, style=style)
+        self._icon_size = -1
 
         # Create a platform specific implementation of a Button
-        self._impl = self.factory.Button(interface=self)
+        # self._impl = self.factory.Button(interface=self)
+        self._impl =TaButtonImpl(interface=self)
 
         # Set a dummy handler before installing the actual on_press, because we do not want
         # on_press triggered by the initial value being set
@@ -116,7 +123,7 @@ class Button(Widget):
         return self._impl.get_icon()
 
     @icon.setter
-    def icon(self, value: IconContent | None) -> None:
+    def icon(self, value) -> None:
         if isinstance(value, toga.Icon):
             icon = value
             text = ""
@@ -143,3 +150,19 @@ class Button(Widget):
     @on_press.setter
     def on_press(self, handler):
         self._on_press = wrapped_handler(self, handler)
+
+    def set_icon(self, icon, size):
+        """Sets the icon of the button
+        
+        :param icon: The icon to display on the button. Can be specified as any valid
+            :any:`icon content <IconContent>`.
+        :param int size: The size in CSS pixels
+        """
+        self._icon_size = size
+        self._impl.set_icon(icon, size)
+        self._impl.set_text(None)
+        self.refresh()
+
+
+version = "1.0.0"
+version_date = "2024-02-20 - 2024-03-20"

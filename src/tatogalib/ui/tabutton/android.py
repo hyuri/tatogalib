@@ -1,11 +1,10 @@
 from decimal import ROUND_UP
-
 from android.view import View
 from android.widget import Button as A_Button
 from java import dynamic_proxy
 from travertino.size import at_least
-
-from .label import TextViewWidget
+# from .label import TextViewWidget
+from toga_android.widgets.label import TextViewWidget
 
 
 class TogaOnClickListener(dynamic_proxy(View.OnClickListener)):
@@ -17,7 +16,8 @@ class TogaOnClickListener(dynamic_proxy(View.OnClickListener)):
         self.button_impl.interface.on_press()
 
 
-class Button(TextViewWidget):
+# class Button(TextViewWidget):
+class TaButtonImpl(TextViewWidget):
     focusable = False
 
     def create(self):
@@ -36,11 +36,14 @@ class Button(TextViewWidget):
     def get_icon(self):
         return self._icon
 
-    def set_icon(self, icon):
+    def set_icon(self, icon, size=-1):
+        if size == -1:
+            # Scale icon to to a 48x48 CSS pixel bitmap drawable.
+            size = 48
+            self.interface._icon_size = size
         self._icon = icon
         if icon:
-            # Scale icon to to a 48x48 CSS pixel bitmap drawable.
-            drawable = icon._impl.as_drawable(self, 48)
+            drawable = icon._impl.as_drawable(self, size)
         else:
             drawable = None
 
@@ -55,10 +58,11 @@ class Button(TextViewWidget):
     def rehint(self):
         if self._icon:
             # Icons aren't considered "inside" the button, so they aren't part of the
-            # "measured" size. Hardcode a button size of 48x48 pixels with 10px of
+            # "measured" size. Set a button size with 10px of
             # padding (in CSS pixels).
-            self.interface.intrinsic.width = at_least(68)
-            self.interface.intrinsic.height = 68
+            size = self.interface._icon_size + 20
+            self.interface.intrinsic.width = at_least(size)
+            self.interface.intrinsic.height = size
         else:
             self.native.measure(
                 View.MeasureSpec.UNSPECIFIED,
@@ -70,3 +74,7 @@ class Button(TextViewWidget):
             self.interface.intrinsic.height = self.scale_out(
                 self.native.getMeasuredHeight(), ROUND_UP
             )
+
+
+version = "1.0.0"
+version_date = "2024-02-20 - 2024-03-20"
