@@ -76,19 +76,19 @@ class MainGui(TaGui):
 
         # Button with icon
         button9 = TaButton(
-            icon=toga.Icon(GM.get_data_path() / "button_example/resources/star"),
+            icon=toga.Icon(GM.get_data_path() / "myapp/resources/star"),
         )
         button10 = TaButton(
             None, 
             icon=None,
         )
-        icon = toga.Icon(GM.get_data_path() / "button_example/resources/star")
+        icon = toga.Icon(GM.get_data_path() / "myapp/resources/star")
         button10.set_icon(icon, 30)
         button11 = TaButton(
             None, 
             icon=None,
         )
-        icon = toga.Icon(GM.get_data_path() / "button_example/resources/star")
+        icon = toga.Icon(GM.get_data_path() / "myapp/resources/star")
         button11.set_icon(icon, 60)
 
         # Add components for the second row of the outer box
