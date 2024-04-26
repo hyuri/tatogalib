@@ -32,11 +32,11 @@ class OnPressHandler(Protocol):
 class TaButton(Widget):
     def __init__(
         self,
-        text = None,
+        text: str | None = None,
         icon = None,
-        id = None,
+        id: str | None = None,
         style=None,
-        on_press = None,
+        on_press: OnPressHandler | None = None,
         enabled: bool = True,
     ):
         """Create a new button widget.
@@ -94,7 +94,7 @@ class TaButton(Widget):
         return self._impl.get_text()
 
     @text.setter
-    def text(self, value) -> None:
+    def text(self, value: str | None) -> None:
         if value is None or value == "\u200B":
             value = ""
         else:
@@ -107,7 +107,7 @@ class TaButton(Widget):
         self.refresh()
 
     @property
-    def icon(self):
+    def icon(self) -> toga.Icon | None:
         """The icon displayed on the button.
 
         Can be specified as any valid :any:`icon content <IconContent>`.
