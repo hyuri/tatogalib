@@ -20,7 +20,7 @@ class UriOutputStreamImpl:
     # RawIOBase methods
     def write(self, bytesobj):
         self.stream.write(bytesobj)
-
+        return len(bytesobj)
     # wtite
 
     # IOBase methods
@@ -82,5 +82,5 @@ class UriOutputStreamImpl:
 # UriOutputStreamImpl
 
 
-version = "0.8.0"
-version_date = "2023-05-23 - 2023-05-23"
+version = "0.8.1"
+version_date = "2023-05-23 - 2024-04-27"
