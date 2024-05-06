@@ -1,5 +1,6 @@
 import toga
 import io
+import os
 
 
 class UriInputStream:
@@ -133,6 +134,17 @@ class UriInputStream:
 
     # isatty
 
+    def seek(self, offset, whence=os.SEEK_SET):
+        """
+        Change the stream position to the given byte offset
+        
+        :param int offset: byte offset
+        :param int whence: see os.SEEK_ constants
+        
+        :returns: True when seekable, False otherwise
+        """
+        self._impl.seek(offset, whence)
+
     def seekable(self):
         """
         Checks if the stream is seekable
@@ -142,6 +154,15 @@ class UriInputStream:
         return self._impl.seekable()
 
     # seekable
+
+    def tell(self):
+        """
+        Returns the current stream position
+        
+        :returns: The current stream position
+        """
+        return self._impl.tell()
+    # tell
 
     def truncate(self, size=None):
         """
@@ -352,5 +373,5 @@ class UriTextInputStream:
 # UriTextInputStream
 
 
-version = "0.9.0"
-version_date = "2023-05-23 - 2023-05-30"
+version = "1.0.0"
+version_date = "2023-05-23 - 2024-05-05"

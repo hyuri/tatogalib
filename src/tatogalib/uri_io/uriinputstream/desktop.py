@@ -52,7 +52,7 @@ class UriInputStreamImpl:
 
     # seekable
 
-    def seek(self, offset, whence=0):
+    def seek(self, offset, whence):
         self.stream.seek(offset, whence)
 
     # seek
