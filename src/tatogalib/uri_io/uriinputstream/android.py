@@ -12,7 +12,7 @@ class UriInputStreamImpl:
         self.position = 0
         urifile = UriFile(self.interface.uristring)
         self.seek_end_offset = urifile.size
-        print(f"stream seek_end={self.seek_end_offset}")
+        # print(f"stream seek_end={self.seek_end_offset}")
         self.stream = None
         self._open_stream()
     # __init__
@@ -28,7 +28,7 @@ class UriInputStreamImpl:
     def read(self, maxsize):
         # readNBytes() is only available on API 33 or later
         # So, we use our own implementation here
-        print(f"read({maxsize}), position={self.position}")
+        # print(f"read({maxsize}), position={self.position}")
         if maxsize == -1:
             maxsize = Integer.MAX_VALUE
         bytesobj = b""
@@ -44,7 +44,7 @@ class UriInputStreamImpl:
                     bytesobj += self.buffer[0: i]
                     remaining -= i
             self.position += len(bytesobj)
-            print(f"read {len(bytesobj)} bytes, new position={self.position}")
+            # print(f"read {len(bytesobj)} bytes, new position={self.position}")
         except BaseException as ex:
             bytesobj = None
             print(str(ex))
@@ -60,7 +60,7 @@ class UriInputStreamImpl:
             i = None
         else:
             self.position += i
-            print(f"readinto(len={len(bytesobj)}), new position={self.position}")
+            # print(f"readinto(len={len(bytesobj)}), new position={self.position}")
         return i
 
     # readinto
@@ -99,7 +99,7 @@ class UriInputStreamImpl:
     # seekable
 
     def seek(self, offset, whence):
-        print(f"UriInputStream.seek({offset}, {whence})")
+        # print(f"UriInputStream.seek({offset}, {whence})")
         if whence == os.SEEK_SET:
             start = 0
         if whence == os.SEEK_CUR:
@@ -107,34 +107,21 @@ class UriInputStreamImpl:
         if whence == os.SEEK_END:
             start = self.seek_end_offset
         absolut_offset = start + offset
-        print(f"absolut_offset={absolut_offset}")
-        # if absolut_offset < self.position:
-        # todo: undo
+        # print(f"absolut_offset={absolut_offset}")
         if absolut_offset >=0 and absolut_offset <= self.seek_end_offset:
             # This is very inefficient, but (to my knowledge) there is no other way 
             self.stream.close()
             self._open_stream()
             if absolut_offset == 0:
-                print("no skipping needed")
+                # print("no skipping needed")
+                pass
             else:
-                print(f"skipping {absolut_offset}")
+                # print(f"skipping {absolut_offset}")
                 i = self.stream.skip(absolut_offset)
                 if i != absolut_offset:
                     raise OSError("UriInputStream.seek() did not set the requested position")
-        else:
-            # todo: remove
-            # skipping ahead without prior closing did not work
-            # for reading ZipFiles.
-            relative_offset = absolut_offset - self.position
-            if relative_offset == 0:
-                print("no skipping needed")
-            else:
-                print(f"skipping {relative_offset}")
-                i = self.stream.skip(relative_offset)
-                if i != relative_offset:
-                    raise OSError("UriInputStream.seek() did not set the requested position")
         self.position = absolut_offset
-        print(f"new position={absolut_offset}")
+        # print(f"new position={absolut_offset}")
     # seek
 
     def tell(self):
