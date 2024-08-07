@@ -9,11 +9,14 @@ class SysArgv:
     
     myapp --cli --infilename myinfile --outfilename "my out file"
     
-    args = SysArgs()
-    args.get("cli")          # returns True
-    args.get("infilename")   # returns "myinfile"
-    args.get("outfilename")  # returns "my out file"
-    args.get("whatever")     # returns None
+    .. code-block:: python
+    
+        args = SysArgs()         # creates the object and parses all arguments from sys.argv
+        args.get("cli")          # returns True
+        args.get("infilename")   # returns "myinfile"
+        args.get("outfilename")  # returns "my out file"
+        args.get("whatever")     # returns None
+
     """
     _args = {}
     

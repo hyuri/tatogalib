@@ -4,5 +4,8 @@ sysargv module
    :maxdepth: 2
    
 .. automodule:: tatogalib.util.sysargv
-   :members:
 
+SysArgv class
+-------------
+.. autoclass:: tatogalib.util.sysargv.SysArgv
+   :members:
