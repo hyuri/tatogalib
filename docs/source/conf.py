@@ -10,7 +10,7 @@ project = 'taTogaLib'
 copyright = '2023, Tom Arn, www.tanapro.ch'
 license = 'MIT license'
 author = 'Tom Arn'
-release = '2024-02-23'
+release = '2024-08-07'
 repository = 'https://bitbucket.org/TomArn/tatogalib/'
 
 # -- General configuration ---------------------------------------------------

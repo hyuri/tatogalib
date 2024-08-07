@@ -139,7 +139,7 @@ class UriInputStream:
         Change the stream position to the given byte offset
         
         :param int offset: byte offset
-        :param int whence: see os.SEEK_ constants
+        :param int whence: see os.SEEK_* constants
         
         :returns: True when seekable, False otherwise
         """

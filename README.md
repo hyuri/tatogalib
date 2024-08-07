@@ -17,7 +17,7 @@ For formatting the code: `black`
 
 ## How to setup the venv
 
-Use Python 3.9 - higher versions might not work with Chaquopy yet
+Use Python 3.11 - higher versions might not work with Chaquopy yet
 ```bash
 cd taTogaLib
 py -m venv .venv

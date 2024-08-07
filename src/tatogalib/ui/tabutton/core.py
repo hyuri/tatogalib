@@ -43,7 +43,7 @@ class TaButton(Widget):
 
         :param text: The text to display on the button.
         :param icon: The icon to display on the button. Can be specified as any valid
-            :any:`icon content <IconContent>`.
+            `icon content <IconContent>`.
         :param id: The ID for the widget.
         :param style: A style object. If no style is provided, a default style will be
             applied to the widget.
@@ -110,7 +110,7 @@ class TaButton(Widget):
     def icon(self) -> toga.Icon | None:
         """The icon displayed on the button.
 
-        Can be specified as any valid :any:`icon content <IconContent>`.
+        Can be specified as any valid `icon content <IconContent>`.
 
         If the button is currently displaying text, and an icon is assigned, the text
         will be replaced by the new icon.
@@ -155,7 +155,7 @@ class TaButton(Widget):
         """Sets the icon of the button
         
         :param icon: The icon to display on the button. Can be specified as any valid
-            :any:`icon content <IconContent>`.
+            `icon content <IconContent>`.
         :param int size: The size in CSS pixels
         """
         self._icon_size = size
