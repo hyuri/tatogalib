@@ -19,9 +19,10 @@ class NewWidget(Widget):
         id,
         style,
         # other params
-      ):
-        """Class documentation
-        """
-        super().__init__(id=id, style=style)
-
+    ):
+    """Class documentation
+    """
+    super().__init__(id=id, style=style)
+    # self._impl = self.factory.OriginalClass(interface=self)
+    self._impl = NewWidgetImpl(interface=self)
  
