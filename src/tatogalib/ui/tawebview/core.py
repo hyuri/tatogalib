@@ -1,12 +1,17 @@
 from __future__ import annotations
 
 import asyncio
-from typing import Any, Protocol
+# from typing import Any, Protocol
+from travertino.declaration import BaseStyle
+from typing import Any, Protocol, TypeVar
 
 from toga.handlers import AsyncResult, OnResultT, wrapped_handler
 
-from .base import StyleT, Widget
+# from .base import StyleT, Widget
+from toga import Widget, WebView
+StyleT = TypeVar("StyleT", bound=BaseStyle)
 
+from ... import system
 
 class JavaScriptResult(AsyncResult):
     RESULT_TYPE = "JavaScript"
@@ -21,10 +26,18 @@ class OnWebViewLoadHandler(Protocol):
         """
 
 
-class WebView(Widget):
+if system.get_platform() == "windows":
+    from .windows import taWebViewImpl
+else:
+    raise NotImplementedError(f"NewWidget is not implemented for {system.get_platform()}")
+
+
+#class WebView(Widget):
+class taWebView(Widget):
     def __init__(
         self,
         id: str | None = None,
+        # style: StyleT | None = None,
         style: StyleT | None = None,
         url: str | None = None,
         user_agent: str | None = None,
@@ -44,7 +57,8 @@ class WebView(Widget):
         """
         super().__init__(id=id, style=style)
 
-        self._impl = self.factory.WebView(interface=self)
+        # self._impl = self.factory.WebView(interface=self)
+        self._impl =taWebViewImpl(interface=self)
         self.user_agent = user_agent
 
         # Set the load handler before loading the first URL.
@@ -152,3 +166,5 @@ class WebView(Widget):
         :param on_result: **DEPRECATED** ``await`` the return value of this method.
         """
         return self._impl.evaluate_javascript(javascript, on_result=on_result)
+
+ 

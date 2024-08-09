@@ -1,3 +1,6 @@
+import clr
+clr.AddReference("System.Windows.Forms")
+
 import json
 import webbrowser
 
@@ -18,8 +21,10 @@ from toga_winforms.libs.extensions import (
     WebView2RuntimeNotFoundException,
 )
 
-from ..libs.wrapper import WeakrefCallable
-from .base import Widget
+#from ..libs.wrapper import WeakrefCallable
+from toga_winforms.libs.wrapper import WeakrefCallable
+#from .base import Widget
+from toga_winforms.widgets.base import Widget
 
 
 def requires_initialization(method):
@@ -32,7 +37,13 @@ def requires_initialization(method):
     return wrapper
 
 
-class WebView(Widget):
+class taWebViewImpl(Widget):
+    def __init__(self, interface):
+        self.interface = interface
+        self.app = toga.App.app
+        self.corewebview2_available = None
+        self.pending_tasks = []
+
     def create(self):
         self.native = WebView2()
         self.native.CoreWebView2InitializationCompleted += WeakrefCallable(
@@ -171,3 +182,7 @@ class WebView(Widget):
 
         self.run_after_initialization(execute)
         return result
+
+
+version = "1.0.0"
+version_date = "2024-08-09 - 2024-08-09"
