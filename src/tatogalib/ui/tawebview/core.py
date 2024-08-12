@@ -1,16 +1,14 @@
 from __future__ import annotations
 
 import asyncio
-# from typing import Any, Protocol
-from travertino.declaration import BaseStyle
-from typing import Any, Protocol, TypeVar
+from typing import Any, Protocol
 
 from toga.handlers import AsyncResult, OnResultT, wrapped_handler
 
 # from .base import StyleT, Widget
-from toga import Widget, WebView
-StyleT = TypeVar("StyleT", bound=BaseStyle)
+from toga.widgets.base import StyleT, Widget
 
+from toga.widgets import webview
 from ... import system
 
 class JavaScriptResult(AsyncResult):
@@ -37,7 +35,6 @@ class taWebView(Widget):
     def __init__(
         self,
         id: str | None = None,
-        # style: StyleT | None = None,
         style: StyleT | None = None,
         url: str | None = None,
         user_agent: str | None = None,
@@ -166,5 +163,3 @@ class taWebView(Widget):
         :param on_result: **DEPRECATED** ``await`` the return value of this method.
         """
         return self._impl.evaluate_javascript(javascript, on_result=on_result)
-
- 

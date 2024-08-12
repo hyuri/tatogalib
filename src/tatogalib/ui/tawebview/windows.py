@@ -38,12 +38,6 @@ def requires_initialization(method):
 
 
 class taWebViewImpl(Widget):
-    def __init__(self, interface):
-        self.interface = interface
-        self.app = toga.App.app
-        self.corewebview2_available = None
-        self.pending_tasks = []
-
     def create(self):
         self.native = WebView2()
         self.native.CoreWebView2InitializationCompleted += WeakrefCallable(
