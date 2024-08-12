@@ -20,6 +20,9 @@ from toga_winforms.libs.extensions import (
     WebView2,
     WebView2RuntimeNotFoundException,
 )
+from Microsoft.Web.WebView2.Core import (
+    CoreWebView2WebResourceContext
+)
 
 #from ..libs.wrapper import WeakrefCallable
 from toga_winforms.libs.wrapper import WeakrefCallable
@@ -90,6 +93,9 @@ class taWebViewImpl(Widget):
             settings.IsStatusBarEnabled = debug
             settings.IsZoomControlEnabled = True
 
+            self.native.CoreWebView2.AddWebResourceRequestedFilter("*", CoreWebView2WebResourceContext.All)
+            self.native.CoreWebView2.WebResourceRequested += self.winforms_web_resource_requested
+
             for task in self.pending_tasks:
                 task()
             self.pending_tasks = None
@@ -118,6 +124,10 @@ class taWebViewImpl(Widget):
 
         else:  # pragma: nocover
             raise RuntimeError(args.InitializationException)
+
+    def winforms_web_resource_requested(self, sender, args):
+        if self.interface.on_resource_requested:
+            self.interface.on_resource_requested(args.Request.Uri)
 
     def winforms_navigation_completed(self, sender, args):
         self.interface.on_webview_load()
@@ -158,6 +168,9 @@ class taWebViewImpl(Widget):
         self.native.CoreWebView2.Settings.UserAgent = (
             self.default_user_agent if value is None else value
         )
+
+    def set_on_resource_requested(self, handler):
+        pass
 
     def evaluate_javascript(self, javascript, on_result=None):
         result = JavaScriptResult(on_result)

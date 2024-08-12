@@ -38,6 +38,7 @@ class taWebView(Widget):
         style: StyleT | None = None,
         url: str | None = None,
         user_agent: str | None = None,
+        on_resource_requested=None,
         on_webview_load: OnWebViewLoadHandler | None = None,
     ):
         """Create a new WebView widget.
@@ -49,6 +50,8 @@ class taWebView(Widget):
             an empty page will be displayed.
         :param user_agent: The user agent to use for web requests. If not
             provided, the default user agent for the platform will be used.
+        :param on_resource_requested: A handler that will be invoked when the 
+            webview starts load (or reload)
         :param on_webview_load: A handler that will be invoked when the web view
             finishes loading.
         """
@@ -60,6 +63,7 @@ class taWebView(Widget):
 
         # Set the load handler before loading the first URL.
         self.on_webview_load = on_webview_load
+        self.on_resource_requested = on_resource_requested
         self.url = url
 
     def _set_url(self, url: str | None, future: asyncio.Future | None) -> None:
@@ -94,6 +98,23 @@ class taWebView(Widget):
         loaded_future = loop.create_future()
         self._set_url(url, future=loaded_future)
         return await loaded_future
+
+    @property
+    def on_resource_requested(self):
+        """The handler to invoke when the webview starts loading.
+        Returns:
+            The function ``callable`` that is called when the webview starts loading.
+        """
+        return self._on_resource_requested
+
+    @on_resource_requested.setter
+    def on_resource_requested(self, handler):
+        """Set the handler to invoke when the webview starts loading.
+
+        :param handler (:obj:`callable`): The handler to invoke when the webview starts loading.
+        """
+        self._on_resource_requested = wrapped_handler(self, handler)
+        self._impl.set_on_resource_requested(self._on_resource_requested)
 
     @property
     def on_webview_load(self) -> OnWebViewLoadHandler:
