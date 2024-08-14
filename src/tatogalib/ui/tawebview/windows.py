@@ -180,7 +180,8 @@ class taWebViewImpl(Widget):
         )
 
     def set_on_navigation_starting(self, handler):
-        print(f"set_on_navigation_starting")
+        # print(f"set_on_navigation_starting")
+        pass
 
     def set_on_resource_requested(self, handler):
         # print(f"set_on_resource_requested")
