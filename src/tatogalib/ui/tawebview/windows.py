@@ -93,6 +93,7 @@ class taWebViewImpl(Widget):
             settings.IsStatusBarEnabled = debug
             settings.IsZoomControlEnabled = True
 
+            self.native.CoreWebView2.NavigationStarting += self.winforms_navigation_starting
             self.native.CoreWebView2.AddWebResourceRequestedFilter("*", CoreWebView2WebResourceContext.All)
             self.native.CoreWebView2.WebResourceRequested += self.winforms_web_resource_requested
 
@@ -136,6 +137,15 @@ class taWebViewImpl(Widget):
             self.loaded_future.set_result(None)
             self.loaded_future = None
 
+    def winforms_navigation_starting(self, sender, args):
+        # print(f"winforms_navigation_starting: {args.Uri}")
+        if self.interface.on_navigation_starting:
+            self.interface.on_navigation_starting(args.Uri, args)
+
+    def cancel_navigation(self, event):
+        event.Cancel = True
+        # print(f"Navigation cancelled: {event.Uri}")
+
     def get_url(self):
         source = self.native.Source
         if source is None:  # pragma: nocover
@@ -169,7 +179,11 @@ class taWebViewImpl(Widget):
             self.default_user_agent if value is None else value
         )
 
+    def set_on_navigation_starting(self, handler):
+        print(f"set_on_navigation_starting")
+
     def set_on_resource_requested(self, handler):
+        # print(f"set_on_resource_requested")
         pass
 
     def evaluate_javascript(self, javascript, on_result=None):

@@ -8,8 +8,8 @@ from toga.handlers import AsyncResult, OnResultT, wrapped_handler
 # from .base import StyleT, Widget
 from toga.widgets.base import StyleT, Widget
 
-from toga.widgets import webview
 from ... import system
+
 
 class JavaScriptResult(AsyncResult):
     RESULT_TYPE = "JavaScript"
@@ -27,7 +27,7 @@ class OnWebViewLoadHandler(Protocol):
 if system.get_platform() == "windows":
     from .windows import taWebViewImpl
 else:
-    raise NotImplementedError(f"NewWidget is not implemented for {system.get_platform()}")
+    raise NotImplementedError(f"taWebView is not implemented for {system.get_platform()}")
 
 
 #class WebView(Widget):
@@ -38,6 +38,7 @@ class taWebView(Widget):
         style: StyleT | None = None,
         url: str | None = None,
         user_agent: str | None = None,
+        on_navigation_starting=None,
         on_resource_requested=None,
         on_webview_load: OnWebViewLoadHandler | None = None,
     ):
@@ -50,6 +51,8 @@ class taWebView(Widget):
             an empty page will be displayed.
         :param user_agent: The user agent to use for web requests. If not
             provided, the default user agent for the platform will be used.
+        :param on_navigation_starting: A handler that will be invoked is raised when the 
+            WebView is requesting permission to navigate or redirect to a different URI. 
         :param on_resource_requested: A handler that will be invoked when the 
             webview starts load (or reload)
         :param on_webview_load: A handler that will be invoked when the web view
@@ -63,6 +66,7 @@ class taWebView(Widget):
 
         # Set the load handler before loading the first URL.
         self.on_webview_load = on_webview_load
+        self.on_navigation_starting = on_navigation_starting
         self.on_resource_requested = on_resource_requested
         self.url = url
 
@@ -98,6 +102,28 @@ class taWebView(Widget):
         loaded_future = loop.create_future()
         self._set_url(url, future=loaded_future)
         return await loaded_future
+
+    @property
+    def on_navigation_starting(self):
+        """A handler that will be invoked is raised when the taWebView is requesting 
+        permission to navigate or redirect to a different URI.
+        Returns:
+            The function ``callable`` that is called when the webview starts navigating.
+        """
+        return self._on_navigation_starting
+
+    @on_navigation_starting.setter
+    def on_navigation_starting(self, handler):
+        """Set the handler to invoke when the webview starts navigating.
+
+        :param handler (:obj:`callable`): The handler to invoke when the webview starts navigating.
+            The handler will receive following arguments:
+            widget: The taWebView instance
+            url:    The URL to be navigated to
+            event:  The native Event object
+        """
+        self._on_navigation_starting = wrapped_handler(self, handler)
+        self._impl.set_on_navigation_starting(self._on_navigation_starting)
 
     @property
     def on_resource_requested(self):
@@ -184,3 +210,10 @@ class taWebView(Widget):
         :param on_result: **DEPRECATED** ``await`` the return value of this method.
         """
         return self._impl.evaluate_javascript(javascript, on_result=on_result)
+
+    def cancel_navigation(self, event):
+        """Cancels the navigation being started
+
+        :param object event: The `event` object received in the on_navigation_starting handler
+        """
+        self._impl.cancel_navigation(event)
