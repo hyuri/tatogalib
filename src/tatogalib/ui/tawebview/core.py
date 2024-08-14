@@ -52,7 +52,7 @@ class taWebView(Widget):
         :param user_agent: The user agent to use for web requests. If not
             provided, the default user agent for the platform will be used.
         :param on_navigation_starting: A handler that will be invoked is raised when the 
-            WebView is requesting permission to navigate or redirect to a different URI. 
+            taWebView is requesting permission to navigate or redirect to a different URI. 
         :param on_resource_requested: A handler that will be invoked when the 
             webview starts load (or reload)
         :param on_webview_load: A handler that will be invoked when the web view
@@ -105,10 +105,17 @@ class taWebView(Widget):
 
     @property
     def on_navigation_starting(self):
-        """A handler that will be invoked is raised when the taWebView is requesting 
+        """A handler that will be invoked when the taWebView is requesting 
         permission to navigate or redirect to a different URI.
+        
         Returns:
-            The function ``callable`` that is called when the webview starts navigating.
+            The function ``callable`` that is called by this navigation event.
+        
+        The handler will receive following arguments:
+        
+        :param taWebView widget:  The taWebView instance
+        :param str url:           The URL to be navigated to
+        :param object event:      The native Event object
         """
         return self._on_navigation_starting
 
@@ -117,19 +124,20 @@ class taWebView(Widget):
         """Set the handler to invoke when the webview starts navigating.
 
         :param handler (:obj:`callable`): The handler to invoke when the webview starts navigating.
-            The handler will receive following arguments:
-            widget: The taWebView instance
-            url:    The URL to be navigated to
-            event:  The native Event object
+        The handler will receive following arguments:
+        widget: The taWebView instance
+        url:    The URL to be navigated to
+        event:  The native Event object
         """
         self._on_navigation_starting = wrapped_handler(self, handler)
         self._impl.set_on_navigation_starting(self._on_navigation_starting)
 
     @property
     def on_resource_requested(self):
-        """The handler to invoke when the webview starts loading.
+        """The handler to invoke when the webview starts loading resources.
+
         Returns:
-            The function ``callable`` that is called when the webview starts loading.
+            The function ``callable`` that is called when the webview starts loading resources.
         """
         return self._on_resource_requested
 

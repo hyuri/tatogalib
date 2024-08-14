@@ -7,4 +7,5 @@ tatogalib.ui
    window
    tabutton
    taselection
+   tawebview
    
