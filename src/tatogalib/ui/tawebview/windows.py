@@ -40,7 +40,7 @@ def requires_initialization(method):
     return wrapper
 
 
-class taWebViewImpl(Widget):
+class TaWebViewImpl(Widget):
     def create(self):
         self.native = WebView2()
         self.native.CoreWebView2InitializationCompleted += WeakrefCallable(
@@ -92,6 +92,10 @@ class taWebViewImpl(Widget):
             settings.IsWebMessageEnabled = True
             settings.IsStatusBarEnabled = debug
             settings.IsZoomControlEnabled = True
+            # enable password auto-fill
+            settings.IsPasswordAutosaveEnabled = True
+            # print(f"Profile: {self.native.CoreWebView2.Profile.ProfilePath}")
+
 
             self.native.CoreWebView2.NavigationStarting += self.winforms_navigation_starting
             self.native.CoreWebView2.AddWebResourceRequestedFilter("*", CoreWebView2WebResourceContext.All)
@@ -206,5 +210,5 @@ class taWebViewImpl(Widget):
         return result
 
 
-version = "1.0.0"
-version_date = "2024-08-09 - 2024-08-09"
+version = "1.1.0"
+version_date = "2024-08-09 - 2024-08-15"

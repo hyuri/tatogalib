@@ -1,1 +1,1 @@
-from .core import taWebView
+from .core import TaWebView

@@ -25,13 +25,13 @@ class OnWebViewLoadHandler(Protocol):
 
 
 if system.get_platform() == "windows":
-    from .windows import taWebViewImpl
+    from .windows import TaWebViewImpl
 else:
-    raise NotImplementedError(f"taWebView is not implemented for {system.get_platform()}")
+    raise NotImplementedError(f"TaWebView is not implemented for {system.get_platform()}")
 
 
 #class WebView(Widget):
-class taWebView(Widget):
+class TaWebView(Widget):
     def __init__(
         self,
         id: str | None = None,
@@ -52,7 +52,7 @@ class taWebView(Widget):
         :param user_agent: The user agent to use for web requests. If not
             provided, the default user agent for the platform will be used.
         :param on_navigation_starting: A handler that will be invoked is raised when the 
-            taWebView is requesting permission to navigate or redirect to a different URI. 
+            TaWebView is requesting permission to navigate or redirect to a different URI. 
         :param on_resource_requested: A handler that will be invoked when the 
             webview starts load (or reload)
         :param on_webview_load: A handler that will be invoked when the web view
@@ -61,7 +61,7 @@ class taWebView(Widget):
         super().__init__(id=id, style=style)
 
         # self._impl = self.factory.WebView(interface=self)
-        self._impl =taWebViewImpl(interface=self)
+        self._impl =TaWebViewImpl(interface=self)
         self.user_agent = user_agent
 
         # Set the load handler before loading the first URL.
@@ -105,7 +105,7 @@ class taWebView(Widget):
 
     @property
     def on_navigation_starting(self):
-        """A handler that will be invoked when the taWebView is requesting 
+        """A handler that will be invoked when the TaWebView is requesting 
         permission to navigate or redirect to a different URI.
         
         Returns:
@@ -113,7 +113,7 @@ class taWebView(Widget):
         
         The handler will receive following arguments:
         
-        :param taWebView widget:  The taWebView instance
+        :param TaWebView widget:  The TaWebView instance
         :param str url:           The URL to be navigated to
         :param object event:      The native Event object
         """
@@ -125,7 +125,7 @@ class taWebView(Widget):
 
         :param handler (:obj:`callable`): The handler to invoke when the webview starts navigating.
         The handler will receive following arguments:
-        widget: The taWebView instance
+        widget: The TaWebView instance
         url:    The URL to be navigated to
         event:  The native Event object
         """
