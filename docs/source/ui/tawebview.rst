@@ -13,5 +13,5 @@ is currently only supported on Windows.
 
 TaWebView class
 ---------------
-.. autoclass:: tatogalib.ui.tawebview.taWebView
+.. autoclass:: tatogalib.ui.tawebview.TaWebView
    :members:
