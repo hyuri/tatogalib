@@ -1,2 +1,2 @@
-version = "release_2024-08-15"
+version = "release_2024-12-xx"
 __version__ = version

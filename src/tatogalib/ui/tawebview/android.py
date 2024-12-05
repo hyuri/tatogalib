@@ -5,7 +5,8 @@ from java import dynamic_proxy
 
 from toga.widgets.webview import JavaScriptResult
 
-from .base import Widget
+# from .base import Widget
+from toga_android.widgets.base import Widget
 
 
 class ReceiveString(dynamic_proxy(ValueCallback)):
@@ -22,7 +23,8 @@ class ReceiveString(dynamic_proxy(ValueCallback)):
         self.result.set_result(res)
 
 
-class WebView(Widget):
+# class WebView(Widget):
+class TaWebViewImpl(Widget):
     SUPPORTS_ON_WEBVIEW_LOAD = False
 
     def create(self):
@@ -75,3 +77,11 @@ class WebView(Widget):
 
         self.native.evaluateJavascript(javascript, ReceiveString(result))
         return result
+
+    def set_on_navigation_starting(self, handler):
+        # print(f"set_on_navigation_starting")
+        pass
+
+    def set_on_resource_requested(self, handler):
+        # print(f"set_on_resource_requested")
+        pass
