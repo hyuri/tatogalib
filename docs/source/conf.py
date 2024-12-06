@@ -7,10 +7,10 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'taTogaLib'
-copyright = '2023, Tom Arn, www.tanapro.ch'
+copyright = '2023-2024, Tom Arn, www.tanapro.ch'
 license = 'MIT license'
 author = 'Tom Arn'
-release = '2024-08-15'
+release = '2024-12-06'
 repository = 'https://bitbucket.org/TomArn/tatogalib/'
 
 # -- General configuration ---------------------------------------------------
