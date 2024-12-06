@@ -32,14 +32,13 @@ class TogaNavigationEvent():
     
 
 class TogaWebClient(static_proxy(WebViewClient)):
-    @constructor([jclass])
     def __init__(self, impl):
         super().__init__()
         self.webview_impl = impl
     # __init__
 
-    @Override(jboolean, [jclass, jclass])
-    def shouldOverrideUrlLoading(webview, webresourcerequest):
+    @Override(jboolean, [A_WebView, WebResourceRequest])
+    def shouldOverrideUrlLoading(self, webview, webresourcerequest):
         if self.webview_impl.interface.on_navigation_starting:
             event = TogaNavigationEvent(webresourcerequest)
             self.webview_impl.interface.on_navigation_starting(
@@ -51,7 +50,7 @@ class TogaWebClient(static_proxy(WebViewClient)):
             if event.cancel == True:
                 event = None
                 return True
-        return super().shouldOverrideUrlLoading(webview, webresourcerequest)
+        return False
     # shouldOverrideUrlLoading
 # TogaWebClient
 
