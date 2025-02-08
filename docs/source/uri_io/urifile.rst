@@ -18,7 +18,7 @@ Example for displaying the content of a folder:
    for urifile in children:
        print(f"name: {urifile.name}")
        print(f"uristring: {urifile.uristring}")
-       print(f"isdir: {urifile.isdir()}")
+       print(f"is_dir: {urifile.is_dir()}")
        print(f"size: {urifile.size}")
 
 Example for reading a file:

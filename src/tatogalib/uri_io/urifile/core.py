@@ -132,11 +132,11 @@ class UriFile:
         :returns: The newly created file
         :rtype: UriFile
         """
-        if not self.isdir():
+        if not self.is_dir():
             raise NotADirectoryError("UriFile is not an accessible directory.")
         urifile = self.find(child_name)
         if urifile is not None:
-            if urifile.isfile():
+            if urifile.is_file():
                 if not replace:
                     raise FileExistsError(f"File '{child_name}' already exists!")
                 else:
@@ -180,7 +180,7 @@ class UriFile:
         :returns: The child if it exists, None otherwise
         :rtype: UriFile or None
         """
-        if not self.isdir():
+        if not self.is_dir():
             raise NotADirectoryError("UriFile is not an accessible directory")
         uristring = self._impl.find(child_name)
         if uristring is None:
@@ -255,27 +255,27 @@ class UriFile:
 
     # get_uristring
 
-    def isdir(self):
+    def is_dir(self):
         """
         Checks if the UriFile represents an existing folder
 
         :returns: True or False
         :rtype: boolean
         """
-        return self._impl.isdir()
+        return self._impl.is_dir()
 
-    # isdir
+    # is_dir
 
-    def isfile(self):
+    def is_file(self):
         """
         Checks if the UriFile represents an existing file
 
         :returns: True or False
         :rtype: boolean
         """
-        return self._impl.isfile()
+        return self._impl.is_file()
 
-    # isfile
+    # is_file
 
     def listdir(self):
         """
@@ -286,7 +286,7 @@ class UriFile:
         :returns: The children of this UriFile
         :rtype: A list of UriFiles or None
         """
-        if not self.isdir():
+        if not self.is_dir():
             return None
         result = []
         children = self._impl.listdir()

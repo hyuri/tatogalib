@@ -188,15 +188,15 @@ class UriFileImpl:
 
     # get_size
 
-    def isdir(self):
+    def is_dir(self):
         return self.docfile.isDirectory()
 
-    # isdir
+    # is_dir
 
-    def isfile(self):
+    def is_file(self):
         return self.docfile.isFile()
 
-    # isfile
+    # is_file
 
     def is_downloads_document(self):
         pr = urlparse(self.interface.uristring)

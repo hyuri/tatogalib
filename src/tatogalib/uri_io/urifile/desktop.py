@@ -31,7 +31,7 @@ class UriFileImpl:
     # create_file
 
     def delete(self):
-        if self.isfile():
+        if self.is_file():
             try:
                 self.path.unlink(missing_ok=True)
             except Exception as ex:
@@ -90,15 +90,15 @@ class UriFileImpl:
 
     # get_size
 
-    def isdir(self):
+    def is_dir(self):
         return self.path.is_dir()
 
-    # isdir
+    # is_dir
 
-    def isfile(self):
+    def is_file(self):
         return self.path.is_file()
 
-    # isfile
+    # is_file
 
     def listdir(self):
         result = []

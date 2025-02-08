@@ -193,8 +193,8 @@ class MainGui(TaGui):
             self.fnPrintln("")
             self.fnPrintln(f"name: {urifile.name}")
             self.fnPrintln(f"exists: {urifile.exists()}")
-            self.fnPrintln(f"isfile: {urifile.isfile()}")
-            if urifile.isfile():
+            self.fnPrintln(f"is_file: {urifile.is_file()}")
+            if urifile.is_file():
                 self.fnPrintln(f"size: {urifile.size}")
         except BaseException as ex:
             G.write_debug_message(str(ex))
@@ -241,7 +241,7 @@ class MainGui(TaGui):
             urifile = UriFile(uri)
             self.fnPrintln(f"name: {urifile.name}")
             self.fnPrintln(f"mime_type: {urifile.mime_type}")
-            self.fnPrintln(f"isdir: {urifile.isdir()}")
+            self.fnPrintln(f"is_dir: {urifile.is_dir()}")
             self.fnPrintln(f"exists: {urifile.exists()}\n")
         except BaseException as ex:
             G.write_debug_message(str(ex))
@@ -311,7 +311,7 @@ class MainGui(TaGui):
                 self.fnPrintln(f"\nname: {urifile.name}")
                 self.fnPrintln(f"mime_type: {urifile.mime_type}")
                 self.fnPrintln(f"uristring: {urifile.uristring}")
-                self.fnPrintln(f"isdir: {urifile.isdir()}")
+                self.fnPrintln(f"is_dir: {urifile.is_dir()}")
                 self.fnPrintln(f"exists: {urifile.exists()}")
         except BaseException as ex:
             G.write_debug_message(str(ex))
@@ -343,7 +343,7 @@ class MainGui(TaGui):
             urifile = UriFile(uristring)
             self.fnPrintln(f"name: {urifile.name}")
             self.fnPrintln(f"mime_type: {urifile.uristring}")
-            self.fnPrintln(f"isdir: {urifile.isdir()}")
+            self.fnPrintln(f"is_dir: {urifile.is_dir()}")
             self.fnPrintln(f"exists: {urifile.exists()}")
             self.fnPrintln(f"path: {str(urifile.get_path())}")
             self.fnPrintln(f"startup arguments: {str(system.get_startup_arguments())}\n")
