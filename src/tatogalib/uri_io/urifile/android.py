@@ -166,19 +166,19 @@ class UriFileImpl:
         roots = system.get_file_roots()
         if self.is_externalstorage_document():
             pr = urlparse(self.interface.uristring)
-            praefix = "/document/primary%3A"
-            if pr.path.startswith(praefix):
-                path = Path(roots[0]) / unquote(pr.path[len(praefix) :])
+            prefix = "/document/primary%3A"
+            if pr.path.startswith(prefix):
+                path = Path(roots[0]) / unquote(pr.path[len(prefix) :])
                 print(str(path))
             else:
                 for root in roots:
                     idx = root.rfind("/")
                     fsid = root[idx + 1 :]
-                    praefix = f"/document/{fsid}%3A"
-                    print(f"präfix={praefix}")
+                    prefix = f"/document/{fsid}%3A"
+                    print(f"prefix={prefix}")
                     print(f"pr.path={pr.path}")
-                    if pr.path.startswith(praefix):
-                        path = Path(root) / unquote(pr.path[len(praefix) :])
+                    if pr.path.startswith(prefix):
+                        path = Path(root) / unquote(pr.path[len(prefix) :])
         return path
 
     # get_path
