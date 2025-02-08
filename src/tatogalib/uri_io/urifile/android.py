@@ -141,8 +141,17 @@ class UriFileImpl:
 
     def get_name(self):
         return self.docfile.getName()
-
+    
     # get_name
+    
+    def get_stem(self):
+        return Path(self.get_name()).stem
+    
+    def get_suffix(self):
+        return Path(self.get_name()).suffix
+    
+    def get_parent(self):
+        return Path(self.get_name()).parent
 
     def get_authorized_uristring(self):
         docId = DocumentsContract.getDocumentId(self.docfile.getUri())
