@@ -33,6 +33,27 @@ class UriFile:
         The name (str) of the file or folder
         """
         return self._impl.get_name()
+    
+    @property
+    def stem(self):
+        """
+        The stem (str) of the file or folder
+        """
+        return self._impl.get_stem()
+    
+    @property
+    def suffix(self):
+        """
+        The suffix (str) of the file or folder
+        """
+        return self._impl.get_suffix()
+    
+    @property
+    def parent(self):
+        """
+        The parent folder
+        """
+        return UriFile(self._impl.get_parent(), self._fnlog)
 
     # name
 
