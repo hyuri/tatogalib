@@ -150,8 +150,51 @@ class UriFileImpl:
     def get_suffix(self):
         return Path(self.get_name()).suffix
     
+    def with_suffix(self, suffix):
+        from . import UriFile
+        
+        return UriFile(Path(str(self.docfile.getUri().toString().with_suffix(suffix))), self.interface)
+    
     def get_parent(self):
-        return Path(self.get_name()).parent
+        from . import UriFile
+        
+        # Get the current URI
+        current_uri = self.docfile.getUri()
+        
+        # Check if this is a DocumentsContract-based URI
+        if DocumentsContract.isDocumentUri(self.context, current_uri):
+            try:
+                # Get the document ID
+                doc_id = DocumentsContract.getDocumentId(current_uri)
+                
+                # Get the parent document ID
+                parent_doc_id = doc_id.rsplit(':', 1)[0]
+                
+                # Reconstruct the parent URI
+                parent_uri = DocumentsContract.buildDocumentUri(
+                    current_uri.getAuthority(),
+                    parent_doc_id
+                )
+                
+                # Create and return a UriFile for the parent
+                return UriFile(parent_uri.toString(), self.interface)
+           
+            except Exception:
+                # If we can't determine the parent, return None
+                return None
+        
+        # For non-DocumentsContract URIs, fall back to previous method
+        from pathlib import Path
+        uri_path = Path(current_uri.toString())
+        parent_path = uri_path.parent
+        
+        # If parent path is the same as the current path, it means we're at the root
+        if parent_path == uri_path:
+            return None
+        
+        return UriFile(str(parent_path), self.interface)
+
+    # get_parent
 
     def get_authorized_uristring(self):
         docId = DocumentsContract.getDocumentId(self.docfile.getUri())
