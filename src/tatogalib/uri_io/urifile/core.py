@@ -53,9 +53,10 @@ class UriFile:
         """
         The parent folder
         """
-        return UriFile(self._impl.get_parent(), self._fnlog)
+        return self._impl.get_parent()
 
-    # name
+    def with_suffix(self, suffix):
+        return self._impl.with_suffix(suffix)
 
     @property
     def lastmodified(self):
