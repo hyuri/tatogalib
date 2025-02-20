@@ -27,6 +27,12 @@ class UriFile:
 
     # __init__
 
+    def __str__(self):
+        return self._impl.__str__()
+
+    def __truediv__(self, child):
+        return self._impl.__truediv__(child)
+
     @property
     def name(self):
         """
