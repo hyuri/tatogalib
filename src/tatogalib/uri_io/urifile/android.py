@@ -26,11 +26,27 @@ class UriFileImpl:
 
     # __init__
 
-    @staticmethod
-    def from_path(path):
+    def __str__(self):
+        return self.interface.get_uristring()
+
+    def __truediv__(self, child):
         from . import UriFile
 
-        urifile = None
+        if isinstance(child, UriFile):
+            return UriFile(self.interface.get_uristring() + quote("/" + child.get_path()))
+        
+        elif isinstance(child, str):
+            return UriFile(self.interface.get_uristring() + quote("/" + child))
+        
+        elif isinstance(child, Path):
+            return UriFile(self.interface.get_uristring() + quote("/" + str(child)))
+        
+        else:
+            raise TypeError(f"Unsupported operand type(s) for /: 'UriFile' and '{type(child).__name__}'")
+    
+    @staticmethod
+    def uristring_from_path(path):
+        uristring = None
         p = str(path)
         roots = system.get_file_roots()
         if p.startswith(roots[0]):
@@ -38,7 +54,6 @@ class UriFileImpl:
                 "content://com.android.externalstorage.documents/document/primary%3A"
             )
             uristring += quote(p[len(roots[0]) + 1 :], safe="!")
-            urifile = UriFile(uristring)
         else:
             uristring = "content://com.android.externalstorage.documents/document/"
             for root in roots:
@@ -47,8 +62,15 @@ class UriFileImpl:
                     if idx != -1:
                         uristring += quote(root[idx + 1 :]) + "%3A"
                         uristring += quote(p[len(root) + 1 :], safe="!")
-                        urifile = UriFile(uristring)
-        return urifile
+        return uristring
+
+    @staticmethod
+    def from_path(path):
+        from . import UriFile
+
+        uristring = UriFileImpl.uristring_from_path(path)
+
+        return UriFile(uristring)
 
     # from_path
 
@@ -152,8 +174,13 @@ class UriFileImpl:
     
     def with_suffix(self, suffix):
         from . import UriFile
+
+        unquoted_uristring = unquote(self.interface.get_uristring())
+        suffixed_path = Path(unquoted_uristring).with_suffix(suffix)
         
-        return UriFile(Path(str(self.docfile.getUri().toString().with_suffix(suffix))), self.interface)
+        suffixed_urifile = UriFile(str(suffixed_path))
+        
+        return suffixed_urifile
     
     def get_parent(self):
         from . import UriFile
