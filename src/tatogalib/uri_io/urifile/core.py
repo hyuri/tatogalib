@@ -330,11 +330,11 @@ class UriFile:
 
     # log
 
-    def open(self, mode, encoding="utf-8", newline=None):
+    def open(self, mode = "r", encoding="utf-8", newline=None):
         """
         Opens a binary or text stream for reading or writing.
         The ``mode`` parameter must contain the operation and the data type of the stream to open.
-        Valid operations are (r)ead, (w)rite and (a)ppend. Valid data types are (b)inary and (t)ext.
+        Valid operations are (r)ead, (w)rite and (a)ppend. Valid data types are (b)inary and (t)ext. Default is "r", which is a synonym for "rt".
         ``encoding`` is only relevant when opening text streams for reading or writing.
         ``newline`` is only relevant when opening a text stream for writing.
         When reading from a text stream, ``newline`` is ignored and all kinds of newline characters
@@ -351,34 +351,59 @@ class UriFile:
         """
         (operation, data_type) = self._validate_open_mode(mode)
         mode = operation + data_type
-        if operation == "r" and data_type == "b":
-            return UriInputStream(self.uristring, self._fnlog)
-        elif operation == "r" and data_type == "t":
+
+        r_mode = operation == "r" and data_type == ""
+        rt_mode = operation == "r" and data_type == "t"
+        wa_mode = operation in "wa" and data_type == ""
+        wat_mode = operation in "wa" and data_type == "t"
+        
+        # "r" is a synonym for "rt" | In other words: the "t" data type is the default
+        if r_mode or rt_mode:
             return UriTextInputStream(self.uristring, encoding, self._fnlog)
+        
+        elif operation == "r" and data_type == "b":
+            return UriInputStream(self.uristring, self._fnlog)
+        
+        # "w" and "a" are synonyms for "wt" and "at", respectively | In other words: the "t" data type is the default
+        elif wa_mode or wat_mode:
+            mode = operation + "t"
+            return UriTextOutputStream(self.uristring, mode, encoding, newline, self._fnlog)
+        
         elif operation in "wa" and data_type == "b":
+            mode = operation + "b"
             return UriOutputStream(self.uristring, mode, self._fnlog)
-        elif operation in "wa" and data_type == "t":
-            return UriTextOutputStream(
-                self.uristring, mode, encoding, newline, self._fnlog
-            )
 
     # open
 
     def _validate_open_mode(self, mode):
         errmsg = (
-            f'Invalid mode "{mode}"! Valid modes are "rb", "rt", "wb", "wt", "ab", "at"'
+            f'Invalid mode "{mode}"! Valid modes are "r" | "rt" | "r+t" (default), "w" | "wt" | "w+t", "a" | "at" | "a+t", "rb" | "r+b", "wb" | "w+b", "ab" | "a+b"'
         )
+        
         operation = ""
         data_type = ""
-        for c in mode:
-            if c in "rwa":
-                operation = operation + c
-            elif c in "bt":
-                data_type = data_type + c
+
+        if "+" in mode:
+            (operation, data_type) = mode.split("+", 1)
+        
+        elif len(mode) == 1:
+            if mode in "rwa":
+                operation = mode
             else:
                 raise ValueError(errmsg)
-        if len(operation) != 1 or len(data_type) != 1:
+        
+        else:
+            for c in mode:
+                if c in "rwa":
+                    operation += c
+                elif c in "bt":
+                    data_type += c
+                else:
+                    raise ValueError(errmsg)
+        
+        if len(operation) != 1 or len(data_type) not in {0, 1}:
             raise ValueError(errmsg)
+        
         return (operation, data_type)
 
     # _validate_open_mode
