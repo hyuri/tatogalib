@@ -169,57 +169,32 @@ class UriFileImpl:
     def get_stem(self):
         return Path(self.get_name()).stem
     
+    # get_stem
+    
     def get_suffix(self):
         return Path(self.get_name()).suffix
     
+    # get_suffix
+    
     def with_suffix(self, suffix):
         from . import UriFile
-
         unquoted_uristring = unquote(self.interface.get_uristring())
         suffixed_path = Path(unquoted_uristring).with_suffix(suffix)
-        
         suffixed_urifile = UriFile(str(suffixed_path))
-        
         return suffixed_urifile
     
+    # with_suffix
+    
     def get_parent(self):
-        from . import UriFile
-        
-        # Get the current URI
-        current_uri = self.docfile.getUri()
-        
-        # Check if this is a DocumentsContract-based URI
-        if DocumentsContract.isDocumentUri(self.context, current_uri):
-            try:
-                # Get the document ID
-                doc_id = DocumentsContract.getDocumentId(current_uri)
-                
-                # Get the parent document ID
-                parent_doc_id = doc_id.rsplit(':', 1)[0]
-                
-                # Reconstruct the parent URI
-                parent_uri = DocumentsContract.buildDocumentUri(
-                    current_uri.getAuthority(),
-                    parent_doc_id
-                )
-                
-                # Create and return a UriFile for the parent
-                return UriFile(parent_uri.toString(), self.interface)
-           
-            except Exception:
-                # If we can't determine the parent, return None
-                return None
-        
-        # For non-DocumentsContract URIs, fall back to previous method
-        from pathlib import Path
-        uri_path = Path(current_uri.toString())
-        parent_path = uri_path.parent
-        
-        # If parent path is the same as the current path, it means we're at the root
-        if parent_path == uri_path:
+        path = self.get_path()
+
+        if path is None:
             return None
         
-        return UriFile(str(parent_path), self.interface)
+        parent = Path(path).parent
+        
+        from . import UriFile
+        return UriFile.from_path(parent)
 
     # get_parent
 
@@ -258,6 +233,18 @@ class UriFileImpl:
                     print(f"pr.path={pr.path}")
                     if pr.path.startswith(prefix):
                         path = Path(root) / unquote(pr.path[len(prefix) :])
+        elif self.is_downloads_document():
+            doc_id = DocumentsContract.getDocumentId(self.uri)
+            if doc_id and doc_id.startswith("raw:/"):
+                raw_uri = Uri.parse(doc_id)
+                path = raw_uri.getPath()
+            """
+            This would get path from ID number (msf:id), but it's no longer supported.
+            else:
+                pass
+            """
+        elif self.uri.getScheme().lower() == "file":
+            path = self.uri.getPath()
         return path
 
     # get_path
@@ -294,6 +281,13 @@ class UriFileImpl:
         )
 
     # is_externalstorage_document
+
+    def is_media_document(self):
+        pr = urlparse(self.interface.uristring)
+        return (
+            pr.scheme == "content"
+            and pr.netloc == "com.android.providers.media.documents"
+        )
 
     def listdir(self):
         result = []
