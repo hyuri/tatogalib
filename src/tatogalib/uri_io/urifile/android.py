@@ -27,22 +27,24 @@ class UriFileImpl:
     # __init__
 
     def __str__(self):
-        return self.interface.get_uristring()
+        return unquote(self.interface.get_uristring())
+    
+    # __str__
 
-    def __truediv__(self, child):
+    def __truediv__(self, other):
         from . import UriFile
-
-        if isinstance(child, UriFile):
-            return UriFile(self.interface.get_uristring() + quote("/" + child.get_path()))
-        
-        elif isinstance(child, str):
-            return UriFile(self.interface.get_uristring() + quote("/" + child))
-        
-        elif isinstance(child, Path):
-            return UriFile(self.interface.get_uristring() + quote("/" + str(child)))
-        
+        parent = self.interface.get_uristring()
+        if isinstance(other, UriFile):
+            child = str(other.get_path())
+        elif isinstance(other, str):
+            child = other
+        elif isinstance(other, Path):
+            child = str(other)
         else:
-            raise TypeError(f"Unsupported operand type(s) for /: 'UriFile' and '{type(child).__name__}'")
+            raise TypeError(f"Unsupported operand type(s) for /: 'UriFile' and '{type(other).__name__}'")
+        return UriFile.from_path(Path(parent) / child)
+    
+    # __truediv__
     
     @staticmethod
     def uristring_from_path(path):
@@ -63,6 +65,8 @@ class UriFileImpl:
                         uristring += quote(root[idx + 1 :]) + "%3A"
                         uristring += quote(p[len(root) + 1 :], safe="!")
         return uristring
+    
+    # uristring_from_path
 
     @staticmethod
     def from_path(path):
@@ -180,19 +184,15 @@ class UriFileImpl:
         from . import UriFile
         unquoted_uristring = unquote(self.interface.get_uristring())
         suffixed_path = Path(unquoted_uristring).with_suffix(suffix)
-        suffixed_urifile = UriFile(str(suffixed_path))
-        return suffixed_urifile
+        return UriFile(str(suffixed_path))
     
     # with_suffix
     
     def get_parent(self):
         path = self.get_path()
-
         if path is None:
             return None
-        
         parent = Path(path).parent
-        
         from . import UriFile
         return UriFile.from_path(parent)
 
