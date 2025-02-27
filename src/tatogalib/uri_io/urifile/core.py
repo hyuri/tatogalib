@@ -291,12 +291,30 @@ class UriFile:
         :rtype: boolean
         """
         return self._impl.is_dir()
+    
+    def isdir(self):
+        """
+        (Backward Compatibility) Checks if the UriFile represents an existing folder
+
+        :returns: True or False
+        :rtype: boolean
+        """
+        return self._impl.is_dir()
 
     # is_dir
 
     def is_file(self):
         """
         Checks if the UriFile represents an existing file
+
+        :returns: True or False
+        :rtype: boolean
+        """
+        return self._impl.is_file()
+    
+    def isfile(self):
+        """
+        (Backward Compatibility) Checks if the UriFile represents an existing file
 
         :returns: True or False
         :rtype: boolean
