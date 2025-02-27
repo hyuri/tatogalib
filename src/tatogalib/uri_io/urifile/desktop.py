@@ -12,6 +12,24 @@ class UriFileImpl:
 
     # __init__
 
+    def __str__(self):
+        return str(self.path)
+    
+    # __str__
+
+    def __truediv__(self, child):
+        from . import UriFile
+        parent = self.path
+        if isinstance(other, UriFile):
+            child = other.path
+        elif isinstance(other, str) or isinstance(other, Path):
+            child = other
+        else:
+            raise TypeError(f"Unsupported operand type(s) for /: 'UriFile' and '{type(other).__name__}'")
+        return UriFile.from_path(parent / child)
+	
+	# __truediv__
+
     @staticmethod
     def from_path(path):
         from . import UriFile
@@ -79,6 +97,30 @@ class UriFileImpl:
         return self.path.name
 
     # get_name
+
+    def get_stem(self):
+        return self.path.stem
+    
+    # get_stem
+    
+    def get_suffix(self):
+        return self.path.suffix
+    
+    # get_suffix
+    
+    def with_suffix(self, suffix):
+        from . import UriFile
+        suffixed_path = self.path.with_suffix(suffix)
+        return UriFile.from_path(suffixed_path)
+    
+    # with_suffix
+    
+    def get_parent(self):
+        from . import UriFile
+        parent = self.path.parent
+        return UriFile.from_path(parent)
+    
+    # get_parent
 
     def get_path(self):
         return self.path
