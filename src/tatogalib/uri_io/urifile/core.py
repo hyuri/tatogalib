@@ -31,7 +31,8 @@ class UriFile:
         return self._impl.__str__()
 
     def __truediv__(self, child):
-        return self._impl.__truediv__(child)
+        uristring = self._impl.get_truediv_uristring(child)
+        return UriFile(uristring, self._fnlog)
 
     @property
     def name(self):
@@ -139,7 +140,7 @@ class UriFile:
             if outstream is not None:
                 outstream.flush()
                 outstream.close()
-            urifile.delete()
+            urifile.unlink()
             result = False
             self.log(str(ex))
         finally:
@@ -168,7 +169,7 @@ class UriFile:
                 if not replace:
                     raise FileExistsError(f"File '{child_name}' already exists!")
                 else:
-                    urifile.delete()
+                    urifile.unlink()
             else:
                 raise IsADirectoryError(f"Directory '{child_name}' already exists!")
         uristring = self._impl.create_file(child_name)
@@ -176,14 +177,47 @@ class UriFile:
 
     # create_file
 
-    def delete(self):
+    def create_dir(self, child_name, replace=False, exists_ok=False):
+        """
+        Creates a new folder in the folder represented by this UriFile.
+        If this UriFile is not a folder, a NotADirectoryError will be raised.
+
+        :param str child_name: The name of the folder to be created
+
+        :returns: The newly created folder
+        :rtype: UriFile
+        """
+        if not self.is_dir():
+            raise NotADirectoryError("UriFile is not an accessible directory.")
+        urifile = self.find(child_name)
+        if urifile is not None:
+            if urifile.is_dir():
+                if not exists_ok:
+                    raise FileExistsError(f"Directory '{child_name}' already exists!")
+            else:
+                raise NotADirectoryError(f"File '{child_name}' already exists!")
+        uristring = self._impl.create_dir(child_name, replace = replace, exists_ok = exists_ok)
+        return UriFile(uristring, self._fnlog)
+    
+    # create_dir
+
+    def unlink(self):
         """
         Deletes the file
 
         :returns: True on success, False on failure
         :rtype: boolean
         """
-        return self._impl.delete()
+        return self._impl.unlink()
+
+    def delete(self):
+        """
+        (Backward Compatibility) Deletes the file
+
+        :returns: True on success, False on failure
+        :rtype: boolean
+        """
+        return self._impl.unlink()
 
     # delete
 
@@ -343,6 +377,16 @@ class UriFile:
 
     # listdir
 
+    def relative_to(self, other):
+        return self._impl.relative_to(other)
+    
+    # relative_to
+
+    def resolve(self, other):
+        return self._impl.resolve(other)
+    
+    # resolve
+
     def log(self, message):
         """
         Logs a message to the user code if fnLog was passed to the constructor
@@ -375,21 +419,16 @@ class UriFile:
         """
         (operation, data_type) = self._validate_open_mode(mode)
         mode = operation + data_type
-
-        r_mode = operation == "r" and data_type == ""
-        rt_mode = operation == "r" and data_type == "t"
-        wa_mode = operation in "wa" and data_type == ""
-        wat_mode = operation in "wa" and data_type == "t"
         
         # "r" is a synonym for "rt" | In other words: the "t" data type is the default
-        if r_mode or rt_mode:
+        if operation == "r" and "b" not in mode:
             return UriTextInputStream(self.uristring, encoding, self._fnlog)
         
         elif operation == "r" and data_type == "b":
             return UriInputStream(self.uristring, self._fnlog)
         
         # "w" and "a" are synonyms for "wt" and "at", respectively | In other words: the "t" data type is the default
-        elif wa_mode or wat_mode:
+        elif operation in "wa" and "b" not in mode:
             mode = operation + "t"
             return UriTextOutputStream(self.uristring, mode, encoding, newline, self._fnlog)
         
