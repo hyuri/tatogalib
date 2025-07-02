@@ -17,7 +17,7 @@ class UriFileImpl:
     
     # __str__
 
-    def __truediv__(self, child):
+    def get_truediv_uristring(self, other):
         from . import UriFile
         parent = self.path
         if isinstance(other, UriFile):
@@ -26,9 +26,9 @@ class UriFileImpl:
             child = other
         else:
             raise TypeError(f"Unsupported operand type(s) for /: 'UriFile' and '{type(other).__name__}'")
-        return UriFile.from_path(parent / child)
-	
-	# __truediv__
+        return str(parent / child)
+    
+    # __truediv__
 
     @staticmethod
     def from_path(path):
@@ -48,7 +48,12 @@ class UriFileImpl:
 
     # create_file
 
-    def delete(self):
+    def create_dir(self, child_name, replace=False, exists_ok=False):
+        path = self.path / child_name
+        path.mkdir(replace = replace, exist_ok = exists_ok)
+        return urifile.ospath_to_uristring(str(path))
+
+    def unlink(self):
         if self.is_file():
             try:
                 self.path.unlink(missing_ok=True)
@@ -56,7 +61,7 @@ class UriFileImpl:
                 self.interface.log(str(ex))
         return not self.exists()
 
-    # delete
+    # unlink (delete)
 
     def exists(self):
         return self.path.exists()
@@ -153,6 +158,22 @@ class UriFileImpl:
         return result
 
     # listdir
+
+    def relative_to(self, other):
+        self_path = str(self.path)
+        other_path = str(other.path) if hasattr(other, 'path') else str(other._impl.path)
+        return Path(self_path).relative_to(other_path)
+    
+    # relative_to
+    
+    def resolve(self, other):
+        from . import UriFile
+        self_path = str(self.path)
+        other_path = str(other.path) if hasattr(other, 'path') else str(other._impl.path)
+        resolved = (Path(self_path) / other_path).resolve()
+        return UriFile.from_path(resolved)
+    
+    # resolve
 
     def set_lastmodified(self, unixtime):
         try:
