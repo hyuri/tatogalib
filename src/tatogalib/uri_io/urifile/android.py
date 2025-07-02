@@ -16,8 +16,8 @@ class UriFileImpl:
         self.context = toga.App.app._impl.native
         self.resolver = self.context.getContentResolver()
         self.uri = Uri.parse(interface.uristring)
-        if "/document/" in interface.uristring:
-            if "/tree/" in interface.uristring:
+        if "/document/" in self.interface.uristring:
+            if "/tree/" in self.interface.uristring:
                 self.docfile = DocumentFile.fromSingleUri(self.context, self.uri)
             else:
                 self.docfile = DocumentFile.fromSingleUri(self.context, self.uri)
@@ -31,7 +31,7 @@ class UriFileImpl:
     
     # __str__
 
-    def __truediv__(self, other):
+    def get_truediv_uristring(self, other):
         from . import UriFile
         parent = self.interface.get_uristring()
         if isinstance(other, UriFile):
@@ -42,9 +42,10 @@ class UriFileImpl:
             child = str(other)
         else:
             raise TypeError(f"Unsupported operand type(s) for /: 'UriFile' and '{type(other).__name__}'")
-        return UriFile.from_path(Path(parent) / child)
+        uristring = str(Path(parent) / child)
+        return uristring
     
-    # __truediv__
+    # get_truediv_uristring
     
     @staticmethod
     def uristring_from_path(path):
@@ -71,9 +72,7 @@ class UriFileImpl:
     @staticmethod
     def from_path(path):
         from . import UriFile
-
         uristring = UriFileImpl.uristring_from_path(path)
-
         return UriFile(uristring)
 
     # from_path
@@ -137,10 +136,16 @@ class UriFileImpl:
 
     # create_file
 
-    def delete(self):
+    def create_dir(self, child_name, replace=False, exists_ok=False):
+        child = self.docfile.createDirectory(child_name)
+        return child.getUri().toString()
+    
+    # create_dir
+
+    def unlink(self):
         return self.docfile.delete()
 
-    # delete
+    # unlink (delete)
 
     def exists(self):
         return self.docfile.exists()
@@ -307,6 +312,27 @@ class UriFileImpl:
         return result
 
     # listdir
+
+    def relative_to(self, other) -> Path:
+        self_uristring = unquote(str(self))
+        other_uristring = unquote(str(other))
+        self_path = self.get_uripath(self_uristring)
+        other_path = other._impl.get_uripath(other_uristring)
+
+        return Path(self_path).relative_to(other_path)
+
+    # relative_to
+
+    def resolve(self, other):
+        self_uristring = unquote(str(self))
+        other_uristring = unquote(str(other))
+        self_path = self.get_uripath(self_uristring)
+        other_path = other._impl.get_uripath(other_uristring)
+        
+        from . import UriFile
+        return UriFile(str(Path(self_path).resolve(other_path)))
+
+    # resolve
 
     def release_persistent_access(self, read=True, write=True):
         try:
