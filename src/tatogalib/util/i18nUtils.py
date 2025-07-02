@@ -14,6 +14,7 @@ This file is distributed under the terms of the MIT license
 
 import i18n
 import locale
+import platform
 from pathlib import Path
 
 
@@ -22,15 +23,17 @@ class I18nUtils:
     lang = None
     translation_dir = None
 
-    def __init__(self, translation_dir, fallback_lang, lang=None):
+    def __init__(self, translation_dir, fallback_lang, lang=None, file_suffix="yml"):
         """
         Initializes the class and loads the translation files
 
-        :param str translation_dir: The path to the directory containing the translation files in the format xx.yml
+        :param str translation_dir: The path to the directory containing the translation files in the format xx.file_suffix
                                    where xx is the language, e.g. en.yml
         :param str fallback_lang: The language to be used if the chosen language is not available
         :param str lang: The language to use. Defaults to self.get_default_app_language()
+        :param str file_suffix: The suffix of the translation files. Defaults to 'yml'
         """
+        self.file_suffix = file_suffix
         self.translation_dir = translation_dir
         self.fallback_lang = fallback_lang
         if lang is None:
@@ -51,8 +54,11 @@ class I18nUtils:
         _languages = []
         _p = Path(self.translation_dir)
         for _child in _p.iterdir():
-            if _child.name.endswith(".yml"):
-                _languages.append(_child.stem)
+            if _child.name.endswith("." + self.file_suffix):
+                # Extract language code from filename (e.g., general.en.yml -> en)
+                _lang = _child.stem.split('.')[-1]
+                if _lang not in _languages:
+                    _languages.append(_lang)
         # for
         return _languages
 
@@ -68,9 +74,31 @@ class I18nUtils:
         :rtype: str
         """
         lang = "en"
-        default_locale = locale.getdefaultlocale()
+
+        default_locale = locale.getlocale()
+        
+        if platform.system() == "Android":
+            from java.util import Locale
+            language = Locale.getDefault().getLanguage()
+            country = Locale.getDefault().getCountry()
+            default_locale = (f'{language}_{country}', default_locale[1] or 'UTF-8')
+        
+        elif platform.system() == "Darwin":
+            from rubicon.objc import ObjCClass
+            NSLocale = ObjCClass('NSLocale')
+            NSLocale.declare_property("languageCode")
+            NSLocale.declare_property("countryCode")
+            current_locale = NSLocale.currentLocale()
+            language = current_locale.languageCode
+            country = current_locale.countryCode
+            default_locale = (f'{language}_{country}', default_locale[1] or 'UTF-8')
+        
+        elif platform.system() in {"iOS", "iPadOS"}:
+            pass
+        
         if default_locale is not None:
             lang = default_locale[0][0:2]
+        
         return lang
 
     # get_default_system_language
@@ -122,7 +150,8 @@ class I18nUtils:
         if dir_name == "":
             dir_name = self.translation_dir
         i18n.set("skip_locale_root_data", True)
-        i18n.set("filename_format", "{locale}.{format}")
+        i18n.set('file_format', self.file_suffix)
+        i18n.set("filename_format", "{namespace}.{locale}.{format}")
         i18n.set("enable_memoization", True)
         i18n.set("locale", self.lang)
         i18n.set("fallback", self.fallback_lang)
