@@ -1,9 +1,16 @@
 from .. import urifile
+from .. import _security_scoped_urls
 
 
 class UriOutputStreamImpl:
     def __init__(self, interface, mode):
         self.interface = interface
+        self._nsurl = _security_scoped_urls.get(interface.uristring)
+        if self._nsurl is not None:
+            try:
+                self._nsurl.startAccessingSecurityScopedResource()
+            except Exception:
+                self._nsurl = None
         ospath = urifile.uristring_to_ospath(interface.uristring)
         if ospath is None:
             from urllib.parse import urlparse, unquote
@@ -16,6 +23,12 @@ class UriOutputStreamImpl:
         return len(bytesobj)
 
     def close(self):
+        if self._nsurl is not None:
+            try:
+                self._nsurl.stopAccessingSecurityScopedResource()
+            except Exception:
+                pass
+            self._nsurl = None
         if self.stream is not None:
             self.flush()
             self.stream.close()

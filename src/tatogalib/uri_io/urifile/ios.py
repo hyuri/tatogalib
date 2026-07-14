@@ -2,17 +2,30 @@ import mimetypes
 import os
 from pathlib import Path
 from .. import urifile
+from .. import _security_scoped_urls
 
 
 class UriFileImpl:
     def __init__(self, interface):
         self.interface = interface
+        self._nsurl = _security_scoped_urls.get(interface.uristring)
         ospath = urifile.uristring_to_ospath(interface.uristring)
         if ospath is None:
             from urllib.parse import urlparse, unquote
             pr = urlparse(interface.uristring)
             ospath = unquote(pr.path)
         self.path = Path(ospath)
+
+    def __del__(self):
+        self.release_security_scope()
+
+    def release_security_scope(self):
+        if hasattr(self, '_nsurl') and self._nsurl is not None:
+            try:
+                self._nsurl.stopAccessingSecurityScopedResource()
+            except Exception:
+                pass
+            self._nsurl = None
 
     def __str__(self):
         return str(self.path)

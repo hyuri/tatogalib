@@ -14,6 +14,7 @@ from rubicon.objc.api import NSString
 import toga
 
 from .. import urifile
+from .. import _security_scoped_urls
 
 
 # ------------------------------------------------------------------------------
@@ -72,6 +73,25 @@ class DocumentPickerDelegate(NSObject, protocols=[UIDocumentPickerDelegateProtoc
 
 
 _pending_delegates = set()
+
+
+# ------------------------------------------------------------------------------
+# Security-scoped URL helpers
+# ------------------------------------------------------------------------------
+
+def _register_security_scoped_urls(urls):
+    """Call startAccessingSecurityScopedResource on each NSURL and register it
+    in the global registry so UriFile and stream implementations can look it up
+    and call stopAccessingSecurityScopedResource when done."""
+    for url in (urls or []):
+        if url is not None:
+            try:
+                url.startAccessingSecurityScopedResource()
+            except Exception:
+                pass
+            uristring = str(url.absoluteString())
+            if uristring:
+                _security_scoped_urls[uristring] = url
 
 
 # ------------------------------------------------------------------------------
@@ -158,6 +178,8 @@ class UriFileBrowserImpl:
         if result is None:
             return []
 
+        _register_security_scoped_urls(result)
+
         return [
             str(url.absoluteString())
             for url in result
@@ -177,6 +199,8 @@ class UriFileBrowserImpl:
         if result is None or len(result) == 0:
             return None
 
+        _register_security_scoped_urls(result)
+
         url_str = result[0].absoluteString()
         return str(url_str) if url_str else None
 
@@ -191,6 +215,8 @@ class UriFileBrowserImpl:
         result = await _present_and_await(picker)
         if result is None or len(result) == 0:
             return None
+
+        _register_security_scoped_urls(result)
 
         url_str = result[0].absoluteString()
         return str(url_str) if url_str else None
