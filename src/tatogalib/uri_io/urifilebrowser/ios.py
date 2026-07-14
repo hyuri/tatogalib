@@ -33,7 +33,7 @@ class UriFileBrowserImpl:
             title,
             initial_directory=initial_path,
             file_types=file_types,
-            multiselect=multiselect,
+            multiple_select=multiselect,
             on_result=None,
         )
         if result is None:
