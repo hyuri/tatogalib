@@ -1,4 +1,4 @@
-import toga
+from ... import system
 
 
 class UriFileBrowser:
@@ -10,13 +10,16 @@ class UriFileBrowser:
             It expects a string parameter
         """
         self._fnlog = fnLog  # for logging to user code
-        if toga.platform.current_platform == "android":
+        plat = system.get_platform()
+        if plat == "Android":
             from .android import UriFileBrowserImpl
-        elif toga.platform.current_platform in ("windows", "linux", "macOS"):
+        elif plat == "iOS":
+            from .ios import UriFileBrowserImpl
+        elif plat in ("Windows", "Linux", "Darwin"):
             from .desktop import UriFileBrowserImpl
         else:
             raise NotImplementedError(
-                f"UriFileBrowser is not implemented for {toga.platform.current_platform}"
+                f"UriFileBrowser is not implemented for {plat}"
             )
         self._impl = UriFileBrowserImpl(self)
 

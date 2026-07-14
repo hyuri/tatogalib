@@ -1,6 +1,7 @@
-import toga
 import io
 import os
+
+from ... import system
 
 
 class UriInputStream:
@@ -16,13 +17,16 @@ class UriInputStream:
         self.uristring = uristring
         self._fnlog = fnLog  # for logging to user code
         self._impl = None
-        if toga.platform.current_platform == "android":
+        plat = system.get_platform()
+        if plat == "Android":
             from .android import UriInputStreamImpl
-        elif toga.platform.current_platform in ("windows", "linux", "macOS"):
+        elif plat == "iOS":
+            from .ios import UriInputStreamImpl
+        elif plat in ("Windows", "Linux", "Darwin"):
             from .desktop import UriInputStreamImpl
         else:
             raise NotImplementedError(
-                f"UriInputStream is not implemented for {toga.platform.current_platform}"
+                f"UriInputStream is not implemented for {plat}"
             )
         self._impl = UriInputStreamImpl(self)
 

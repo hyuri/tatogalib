@@ -1,5 +1,6 @@
 import os
-import toga
+
+from ... import system
 
 
 class UriOutputStream:
@@ -20,13 +21,16 @@ class UriOutputStream:
                 f'UriOutputStream: Invalid mode "{mode}"! Valid modes are "wb" or "ab"'
             )
         self._fnlog = fnLog  # for logging to user code
-        if toga.platform.current_platform == "android":
+        plat = system.get_platform()
+        if plat == "Android":
             from .android import UriOutputStreamImpl
-        elif toga.platform.current_platform in ("windows", "linux", "macOS"):
+        elif plat == "iOS":
+            from .ios import UriOutputStreamImpl
+        elif plat in ("Windows", "Linux", "Darwin"):
             from .desktop import UriOutputStreamImpl
         else:
             raise NotImplementedError(
-                f"UriOutputStream is not implemented for {toga.platform.current_platform}"
+                f"UriOutputStream is not implemented for {plat}"
             )
         self._impl = UriOutputStreamImpl(self, mode)
 

@@ -18,6 +18,8 @@ import toga
 from toga.style import Pack
 from toga.style.pack import COLUMN, ROW
 
+from .. import system
+
 
 class TaGui:
     """
@@ -55,7 +57,7 @@ class TaGui:
                 return top_box
             # build_gui
 
-    Currently supported platforms: windows, android
+    Currently supported platforms: windows, android, iOS
 
     """
 
@@ -83,18 +85,19 @@ class TaGui:
             self.app.main_window = toga.MainWindow(title=title, **kwargs)
             self.window = self.app.main_window
         else:  # sub GUIs
-            if toga.platform.current_platform in ("windows"):
+            current_platform = system.get_platform()
+            if current_platform == "Windows":
                 self.window = TaWindow(self.parentGui.window, title, **kwargs)
-            elif toga.platform.current_platform in ("android"):
+            elif current_platform in ("Android", "iOS"):
                 self.window = self.parentGui.window
             else:
                 raise NotImplementedError(
-                    f"TaGui: unsupported platform {toga.platform.current_platform}"
+                    f"TaGui: unsupported platform {current_platform}"
                 )
-        if toga.platform.current_platform == "android":
-            # save parent commands and toolbar
-            self.parent_commands = copy.copy(self.app.commands)
-            self.parent_toolbar = copy.copy(self.app.main_window.toolbar)
+            if current_platform in ("Android", "iOS"):
+                # save parent commands and toolbar
+                self.parent_commands = copy.copy(self.app.commands)
+                self.parent_toolbar = copy.copy(self.app.main_window.toolbar)
 
     # __init__
 
@@ -114,15 +117,20 @@ class TaGui:
     def close(self):
         """
         Closes the current GUI.
-        On Android, it calls parentGui.show() to restore the previous GUI
+        On Android and iOS, it calls parentGui.show() to restore the previous GUI
         """
-        if toga.platform.current_platform in ("windows"):
+        current_platform = system.get_platform()
+        if current_platform == "Windows":
             self.window.close()
         # restore parent commands and toolbar
-        if toga.platform.current_platform == "android":
+        if plat == "Android":
             self.app._commands = self.parent_commands
             self.app.main_window._toolbar = self.parent_toolbar
             self.app._impl.native.invalidateOptionsMenu()
+            self.parentGui.show()
+        elif current_platform == "iOS":
+            self.app._commands = self.parent_commands
+            self.app.main_window._toolbar = self.parent_toolbar
             self.parentGui.show()
 
     # close
@@ -164,8 +172,11 @@ class TaGui:
             )
         self.window.content = self.root_box
         # setting app title
-        if toga.platform.current_platform == "android":
+        current_platform = system.get_platform()
+        if current_platform == "Android":
             self.app._impl.native.setTitle(self.title)
+        elif current_platform == "iOS":
+            self.app.main_window.native.navigationItem.title = self.title
         self.window.show()
 
     # show

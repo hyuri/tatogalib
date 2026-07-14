@@ -24,12 +24,15 @@ class OnWebViewLoadHandler(Protocol):
         """
 
 
-if system.get_platform() == "windows":
+plat = system.get_platform()
+if plat == "Windows":
     from .windows import TaWebViewImpl
-elif system.get_platform() == "android":
+elif plat == "Android":
     from .android import TaWebViewImpl
+elif plat == "iOS":
+    from .ios import TaWebViewImpl
 else:
-    raise NotImplementedError(f"TaWebView is not implemented for {system.get_platform()}")
+    raise NotImplementedError(f"TaWebView is not implemented for {plat}")
 
 
 #class WebView(Widget):

@@ -11,10 +11,13 @@ from toga import Widget
 from ... import system
 
 
-if system.get_platform() == "android":
+plat = system.get_platform()
+if plat == "Android":
     from .android import TaSelectionImpl
+elif plat == "iOS":
+    from .ios import TaSelectionImpl
 else:
-    raise NotImplementedError(f"TaSelection is not implemented for {system.get_platform()}")
+    raise NotImplementedError(f"TaSelection is not implemented for {plat}")
 
 
 #class Selection(Widget):

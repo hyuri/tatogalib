@@ -4,12 +4,15 @@ from ..uriinputstream import UriInputStream, UriTextInputStream
 from ..urioutputstream import UriOutputStream, UriTextOutputStream
 
 
-if system.get_platform() == "android":
+plat = system.get_platform()
+if plat == "Android":
     from .android import UriFileImpl
-elif system.get_platform() in ("windows", "linux", "macOS"):
+elif plat == "iOS":
+    from .ios import UriFileImpl
+elif plat in ("Windows", "Linux", "Darwin"):
     from .desktop import UriFileImpl
 else:
-    raise NotImplementedError(f"UriFile is not implemented for {system.get_platform()}")
+    raise NotImplementedError(f"UriFile is not implemented for {plat}")
 
 
 class UriFile:
@@ -479,7 +482,7 @@ class UriFile:
         :param bool read: Release read permissions
         :param bool write: Release write permissions
         """
-        if system.get_platform() == "android":
+        if system.get_platform() == "Android":
             self._impl.release_persistent_access(read, write)
 
     # release_persistent_access
@@ -492,7 +495,7 @@ class UriFile:
         :param bool read: Request read permissions
         :param bool write: Request write permissions
         """
-        if system.get_platform() == "android":
+        if system.get_platform() == "Android":
             self._impl.request_persistent_access(read, write)
 
     # request_persistent_access

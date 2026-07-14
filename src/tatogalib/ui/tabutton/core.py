@@ -7,12 +7,15 @@ if TYPE_CHECKING:
     from toga.icons import IconContent
 
 from ... import system
-if system.get_platform() == "android":
+plat = system.get_platform()
+if plat == "Android":
     from .android import TaButtonImpl
-elif system.get_platform() == "windows":
+elif plat == "iOS":
+    from .ios import TaButtonImpl
+elif plat == "Windows":
     from .winforms import TaButtonImpl
 else:
-    raise NotImplementedError(f"TaButton is not implemented for {system.get_platform()}")
+    raise NotImplementedError(f"TaButton is not implemented for {plat}")
 
 
 class OnPressHandler(Protocol):

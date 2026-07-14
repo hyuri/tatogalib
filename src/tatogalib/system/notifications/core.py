@@ -1,5 +1,7 @@
 import toga
 
+from ... import system
+
 
 class AppIcon:
     """ """
@@ -37,13 +39,14 @@ class NotificationManager:
         """
         self._fnlog = fnLog  # for logging to user code
         self._impl = None
-        if toga.platform.current_platform == "android":
+        plat = system.get_platform()
+        if plat == "Android":
             from .android import NotificationManagerImpl
-        elif toga.platform.current_platform == "windows":
+        elif plat == "Windows":
             from .windows import NotificationManagerImpl
         else:
             raise NotImplementedError(
-                f"Notification is not implemented for {toga.platform.current_platform}"
+                f"Notification is not implemented for {plat}"
             )
         self._impl = NotificationManagerImpl(self)
         toga.App.app.notifications = NotificationManager()

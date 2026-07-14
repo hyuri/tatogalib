@@ -1,5 +1,6 @@
-import toga
 from inspect import stack
+
+from ... import system
 
 
 class Clipboard:
@@ -8,13 +9,14 @@ class Clipboard:
     def __init__(self, fnLog=None):
         self._fnlog = fnLog  # for logging to user code
         self._impl = None
-        if toga.platform.current_platform == "android":
+        plat = system.get_platform()
+        if plat == "Android":
             from .android import ClipboardImpl
-        elif toga.platform.current_platform == "windows":
+        elif plat == "Windows":
             from .windows import ClipboardImpl
         else:
             raise NotImplementedError(
-                f"Clipboard is not implemented for {toga.platform.current_platform}"
+                f"Clipboard is not implemented for {plat}"
             )
         if stack()[1].function != "get_clipboard":
             raise RuntimeError("Clipboard: do not use the constructor, use get_clipboard() instead!")
