@@ -128,14 +128,14 @@ async def _present_and_await(picker):
     future = asyncio.get_event_loop().create_future()
     delegate.future = future
     picker.delegate = delegate
-    _pending_delegates.add(delegate)
+    _pending_delegates.update({delegate, picker})
 
     root_vc.presentViewController_animated_completion_(picker, True, None)
 
     try:
         return await future
     finally:
-        _pending_delegates.discard(delegate)
+        _pending_delegates.difference_update({delegate, picker})
 
 
 # ------------------------------------------------------------------------------
@@ -174,7 +174,12 @@ class UriFileBrowserImpl:
         )
         picker.allowsMultipleSelection = multiselect
 
-        result = await _present_and_await(picker)
+        self._picker_uttype_arr = uttype_arr
+        try:
+            result = await _present_and_await(picker)
+        finally:
+            self._picker_uttype_arr = None
+
         if result is None:
             return []
 
@@ -195,7 +200,12 @@ class UriFileBrowserImpl:
             uttype_arr
         )
 
-        result = await _present_and_await(picker)
+        self._picker_uttype_arr = uttype_arr
+        try:
+            result = await _present_and_await(picker)
+        finally:
+            self._picker_uttype_arr = None
+
         if result is None or len(result) == 0:
             return None
 
@@ -212,7 +222,12 @@ class UriFileBrowserImpl:
             uttype_arr
         )
 
-        result = await _present_and_await(picker)
+        self._picker_uttype_arr = uttype_arr
+        try:
+            result = await _present_and_await(picker)
+        finally:
+            self._picker_uttype_arr = None
+
         if result is None or len(result) == 0:
             return None
 
