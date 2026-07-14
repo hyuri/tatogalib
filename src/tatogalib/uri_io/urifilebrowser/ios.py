@@ -1,8 +1,123 @@
+import asyncio
 import mimetypes
 from pathlib import Path
+
+from rubicon.objc import (
+    NSObject,
+    objc_method,
+    ObjCClass,
+    send_super,
+)
+from rubicon.objc.api import NSString
+
 import toga
+
 from .. import urifile
 
+
+# ------------------------------------------------------------------------------
+# ObjC class references (lazy-loaded on first use so the module can be imported
+# on macOS without crashing; on iOS all UIKit classes are guaranteed available).
+# ------------------------------------------------------------------------------
+
+class _LazyClass:
+    """Wrapper that loads an ObjC class on first attribute access."""
+
+    def __init__(self, name):
+        self._name = name
+        self._cls = None
+
+    def __getattr__(self, name):
+        if self._cls is None:
+            self._cls = ObjCClass(self._name)
+        return getattr(self._cls, name)
+
+    def __call__(self, *args, **kwargs):
+        if self._cls is None:
+            self._cls = ObjCClass(self._name)
+        return self._cls(*args, **kwargs)
+
+
+UIDocumentPickerViewController = _LazyClass("UIDocumentPickerViewController")
+UTType = _LazyClass("UTType")
+NSMutableArray = ObjCClass("NSMutableArray")
+
+
+# ------------------------------------------------------------------------------
+# Delegate that receives UIDocumentPickerViewController callbacks.
+# Kept alive by _pending_delegates until the future completes (the delegate
+# property is weak, so without this the delegate would be deallocated early).
+# ------------------------------------------------------------------------------
+
+class DocumentPickerDelegate(NSObject, protocols=["UIDocumentPickerDelegate"]):
+    @objc_method
+    def init(self):
+        self = send_super(__class__, self, "init")
+        self.future = None
+        return self
+
+    @objc_method
+    def documentPicker_didPickDocumentsAtURLs_(self, picker, urls):
+        if self.future is not None and not self.future.done():
+            result = [urls.objectAtIndex_(i) for i in range(urls.count())]
+            self.future.set_result(result)
+
+    @objc_method
+    def documentPickerWasCancelled_(self, picker):
+        if self.future is not None and not self.future.done():
+            self.future.set_result(None)
+
+
+_pending_delegates = set()
+
+
+# ------------------------------------------------------------------------------
+# Helpers
+# ------------------------------------------------------------------------------
+
+def _build_uttype_array(file_types):
+    """Return an NSMutableArray<UTType *> for the given file extension list."""
+    arr = NSMutableArray.alloc().init()
+    for ext in file_types or []:
+        clean = ext.lstrip(".") if ext.startswith(".") else ext
+        uttype = UTType.typeWithFilenameExtension_(NSString(clean))
+        if uttype is not None:
+            arr.addObject_(uttype)
+    return arr
+
+
+def _root_view_controller():
+    """Return the topmost UINavigationController for presenting dialogs."""
+    app = toga.App.app
+    try:
+        return app.main_window._impl.container.controller
+    except AttributeError:
+        return None
+
+
+async def _present_and_await(picker):
+    """Present a UIDocumentPickerViewController and await the user's choice."""
+    root_vc = _root_view_controller()
+    if root_vc is None:
+        return None
+
+    delegate = DocumentPickerDelegate.alloc().init()
+    future = asyncio.get_event_loop().create_future()
+    delegate.future = future
+    picker.delegate = delegate
+    _pending_delegates.add(delegate)
+
+    root_vc.presentViewController_animated_completion_(picker, True, None)
+
+    try:
+        return await future
+    finally:
+        _pending_delegates.discard(delegate)
+
+
+# ------------------------------------------------------------------------------
+# Implementation
+# ------------------------------------------------------------------------------
 
 class UriFileBrowserImpl:
     def __init__(self, interface):
@@ -27,50 +142,52 @@ class UriFileBrowserImpl:
             return infos
 
     async def open_file_dialog(self, title, initial_uri, file_types, multiselect):
-        selected_uri = []
-        initial_path = urifile.uristring_to_ospath(initial_uri)
-        result = await self.app.main_window.open_file_dialog(
-            title,
-            initial_directory=initial_path,
-            file_types=file_types,
-            multiple_select=multiselect,
-            on_result=None,
+        uttype_arr = _build_uttype_array(file_types)
+        if uttype_arr.count() == 0:
+            uttype_arr.addObject_(UTType.typeWithIdentifier_(NSString("public.data")))
+
+        picker = UIDocumentPickerViewController.alloc().initForOpeningContentTypes_(
+            uttype_arr
         )
+        picker.allowsMultipleSelection = multiselect
+
+        result = await _present_and_await(picker)
         if result is None:
-            return selected_uri
-        if multiselect is False:
-            result = str(result)
-            selected_uri.append(urifile.ospath_to_uristring(result))
-        else:
-            for fname in result:
-                fname = str(fname)
-                selected_uri.append(urifile.ospath_to_uristring(fname))
-        return selected_uri
+            return []
+
+        return [
+            str(url.absoluteString())
+            for url in result
+            if url.absoluteString()
+        ]
 
     async def save_file_dialog(self, title, suggested_filename, file_types):
-        selected_uri = None
-        try:
-            selected_uri = await self.app.main_window.save_file_dialog(
-                title, suggested_filename, file_types=file_types
-            )
-            selected_uri = urifile.ospath_to_uristring(str(selected_uri))
-        except ValueError as ex:
-            selected_uri = None
-            self.interface.log(str(ex))
-        finally:
-            return selected_uri
+        uttype_arr = _build_uttype_array(file_types)
+        if uttype_arr.count() == 0:
+            uttype_arr.addObject_(UTType.typeWithIdentifier_(NSString("public.data")))
+
+        picker = UIDocumentPickerViewController.alloc().initForExportingContentTypes_(
+            uttype_arr
+        )
+
+        result = await _present_and_await(picker)
+        if result is None or len(result) == 0:
+            return None
+
+        url_str = result[0].absoluteString()
+        return str(url_str) if url_str else None
 
     async def select_folder_dialog(self, title, initial_uri=None):
-        selected_uri = None
-        try:
-            initial_path = urifile.uristring_to_ospath(initial_uri)
-            selected_uri = await self.app.main_window.select_folder_dialog(
-                title, initial_path
-            )
-            if selected_uri is not None:
-                selected_uri = urifile.ospath_to_uristring(str(selected_uri))
-        except ValueError as ex:
-            selected_uri = None
-            self.interface.log(str(ex))
-        finally:
-            return selected_uri
+        uttype_arr = NSMutableArray.alloc().init()
+        uttype_arr.addObject_(UTType.typeWithIdentifier_(NSString("public.folder")))
+
+        picker = UIDocumentPickerViewController.alloc().initForOpeningContentTypes_(
+            uttype_arr
+        )
+
+        result = await _present_and_await(picker)
+        if result is None or len(result) == 0:
+            return None
+
+        url_str = result[0].absoluteString()
+        return str(url_str) if url_str else None
