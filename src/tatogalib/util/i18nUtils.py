@@ -76,14 +76,14 @@ class I18nUtils:
         lang = "en"
 
         default_locale = locale.getlocale()
-        
+
         if platform.system() == "Android":
             from java.util import Locale
             language = Locale.getDefault().getLanguage()
             country = Locale.getDefault().getCountry()
             default_locale = (f'{language}_{country}', default_locale[1] or 'UTF-8')
-        
-        elif platform.system() == "Darwin":
+
+        elif platform.system() in {"Darwin", "iOS", "iPadOS"}:
             from rubicon.objc import ObjCClass
             NSLocale = ObjCClass('NSLocale')
             NSLocale.declare_property("languageCode")
@@ -92,13 +92,10 @@ class I18nUtils:
             language = current_locale.languageCode
             country = current_locale.countryCode
             default_locale = (f'{language}_{country}', default_locale[1] or 'UTF-8')
-        
-        elif platform.system() in {"iOS", "iPadOS"}:
-            pass
-        
+
         if default_locale is not None:
             lang = default_locale[0][0:2]
-        
+
         return lang
 
     # get_default_system_language
@@ -188,12 +185,3 @@ class I18nUtils:
             else:
                 _text = _dict["many"]
         return _text
-
-    # t
-
-
-# I18nUtils
-
-
-version = "0.3.2"
-version_date = "2020-07-03 - 2023-11-08"
