@@ -4,8 +4,9 @@ from pathlib import Path
 
 from rubicon.objc import (
     NSObject,
-    objc_method,
     ObjCClass,
+    ObjCProtocol,
+    objc_method,
     send_super,
 )
 from rubicon.objc.api import NSString
@@ -49,7 +50,9 @@ NSMutableArray = ObjCClass("NSMutableArray")
 # property is weak, so without this the delegate would be deallocated early).
 # ------------------------------------------------------------------------------
 
-class DocumentPickerDelegate(NSObject, protocols=["UIDocumentPickerDelegate"]):
+UIDocumentPickerDelegateProtocol = ObjCProtocol("UIDocumentPickerDelegate")
+
+class DocumentPickerDelegate(NSObject, protocols=[UIDocumentPickerDelegateProtocol]):
     @objc_method
     def init(self):
         self = send_super(__class__, self, "init")
