@@ -1,5 +1,6 @@
 import asyncio
 import mimetypes
+import os
 import shutil
 import tempfile
 from pathlib import Path
@@ -126,23 +127,29 @@ def _root_view_controller():
 
 async def _present_and_await(picker):
     """Present a UIDocumentPickerViewController and await the user's choice."""
+    os.write(1, b"DEBUG: _present_and_await start\n")
     root_vc = _root_view_controller()
     if root_vc is None:
         return None
 
+    os.write(1, b"DEBUG: cleaning pending delegates\n")
     _pending_delegates[:] = [
         (d, p) for d, p in _pending_delegates
         if d.future is None or not d.future.done()
     ]
 
+    os.write(1, b"DEBUG: creating delegate\n")
     delegate = DocumentPickerDelegate.alloc().init()
+    os.write(1, b"DEBUG: delegate created\n")
     future = asyncio.get_event_loop().create_future()
     delegate.future = future
     picker.delegate = delegate
     _pending_delegates.append((delegate, picker))
 
+    os.write(1, b"DEBUG: presenting picker\n")
     root_vc.presentViewController_animated_completion_(picker, True, None)
 
+    os.write(1, b"DEBUG: awaiting future\n")
     return await future
 
 
@@ -173,10 +180,13 @@ class UriFileBrowserImpl:
             return infos
 
     async def open_file_dialog(self, title, initial_uri, file_types, multiselect):
+        os.write(1, b"DEBUG: open_file_dialog start\n")
         uttype_arr = _build_uttype_array(file_types)
         if uttype_arr.count() == 0:
+            os.write(1, b"DEBUG: adding fallback public.data\n")
             uttype_arr.addObject_(UTType.typeWithIdentifier_(NSString("public.data")))
 
+        os.write(1, b"DEBUG: creating picker\n")
         picker = UIDocumentPickerViewController.alloc().initForOpeningContentTypes_(
             uttype_arr
         )
