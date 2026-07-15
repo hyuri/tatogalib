@@ -174,8 +174,8 @@ class UriFileBrowserImpl:
         if uttype_arr.count() == 0:
             uttype_arr.addObject_(UTType.typeWithIdentifier_(NSString("public.data")))
 
-        picker = UIDocumentPickerViewController.alloc().initForOpeningContentTypes_asCopy_(
-            uttype_arr, False
+        picker = UIDocumentPickerViewController.alloc().initForOpeningContentTypes_(
+            uttype_arr
         )
         picker.allowsMultipleSelection = multiselect
 
@@ -231,8 +231,8 @@ class UriFileBrowserImpl:
         uttype_arr = NSMutableArray.alloc().init()
         uttype_arr.addObject_(UTType.typeWithIdentifier_(NSString("public.folder")))
 
-        picker = UIDocumentPickerViewController.alloc().initForOpeningContentTypes_asCopy_(
-            uttype_arr, False
+        picker = UIDocumentPickerViewController.alloc().initForOpeningContentTypes_(
+            uttype_arr
         )
 
         if initial_uri:
