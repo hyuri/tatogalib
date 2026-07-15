@@ -1,5 +1,7 @@
 import asyncio
 import mimetypes
+import shutil
+import tempfile
 from pathlib import Path
 
 from rubicon.objc import (
@@ -43,6 +45,7 @@ class _LazyClass:
 UIDocumentPickerViewController = _LazyClass("UIDocumentPickerViewController")
 UTType = _LazyClass("UTType")
 NSMutableArray = ObjCClass("NSMutableArray")
+NSURL = ObjCClass("NSURL")
 
 
 # ------------------------------------------------------------------------------
@@ -171,10 +174,15 @@ class UriFileBrowserImpl:
         if uttype_arr.count() == 0:
             uttype_arr.addObject_(UTType.typeWithIdentifier_(NSString("public.data")))
 
-        picker = UIDocumentPickerViewController.alloc().initForOpeningContentTypes_(
-            uttype_arr
+        picker = UIDocumentPickerViewController.alloc().initForOpeningContentTypes_asCopy_(
+            uttype_arr, False
         )
         picker.allowsMultipleSelection = multiselect
+
+        if initial_uri:
+            path = urifile.uristring_to_ospath(initial_uri)
+            if path and Path(path).is_dir():
+                picker.directoryURL = NSURL.fileURLWithPath_(path)
 
         self._picker_uttype_arr = uttype_arr
         try:
@@ -194,19 +202,22 @@ class UriFileBrowserImpl:
         ]
 
     async def save_file_dialog(self, title, suggested_filename, file_types):
-        uttype_arr = _build_uttype_array(file_types)
-        if uttype_arr.count() == 0:
-            uttype_arr.addObject_(UTType.typeWithIdentifier_(NSString("public.data")))
-
-        picker = UIDocumentPickerViewController.alloc().initForExportingContentTypes_(
-            uttype_arr
-        )
-
-        self._picker_uttype_arr = uttype_arr
+        tmpdir = Path(tempfile.mkdtemp())
         try:
+            tmpfile = tmpdir / (suggested_filename or "untitled")
+            Path(tmpfile).touch()
+            tmpurl = NSURL.fileURLWithPath_(str(tmpfile))
+
+            export_urls = NSMutableArray.alloc().init()
+            export_urls.addObject_(tmpurl)
+
+            picker = UIDocumentPickerViewController.alloc().initForExportingURLs_asCopy_(
+                export_urls, False
+            )
+
             result = await _present_and_await(picker)
         finally:
-            self._picker_uttype_arr = None
+            shutil.rmtree(tmpdir, ignore_errors=True)
 
         if result is None or len(result) == 0:
             return None
@@ -220,9 +231,14 @@ class UriFileBrowserImpl:
         uttype_arr = NSMutableArray.alloc().init()
         uttype_arr.addObject_(UTType.typeWithIdentifier_(NSString("public.folder")))
 
-        picker = UIDocumentPickerViewController.alloc().initForOpeningContentTypes_(
-            uttype_arr
+        picker = UIDocumentPickerViewController.alloc().initForOpeningContentTypes_asCopy_(
+            uttype_arr, False
         )
+
+        if initial_uri:
+            path = urifile.uristring_to_ospath(initial_uri)
+            if path and Path(path).is_dir():
+                picker.directoryURL = NSURL.fileURLWithPath_(path)
 
         self._picker_uttype_arr = uttype_arr
         try:
