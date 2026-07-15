@@ -80,15 +80,17 @@ _pending_delegates = set()
 # ------------------------------------------------------------------------------
 
 def _register_security_scoped_urls(urls):
-    """Call startAccessingSecurityScopedResource on each NSURL and register it
-    in the global registry so UriFile and stream implementations can look it up
-    and call stopAccessingSecurityScopedResource when done."""
+    """Register security-scoped NSURLs in the global registry so UriFile and
+    stream implementations can look them up and call
+    startAccessingSecurityScopedResource / stopAccessingSecurityScopedResource
+    when performing I/O.
+
+    This function does NOT call startAccessingSecurityScopedResource — that is
+    deferred to the actual reader/writer (stream impls) so every start/stop
+    pair stays balanced and localised.
+    """
     for url in (urls or []):
         if url is not None:
-            try:
-                url.startAccessingSecurityScopedResource()
-            except Exception:
-                pass
             uristring = str(url.absoluteString())
             if uristring:
                 _security_scoped_urls[uristring] = url

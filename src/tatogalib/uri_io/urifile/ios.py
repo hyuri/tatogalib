@@ -1,31 +1,27 @@
 import mimetypes
 import os
 from pathlib import Path
+
+from rubicon.objc import ObjCClass
+
 from .. import urifile
 from .. import _security_scoped_urls
+
+NSURL = ObjCClass('NSURL')
 
 
 class UriFileImpl:
     def __init__(self, interface):
         self.interface = interface
         self._nsurl = _security_scoped_urls.get(interface.uristring)
+        if self._nsurl is None:
+            self._nsurl = _find_parent_nsurl(interface.uristring)
         ospath = urifile.uristring_to_ospath(interface.uristring)
         if ospath is None:
             from urllib.parse import urlparse, unquote
             pr = urlparse(interface.uristring)
             ospath = unquote(pr.path)
         self.path = Path(ospath)
-
-    def __del__(self):
-        self.release_security_scope()
-
-    def release_security_scope(self):
-        if hasattr(self, '_nsurl') and self._nsurl is not None:
-            try:
-                self._nsurl.stopAccessingSecurityScopedResource()
-            except Exception:
-                pass
-            self._nsurl = None
 
     def __str__(self):
         return str(self.path)
@@ -142,6 +138,13 @@ class UriFileImpl:
         children = os.listdir(self.path)
         for child in children:
             uristring = urifile.ospath_to_uristring(str(self.path / child))
+            if uristring not in _security_scoped_urls and self._nsurl is not None:
+                try:
+                    child_url = self._nsurl.URLByAppendingPathComponent_(child)
+                    if child_url is not None:
+                        _security_scoped_urls[uristring] = child_url
+                except Exception:
+                    pass
             result.append(uristring)
         return result
 
@@ -173,3 +176,24 @@ class UriFileImpl:
 
     def request_persistent_access(self, read=True, write=True):
         pass
+
+
+def _find_parent_nsurl(uristring):
+    child_path_str = urifile.uristring_to_ospath(uristring)
+    if child_path_str is None:
+        return None
+    child_path = Path(child_path_str)
+    for parent_uristring, parent_url in list(_security_scoped_urls.items()):
+        parent_path_str = urifile.uristring_to_ospath(parent_uristring)
+        if parent_path_str is None:
+            continue
+        parent_path = Path(parent_path_str)
+        try:
+            relative = str(child_path.relative_to(parent_path))
+            child_url = parent_url.URLByAppendingPathComponent_(relative)
+            if child_url is not None:
+                _security_scoped_urls[uristring] = child_url
+                return child_url
+        except ValueError:
+            continue
+    return None
