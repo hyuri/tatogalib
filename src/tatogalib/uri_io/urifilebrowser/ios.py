@@ -45,7 +45,7 @@ class _LazyClass:
 UIDocumentPickerViewController = _LazyClass("UIDocumentPickerViewController")
 UTType = _LazyClass("UTType")
 NSMutableArray = ObjCClass("NSMutableArray")
-NSURL = ObjCClass("NSURL")
+NSURL = _LazyClass("NSURL")
 
 
 # ------------------------------------------------------------------------------
