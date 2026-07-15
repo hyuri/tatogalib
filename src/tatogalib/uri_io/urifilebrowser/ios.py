@@ -50,8 +50,9 @@ NSURL = _LazyClass("NSURL")
 
 # ------------------------------------------------------------------------------
 # Delegate that receives UIDocumentPickerViewController callbacks.
-# Kept alive by _pending_delegates until the future completes (the delegate
-# property is weak, so without this the delegate would be deallocated early).
+# Kept alive in _pending_delegates past the future completion (the delegate
+# property is weak, so without this the delegate could be deallocated before
+# UIKit fully finishes with it, causing EXC_BAD_ACCESS).
 # ------------------------------------------------------------------------------
 
 UIDocumentPickerDelegateProtocol = ObjCProtocol("UIDocumentPickerDelegate")
@@ -75,7 +76,7 @@ class DocumentPickerDelegate(NSObject, protocols=[UIDocumentPickerDelegateProtoc
             self.future.set_result(None)
 
 
-_pending_delegates = set()
+_pending_delegates = []
 
 
 # ------------------------------------------------------------------------------
@@ -129,18 +130,20 @@ async def _present_and_await(picker):
     if root_vc is None:
         return None
 
+    _pending_delegates[:] = [
+        (d, p) for d, p in _pending_delegates
+        if d.future is None or not d.future.done()
+    ]
+
     delegate = DocumentPickerDelegate.alloc().init()
     future = asyncio.get_event_loop().create_future()
     delegate.future = future
     picker.delegate = delegate
-    _pending_delegates.update({delegate, picker})
+    _pending_delegates.append((delegate, picker))
 
     root_vc.presentViewController_animated_completion_(picker, True, None)
 
-    try:
-        return await future
-    finally:
-        _pending_delegates.difference_update({delegate, picker})
+    return await future
 
 
 # ------------------------------------------------------------------------------
