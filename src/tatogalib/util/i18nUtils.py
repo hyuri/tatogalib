@@ -19,6 +19,30 @@ import platform
 from pathlib import Path
 
 
+def _fix_system_locale():
+    lang = os.environ.get('LANG', '')
+    if not lang:
+        os.environ['LANG'] = 'C.UTF-8'
+        return
+
+    try:
+        locale.setlocale(locale.LC_ALL, lang)
+    except locale.Error:
+        lang_parts = lang.replace('.UTF-8', '', 1).split('_', 1)
+        lang_code = lang_parts[0][:2] if lang_parts and len(lang_parts[0]) >= 2 else 'en'
+        fallbacks = [f'{lang_code}_US.UTF-8', 'C.UTF-8']
+        for fb in fallbacks:
+            try:
+                locale.setlocale(locale.LC_ALL, fb)
+                os.environ['LANG'] = fb
+                return
+            except locale.Error:
+                continue
+
+
+_fix_system_locale()
+
+
 class I18nUtils:
     fallback_lang = None
     lang = None
