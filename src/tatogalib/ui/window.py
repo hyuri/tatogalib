@@ -123,7 +123,7 @@ class TaGui:
         if current_platform == "Windows":
             self.window.close()
         # restore parent commands and toolbar
-        if plat == "Android":
+        if current_platform == "Android":
             self.app._commands = self.parent_commands
             self.app.main_window._toolbar = self.parent_toolbar
             self.app._impl.native.invalidateOptionsMenu()
