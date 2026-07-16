@@ -7,6 +7,7 @@ from pathlib import Path
 from rubicon.objc import (
     NSObject,
     ObjCClass,
+    ObjCInstance,
     ObjCProtocol,
     objc_method,
     send_super,
