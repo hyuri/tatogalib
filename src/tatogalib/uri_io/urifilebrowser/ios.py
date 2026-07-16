@@ -20,32 +20,13 @@ from .. import _security_scoped_urls
 
 
 # ------------------------------------------------------------------------------
-# ObjC class references (lazy-loaded on first use so the module can be imported
-# on macOS without crashing; on iOS all UIKit classes are guaranteed available).
+# ObjC class references
 # ------------------------------------------------------------------------------
 
-class _LazyClass:
-    """Wrapper that loads an ObjC class on first attribute access."""
-
-    def __init__(self, name):
-        self._name = name
-        self._cls = None
-
-    def __getattr__(self, name):
-        if self._cls is None:
-            self._cls = ObjCClass(self._name)
-        return getattr(self._cls, name)
-
-    def __call__(self, *args, **kwargs):
-        if self._cls is None:
-            self._cls = ObjCClass(self._name)
-        return self._cls(*args, **kwargs)
-
-
-UIDocumentPickerViewController = _LazyClass("UIDocumentPickerViewController")
-UTType = _LazyClass("UTType")
+UIDocumentPickerViewController = ObjCClass("UIDocumentPickerViewController")
+UTType = ObjCClass("UTType")
 NSMutableArray = ObjCClass("NSMutableArray")
-NSURL = _LazyClass("NSURL")
+NSURL = ObjCClass("NSURL")
 
 
 # ------------------------------------------------------------------------------

@@ -79,7 +79,7 @@ def _coordinated_open(nsurl, path, mode, buffering=0):
         result = [None]
 
         def accessor(coordinated_url):
-            p = str(coordinated_url.path()) if coordinated_url.path() else path
+            p = str(coordinated_url.path) if coordinated_url.path else path
             result[0] = open(p, mode, buffering=buffering)
 
         block = Block(accessor, argtypes=['@'], restype='v')

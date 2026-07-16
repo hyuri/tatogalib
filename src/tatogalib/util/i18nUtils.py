@@ -111,8 +111,6 @@ class I18nUtils:
         elif platform.system() in {"Darwin", "iOS", "iPadOS"}:
             from rubicon.objc import ObjCClass
             NSLocale = ObjCClass('NSLocale')
-            NSLocale.declare_property("languageCode")
-            NSLocale.declare_property("countryCode")
             current_locale = NSLocale.currentLocale()
             language = current_locale.languageCode
             country = current_locale.countryCode

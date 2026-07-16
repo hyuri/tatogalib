@@ -1,6 +1,14 @@
 [project]
 name = "tatogalib"
 version = "0.9.6"
+dependencies = [
+    "toga",
+    "python-i18n[YAML]",
+]
+
+[project.optional-dependencies]
+ios = ["rubicon-objc"]
+android = ["toga-android"]
 
 [tool.setuptools.package-dir]
 tatogalib = "src/tatogalib"
