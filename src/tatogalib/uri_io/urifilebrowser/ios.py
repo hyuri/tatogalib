@@ -46,7 +46,7 @@ class DocumentPickerDelegate(NSObject, protocols=[UIDocumentPickerDelegateProtoc
         return self
 
     @objc_method
-    def documentPicker_didPickDocumentsAtURLs_(self, picker, urls):
+    def documentPicker_didPickDocumentsAtURLs_(self, picker, urls) -> None:
         if self.future is not None and not self.future.done():
             self.future.set_result(urls)
 
