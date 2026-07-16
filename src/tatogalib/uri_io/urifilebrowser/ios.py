@@ -11,7 +11,7 @@ from rubicon.objc import (
     objc_method,
     send_super,
 )
-from rubicon.objc.api import NSString
+
 
 import toga
 
@@ -113,9 +113,7 @@ def _build_uttype_array(file_types):
         clean = ext.lstrip(".") if ext.startswith(".") else ext
         print(f"DEBUG: _build_uttype_array - creating UTType for ext={ext!r} clean={clean!r}\n")
         print("DEBUG: creating NSString for enex\n")
-        nsstring = NSString("enex")
-        print("DEBUG: NSString created\n")
-        uttype = UTType.typeWithFilenameExtension_(nsstring)
+        uttype = UTType.typeWithFilenameExtension_(clean)
         print(f"DEBUG: _build_uttype_array - UTType result: {uttype}\n")
         if uttype is not None:
             print("DEBUG: _build_uttype_array - adding UTType to array\n")
@@ -193,7 +191,7 @@ class UriFileBrowserImpl:
         print("DEBUG: uttype count check\n")
         if uttype_arr.count() == 0:
             print("DEBUG: adding fallback public.data\n")
-            uttype = UTType.typeWithIdentifier_(NSString("public.data"))
+            uttype = UTType.typeWithIdentifier_("public.data")
             print(f"DEBUG: fallback UTType created: {uttype}\n")
             uttype_arr.addObject_(uttype)
 
@@ -257,7 +255,7 @@ class UriFileBrowserImpl:
 
     async def select_folder_dialog(self, title, initial_uri=None):
         uttype_arr = NSMutableArray.alloc().init()
-        uttype_arr.addObject_(UTType.typeWithIdentifier_(NSString("public.folder")))
+        uttype_arr.addObject_(UTType.typeWithIdentifier_("public.folder"))
 
         picker = UIDocumentPickerViewController.alloc().initForOpeningContentTypes_(
             uttype_arr
