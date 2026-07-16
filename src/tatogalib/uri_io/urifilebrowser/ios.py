@@ -112,7 +112,10 @@ def _build_uttype_array(file_types):
     for ext in file_types or []:
         clean = ext.lstrip(".") if ext.startswith(".") else ext
         print(f"DEBUG: _build_uttype_array - creating UTType for ext={ext!r} clean={clean!r}\n")
-        uttype = UTType.typeWithFilenameExtension_(NSString(clean))
+        print("DEBUG: creating NSString for enex\n")
+        nsstring = NSString("enex")
+        print("DEBUG: NSString created\n")
+        uttype = UTType.typeWithFilenameExtension_(nsstring)
         print(f"DEBUG: _build_uttype_array - UTType result: {uttype}\n")
         if uttype is not None:
             print("DEBUG: _build_uttype_array - adding UTType to array\n")
