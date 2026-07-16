@@ -76,7 +76,7 @@ def _register_security_scoped_urls(urls):
     """
     for url in (urls or []):
         if url is not None:
-            uristring = str(url.absoluteString())
+            uristring = str(url.absoluteString)
             if uristring:
                 _security_scoped_urls[uristring] = url
 
@@ -204,9 +204,9 @@ class UriFileBrowserImpl:
         _register_security_scoped_urls(urls_list)
 
         return [
-            str(url.absoluteString())
+            str(url.absoluteString)
             for url in urls_list
-            if url.absoluteString()
+            if url.absoluteString
         ]
 
     async def save_file_dialog(self, title, suggested_filename, file_types):
@@ -236,7 +236,7 @@ class UriFileBrowserImpl:
 
         _register_security_scoped_urls(urls_list)
 
-        url_str = urls_list[0].absoluteString()
+        url_str = urls_list[0].absoluteString
         return str(url_str) if url_str else None
 
     async def select_folder_dialog(self, title, initial_uri=None):
@@ -267,5 +267,5 @@ class UriFileBrowserImpl:
 
         _register_security_scoped_urls(urls_list)
 
-        url_str = urls_list[0].absoluteString()
+        url_str = urls_list[0].absoluteString
         return str(url_str) if url_str else None
