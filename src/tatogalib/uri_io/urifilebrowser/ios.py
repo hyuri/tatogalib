@@ -106,12 +106,18 @@ def _register_security_scoped_urls(urls):
 
 def _build_uttype_array(file_types):
     """Return an NSMutableArray<UTType *> for the given file extension list."""
+    print("DEBUG: _build_uttype_array - creating NSMutableArray\n")
     arr = NSMutableArray.alloc().init()
+    print("DEBUG: _build_uttype_array - NSMutableArray created\n")
     for ext in file_types or []:
         clean = ext.lstrip(".") if ext.startswith(".") else ext
+        print(f"DEBUG: _build_uttype_array - creating UTType for ext={ext!r} clean={clean!r}\n")
         uttype = UTType.typeWithFilenameExtension_(NSString(clean))
+        print(f"DEBUG: _build_uttype_array - UTType result: {uttype}\n")
         if uttype is not None:
+            print("DEBUG: _build_uttype_array - adding UTType to array\n")
             arr.addObject_(uttype)
+    print("DEBUG: _build_uttype_array - returning\n")
     return arr
 
 
@@ -181,21 +187,28 @@ class UriFileBrowserImpl:
     async def open_file_dialog(self, title, initial_uri, file_types, multiselect):
         print("DEBUG: open_file_dialog start\n")
         uttype_arr = _build_uttype_array(file_types)
+        print("DEBUG: uttype count check\n")
         if uttype_arr.count() == 0:
             print("DEBUG: adding fallback public.data\n")
-            uttype_arr.addObject_(UTType.typeWithIdentifier_(NSString("public.data")))
+            uttype = UTType.typeWithIdentifier_(NSString("public.data"))
+            print(f"DEBUG: fallback UTType created: {uttype}\n")
+            uttype_arr.addObject_(uttype)
 
-        print("DEBUG: creating picker\n")
+        print("DEBUG: creating UIDocumentPickerViewController\n")
         picker = UIDocumentPickerViewController.alloc().initForOpeningContentTypes_(
             uttype_arr
         )
+        print("DEBUG: picker created\n")
+        print("DEBUG: setting allowsMultipleSelection\n")
         picker.allowsMultipleSelection = multiselect
+        print("DEBUG: allowsMultipleSelection set\n")
 
         if initial_uri:
             path = urifile.uristring_to_ospath(initial_uri)
             if path and Path(path).is_dir():
                 picker.directoryURL = NSURL.fileURLWithPath_(path)
 
+        print("DEBUG: calling _present_and_await\n")
         self._picker_uttype_arr = uttype_arr
         try:
             result = await _present_and_await(picker)
