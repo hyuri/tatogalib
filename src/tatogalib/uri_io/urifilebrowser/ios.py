@@ -67,8 +67,7 @@ class DocumentPickerDelegate(NSObject, protocols=[UIDocumentPickerDelegateProtoc
     @objc_method
     def documentPicker_didPickDocumentsAtURLs_(self, picker, urls):
         if self.future is not None and not self.future.done():
-            result = [urls.objectAtIndex_(i) for i in range(len(urls))]
-            self.future.set_result(result)
+            self.future.set_result(urls)
 
     @objc_method
     def documentPickerWasCancelled_(self, picker):
@@ -219,11 +218,12 @@ class UriFileBrowserImpl:
         if result is None:
             return []
 
-        _register_security_scoped_urls(result)
+        urls_list = list(result)
+        _register_security_scoped_urls(urls_list)
 
         return [
             str(url.absoluteString())
-            for url in result
+            for url in urls_list
             if url.absoluteString()
         ]
 
@@ -245,12 +245,16 @@ class UriFileBrowserImpl:
         finally:
             shutil.rmtree(tmpdir, ignore_errors=True)
 
-        if result is None or len(result) == 0:
+        if result is None:
             return None
 
-        _register_security_scoped_urls(result)
+        urls_list = list(result)
+        if len(urls_list) == 0:
+            return None
 
-        url_str = result[0].absoluteString()
+        _register_security_scoped_urls(urls_list)
+
+        url_str = urls_list[0].absoluteString()
         return str(url_str) if url_str else None
 
     async def select_folder_dialog(self, title, initial_uri=None):
@@ -272,10 +276,14 @@ class UriFileBrowserImpl:
         finally:
             self._picker_uttype_arr = None
 
-        if result is None or len(result) == 0:
+        if result is None:
             return None
 
-        _register_security_scoped_urls(result)
+        urls_list = list(result)
+        if len(urls_list) == 0:
+            return None
 
-        url_str = result[0].absoluteString()
+        _register_security_scoped_urls(urls_list)
+
+        url_str = urls_list[0].absoluteString()
         return str(url_str) if url_str else None
