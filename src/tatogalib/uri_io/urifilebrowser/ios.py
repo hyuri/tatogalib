@@ -41,7 +41,7 @@ UIDocumentPickerDelegateProtocol = ObjCProtocol("UIDocumentPickerDelegate")
 class DocumentPickerDelegate(NSObject, protocols=[UIDocumentPickerDelegateProtocol]):
     @objc_method
     def init(self):
-        self = send_super(__class__, self, "init")
+        self = ObjCInstance(send_super(__class__, self, "init"))
         self.future = None
         return self
 
@@ -51,7 +51,7 @@ class DocumentPickerDelegate(NSObject, protocols=[UIDocumentPickerDelegateProtoc
             self.future.set_result(urls)
 
     @objc_method
-    def documentPickerWasCancelled_(self, picker):
+    def documentPickerWasCancelled_(self, picker) -> None:
         if self.future is not None and not self.future.done():
             self.future.set_result(None)
 
