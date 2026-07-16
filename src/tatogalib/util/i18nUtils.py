@@ -14,6 +14,7 @@ This file is distributed under the terms of the MIT license
 
 import i18n
 import locale
+import os
 import platform
 from pathlib import Path
 
@@ -75,13 +76,13 @@ class I18nUtils:
         """
         lang = "en"
 
-        default_locale = locale.getlocale()
+        default_locale = None
 
         if platform.system() == "Android":
             from java.util import Locale
             language = Locale.getDefault().getLanguage()
             country = Locale.getDefault().getCountry()
-            default_locale = (f'{language}_{country}', default_locale[1] or 'UTF-8')
+            default_locale = (f'{language}_{country}', 'UTF-8')
 
         elif platform.system() in {"Darwin", "iOS", "iPadOS"}:
             from rubicon.objc import ObjCClass
@@ -91,10 +92,19 @@ class I18nUtils:
             current_locale = NSLocale.currentLocale()
             language = current_locale.languageCode
             country = current_locale.countryCode
-            default_locale = (f'{language}_{country}', default_locale[1] or 'UTF-8')
+            default_locale = (f'{language}_{country}', 'UTF-8')
 
-        if default_locale is not None:
+        else:
+            try:
+                default_locale = locale.getlocale()
+            except locale.Error:
+                default_locale = None
+
+        if default_locale and default_locale[0]:
             lang = default_locale[0][0:2]
+        else:
+            lang_env = os.environ.get('LANG', 'en_US.UTF-8')
+            lang = lang_env.split('_')[0][0:2] if '_' in lang_env else lang_env[0:2]
 
         return lang
 

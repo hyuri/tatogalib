@@ -1,6 +1,5 @@
 import asyncio
 import mimetypes
-import os
 import shutil
 import tempfile
 from pathlib import Path
@@ -127,29 +126,29 @@ def _root_view_controller():
 
 async def _present_and_await(picker):
     """Present a UIDocumentPickerViewController and await the user's choice."""
-    self.interface.log("DEBUG: _present_and_await start\n")
+    print("DEBUG: _present_and_await start\n")
     root_vc = _root_view_controller()
     if root_vc is None:
         return None
 
-    self.interface.log("DEBUG: cleaning pending delegates\n")
+    print("DEBUG: cleaning pending delegates\n")
     _pending_delegates[:] = [
         (d, p) for d, p in _pending_delegates
         if d.future is None or not d.future.done()
     ]
 
-    self.interface.log("DEBUG: creating delegate\n")
+    print("DEBUG: creating delegate\n")
     delegate = DocumentPickerDelegate.alloc().init()
-    self.interface.log("DEBUG: delegate created\n")
+    print("DEBUG: delegate created\n")
     future = asyncio.get_event_loop().create_future()
     delegate.future = future
     picker.delegate = delegate
     _pending_delegates.append((delegate, picker))
 
-    self.interface.log("DEBUG: presenting picker\n")
+    print("DEBUG: presenting picker\n")
     root_vc.presentViewController_animated_completion_(picker, True, None)
 
-    self.interface.log("DEBUG: awaiting future\n")
+    print("DEBUG: awaiting future\n")
     return await future
 
 
@@ -180,13 +179,13 @@ class UriFileBrowserImpl:
             return infos
 
     async def open_file_dialog(self, title, initial_uri, file_types, multiselect):
-        self.interface.log("DEBUG: open_file_dialog start\n")
+        print("DEBUG: open_file_dialog start\n")
         uttype_arr = _build_uttype_array(file_types)
         if uttype_arr.count() == 0:
-            self.interface.log("DEBUG: adding fallback public.data\n")
+            print("DEBUG: adding fallback public.data\n")
             uttype_arr.addObject_(UTType.typeWithIdentifier_(NSString("public.data")))
 
-        self.interface.log("DEBUG: creating picker\n")
+        print("DEBUG: creating picker\n")
         picker = UIDocumentPickerViewController.alloc().initForOpeningContentTypes_(
             uttype_arr
         )
