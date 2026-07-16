@@ -67,7 +67,7 @@ class DocumentPickerDelegate(NSObject, protocols=[UIDocumentPickerDelegateProtoc
     @objc_method
     def documentPicker_didPickDocumentsAtURLs_(self, picker, urls):
         if self.future is not None and not self.future.done():
-            result = [urls.objectAtIndex_(i) for i in range(urls.count())]
+            result = [urls.objectAtIndex_(i) for i in range(len(urls))]
             self.future.set_result(result)
 
     @objc_method
@@ -189,7 +189,7 @@ class UriFileBrowserImpl:
         print("DEBUG: open_file_dialog start\n")
         uttype_arr = _build_uttype_array(file_types)
         print("DEBUG: uttype count check\n")
-        if uttype_arr.count() == 0:
+        if len(uttype_arr) == 0:
             print("DEBUG: adding fallback public.data\n")
             uttype = UTType.typeWithIdentifier_("public.data")
             print(f"DEBUG: fallback UTType created: {uttype}\n")
