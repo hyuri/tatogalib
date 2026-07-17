@@ -87,19 +87,12 @@ def _register_security_scoped_urls(urls):
 
 def _build_uttype_array(file_types):
     """Return an NSMutableArray<UTType *> for the given file extension list."""
-    print("DEBUG: _build_uttype_array - creating NSMutableArray\n")
     arr = NSMutableArray.alloc().init()
-    print("DEBUG: _build_uttype_array - NSMutableArray created\n")
     for ext in file_types or []:
         clean = ext.lstrip(".") if ext.startswith(".") else ext
-        print(f"DEBUG: _build_uttype_array - creating UTType for ext={ext!r} clean={clean!r}\n")
-        print("DEBUG: creating NSString for enex\n")
         uttype = UTType.typeWithFilenameExtension_(clean)
-        print(f"DEBUG: _build_uttype_array - UTType result: {uttype}\n")
         if uttype is not None:
-            print("DEBUG: _build_uttype_array - adding UTType to array\n")
             arr.addObject_(uttype)
-    print("DEBUG: _build_uttype_array - returning\n")
     return arr
 
 
@@ -114,29 +107,23 @@ def _root_view_controller():
 
 async def _present_and_await(picker):
     """Present a UIDocumentPickerViewController and await the user's choice."""
-    print("DEBUG: _present_and_await start\n")
     root_vc = _root_view_controller()
     if root_vc is None:
         return None
 
-    print("DEBUG: cleaning pending delegates\n")
     _pending_delegates[:] = [
         (d, p) for d, p in _pending_delegates
         if d.future is None or not d.future.done()
     ]
 
-    print("DEBUG: creating delegate\n")
     delegate = DocumentPickerDelegate.alloc().init()
-    print("DEBUG: delegate created\n")
     future = asyncio.get_event_loop().create_future()
     delegate.future = future
     picker.delegate = delegate
     _pending_delegates.append((delegate, picker))
 
-    print("DEBUG: presenting picker\n")
     root_vc.presentViewController_animated_completion_(picker, True, None)
 
-    print("DEBUG: awaiting future\n")
     return await future
 
 
@@ -167,30 +154,21 @@ class UriFileBrowserImpl:
             return infos
 
     async def open_file_dialog(self, title, initial_uri, file_types, multiselect):
-        print("DEBUG: open_file_dialog start\n")
         uttype_arr = _build_uttype_array(file_types)
-        print("DEBUG: uttype count check\n")
         if len(uttype_arr) == 0:
-            print("DEBUG: adding fallback public.data\n")
             uttype = UTType.typeWithIdentifier_("public.data")
-            print(f"DEBUG: fallback UTType created: {uttype}\n")
             uttype_arr.addObject_(uttype)
 
-        print("DEBUG: creating UIDocumentPickerViewController\n")
         picker = UIDocumentPickerViewController.alloc().initForOpeningContentTypes_(
             uttype_arr
         )
-        print("DEBUG: picker created\n")
-        print("DEBUG: setting allowsMultipleSelection\n")
         picker.allowsMultipleSelection = multiselect
-        print("DEBUG: allowsMultipleSelection set\n")
 
         if initial_uri:
             path = urifile.uristring_to_ospath(initial_uri)
             if path and Path(path).is_dir():
                 picker.directoryURL = NSURL.fileURLWithPath_(path)
 
-        print("DEBUG: calling _present_and_await\n")
         self._picker_uttype_arr = uttype_arr
         try:
             result = await _present_and_await(picker)
