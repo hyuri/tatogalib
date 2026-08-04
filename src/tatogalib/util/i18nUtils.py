@@ -116,6 +116,21 @@ class I18nUtils:
             country = current_locale.countryCode
             default_locale = (f'{language}_{country}', 'UTF-8')
 
+        elif platform.system() == "Windows":
+            # locale.getlocale() on Windows returns Windows display names
+            # (e.g. 'English_United States') instead of ISO 639-1 codes.
+            # Query the user interface language LCID and map it to a POSIX
+            # locale name.
+            try:
+                import ctypes
+                locale_id = ctypes.windll.kernel32.GetUserDefaultUILanguage()
+                default_locale = (
+                    locale.windows_locale.get(locale_id, 'en_US').split('_')[0],
+                    None,
+                )
+            except Exception:
+                default_locale = None
+
         else:
             try:
                 default_locale = locale.getlocale()
@@ -123,10 +138,13 @@ class I18nUtils:
                 default_locale = None
 
         if default_locale and default_locale[0]:
-            lang = default_locale[0][0:2]
+            lang = default_locale[0][0:2].lower()
         else:
             lang_env = os.environ.get('LANG', 'en_US.UTF-8')
-            lang = lang_env.split('_')[0][0:2] if '_' in lang_env else lang_env[0:2]
+            lang = lang_env.split('.')[0].split('_')[0][0:2].lower()
+
+        if lang in {"c", "posix"}:
+            lang = "en"
 
         return lang
 
