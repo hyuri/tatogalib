@@ -24,7 +24,7 @@ class UriOutputStream:
         plat = system.get_platform()
         if plat == "Android":
             from .android import UriOutputStreamImpl
-        elif plat == "iOS":
+        elif plat in ("iOS", "iPadOS"):
             from .ios import UriOutputStreamImpl
         elif plat in ("Windows", "Linux", "Darwin"):
             from .desktop import UriOutputStreamImpl

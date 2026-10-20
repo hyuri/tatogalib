@@ -57,7 +57,7 @@ class TaGui:
                 return top_box
             # build_gui
 
-    Currently supported platforms: windows, android, iOS
+    Currently supported platforms: windows, android, iOS, iPadOS
 
     """
 
@@ -88,13 +88,13 @@ class TaGui:
             current_platform = system.get_platform()
             if current_platform == "Windows":
                 self.window = TaWindow(self.parentGui.window, title, **kwargs)
-            elif current_platform in ("Android", "iOS"):
+            elif current_platform in ("Android", "iOS", "iPadOS"):
                 self.window = self.parentGui.window
             else:
                 raise NotImplementedError(
                     f"TaGui: unsupported platform {current_platform}"
                 )
-            if current_platform in ("Android", "iOS"):
+            if current_platform in ("Android", "iOS", "iPadOS"):
                 # save parent commands and toolbar
                 self.parent_commands = copy.copy(self.app.commands)
                 self.parent_toolbar = copy.copy(self.app.main_window.toolbar)
@@ -117,7 +117,7 @@ class TaGui:
     def close(self):
         """
         Closes the current GUI.
-        On Android and iOS, it calls parentGui.show() to restore the previous GUI
+        On Android, iOS, and iPadOS, it calls parentGui.show() to restore the previous GUI
         """
         current_platform = system.get_platform()
         if current_platform == "Windows":
@@ -128,7 +128,7 @@ class TaGui:
             self.app.main_window._toolbar = self.parent_toolbar
             self.app._impl.native.invalidateOptionsMenu()
             self.parentGui.show()
-        elif current_platform == "iOS":
+        elif current_platform in ("iOS", "iPadOS"):
             self.app._commands = self.parent_commands
             self.app.main_window._toolbar = self.parent_toolbar
             self.parentGui.show()
@@ -175,7 +175,7 @@ class TaGui:
         current_platform = system.get_platform()
         if current_platform == "Android":
             self.app._impl.native.setTitle(self.title)
-        elif current_platform == "iOS":
+        elif current_platform in ("iOS", "iPadOS"):
             self.app.main_window.native.navigationItem.title = self.title
         self.window.show()
 

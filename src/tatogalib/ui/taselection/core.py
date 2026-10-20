@@ -14,7 +14,7 @@ from ... import system
 plat = system.get_platform()
 if plat == "Android":
     from .android import TaSelectionImpl
-elif plat == "iOS":
+elif plat in ("iOS", "iPadOS"):
     from .ios import TaSelectionImpl
 else:
     raise NotImplementedError(f"TaSelection is not implemented for {plat}")

@@ -10,7 +10,7 @@ from ... import system
 plat = system.get_platform()
 if plat == "Android":
     from .android import TaButtonImpl
-elif plat == "iOS":
+elif plat in ("iOS", "iPadOS"):
     from .ios import TaButtonImpl
 elif plat == "Windows":
     from .winforms import TaButtonImpl

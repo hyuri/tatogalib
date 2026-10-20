@@ -29,7 +29,7 @@ if plat == "Windows":
     from .windows import TaWebViewImpl
 elif plat == "Android":
     from .android import TaWebViewImpl
-elif plat == "iOS":
+elif plat in ("iOS", "iPadOS"):
     from .ios import TaWebViewImpl
 else:
     raise NotImplementedError(f"TaWebView is not implemented for {plat}")

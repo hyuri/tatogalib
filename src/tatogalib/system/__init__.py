@@ -21,7 +21,7 @@ def get_platform():
 def get_file_roots():
     """
     Returns the file root directories.
-    Currently only supported on Android and iOS
+    Currently only supported on Android, iOS, and iPadOS
 
     :returns: The file roots
     :rtype: list[str]
@@ -37,7 +37,7 @@ def get_file_roots():
                 idx = path.find("/Android/data/")
                 if idx != -1:
                     roots.append(path[0:idx])
-        elif get_platform() == "iOS":
+        elif get_platform() in ("iOS", "iPadOS"):
             from rubicon.objc import ObjCClass
             NSFileManager = ObjCClass('NSFileManager')
             fm = NSFileManager.defaultManager

@@ -7,7 +7,7 @@ from ..urioutputstream import UriOutputStream, UriTextOutputStream
 plat = system.get_platform()
 if plat == "Android":
     from .android import UriFileImpl
-elif plat == "iOS":
+elif plat in ("iOS", "iPadOS"):
     from .ios import UriFileImpl
 elif plat in ("Windows", "Linux", "Darwin"):
     from .desktop import UriFileImpl

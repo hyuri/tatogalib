@@ -13,7 +13,7 @@ class UriFileBrowser:
         plat = system.get_platform()
         if plat == "Android":
             from .android import UriFileBrowserImpl
-        elif plat == "iOS":
+        elif plat in ("iOS", "iPadOS"):
             from .ios import UriFileBrowserImpl
         elif plat in ("Windows", "Linux", "Darwin"):
             from .desktop import UriFileBrowserImpl
